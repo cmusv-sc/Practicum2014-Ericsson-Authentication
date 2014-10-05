@@ -15,7 +15,12 @@
 			<url>http://download.java.net/maven/2/</url>
 			<layout>default</layout>
 		</repository>
+		<repository>
+			<id>JBoss repository</id>
+			<url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+		</repository>
 	</repositories>
+	
 
 	<dependencies>
 		<dependency>
@@ -24,6 +29,18 @@
 			<version>4.8.2</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<version>2.2.1.GA</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson-provider</artifactId>
+			<version>2.2.1.GA</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
@@ -31,6 +48,16 @@
 			<version>1.8</version>
 		</dependency>
 
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.21</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bytedeco</groupId>
+			<artifactId>javacv</artifactId>
+			<version>0.9</version>
+		</dependency>
 	</dependencies>
 
 	<build>
