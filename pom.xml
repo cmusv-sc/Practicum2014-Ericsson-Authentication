@@ -15,6 +15,11 @@
 			<url>http://download.java.net/maven/2/</url>
 			<layout>default</layout>
 		</repository>
+		
+		<repository>
+		<id>JBoss repository</id>
+		<url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+	</repository>
 	</repositories>
 
 	<dependencies>
@@ -30,8 +35,22 @@
 			<artifactId>jersey-server</artifactId>
 			<version>1.8</version>
 		</dependency>
+		
+		<dependency>
+		<groupId>org.jboss.resteasy</groupId>
+		<artifactId>resteasy-jaxrs</artifactId>
+		<version>2.2.1.GA</version>
+	</dependency>
+ 
+	<dependency>
+		<groupId>org.jboss.resteasy</groupId>
+		<artifactId>resteasy-jackson-provider</artifactId>
+		<version>2.2.1.GA</version>
+	</dependency>
+		
 
 	</dependencies>
+	
 
 	<build>
 		<finalName>CentralServer</finalName>
