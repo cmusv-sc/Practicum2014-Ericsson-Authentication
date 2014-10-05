@@ -20,21 +20,7 @@
 		<id>JBoss repository</id>
 		<url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
 	</repository>
-	</repositories>
 
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-server</artifactId>
-			<version>1.8</version>
-		</dependency>
 		
 		<dependency>
 		<groupId>org.jboss.resteasy</groupId>
@@ -50,7 +36,7 @@
 		
 
 	</dependencies>
-	
+
 
 	<build>
 		<finalName>CentralServer</finalName>
