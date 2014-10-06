@@ -15,6 +15,16 @@ public class sqlConnection {
     public static final String PASSWORD = "";
     public static final String DRIVER_CLASS = "com.mysql.jdbc.Driver"; 
      
+    public void writeToAUT(ActiveUser user) throws Exception {
+   	 Class.forName("com.mysql.jdbc.Driver");
+   	 connect = DriverManager.getConnection(URL, USER, PASSWORD);
+   	 statement = connect.createStatement();
+   	 String sql = String.format("insert into ACTIVE_USER (id, nssid, latitude, longitude, "
+   	 					+ "user_id) values (%d,'%s','%s','%s',%d)", 
+   	 					user.getID(), user.getNSSID(),user.getLat(),user.getLon(),user.getUser_ID());
+   	 statement.executeUpdate(sql);
+   }
+    
     public void writeDataBase(int id, String picture_path) throws Exception {
     	 Class.forName("com.mysql.jdbc.Driver");
     	 connect = DriverManager.getConnection(URL, USER, PASSWORD);

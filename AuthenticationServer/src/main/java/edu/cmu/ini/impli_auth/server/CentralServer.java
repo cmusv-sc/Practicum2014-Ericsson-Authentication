@@ -132,6 +132,22 @@ public class CentralServer {
 
 	}
 	
+	@GET
+	@Path("/getActiveUser")
+	@Produces("application/json")
+	public ActiveUser getActiveUser() {
+
+		ActiveUser user = new ActiveUser();
+		user.setLat("100");
+		user.setLon("100");
+		user.setNSSID("CMU");
+		user.setID(1);
+		user.setUser_ID(1);
+		
+		return user; 
+
+	}
+	
 	@POST
 	@Path("/postUser")
 	@Consumes("application/json")
@@ -158,6 +174,23 @@ public class CentralServer {
 	public Response createResource(Resource resource) {
 
 		String result = "Resource created : " + resource;
+		return Response.status(201).entity(result).build();
+		
+	}
+	
+	@POST
+	@Path("/postLocation")
+	@Consumes("application/json")
+	public Response createActiveUser(ActiveUser user) {
+
+		String result = "Active User created : " + user;
+		sqlConnection dao = new sqlConnection();
+		try {
+			dao.writeToAUT(user);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return Response.status(201).entity(result).build();
 		
 	}
