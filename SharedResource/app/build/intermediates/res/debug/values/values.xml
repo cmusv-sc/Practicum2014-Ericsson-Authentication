@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- From: file:/Users/CyrilLee/Desktop/USA%20Dream%20Realize/CMU/2014%20Fall/14-798%20INI%20MSIT%20Project%20Practicum/Practicum2014-Ericsson-Authentication/SharedResource/app/src/main/res/values/strings.xml -->
+    <eat-comment />
+
+    <string name="app_name">CameraExample</string>
+    <string name="btn_capture">Click</string>
+    <string name="hello">Hello World, CamTestActivity!</string>
+    <string name="take_photo_help">Touch the take picture button</string>
+    <string name="take_photo_help1">Please enter id for this photo</string>
+
+</resources>
