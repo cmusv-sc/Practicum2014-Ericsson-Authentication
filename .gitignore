@@ -5,3 +5,7 @@ SharedResource/.gradle/*
 SharedResource/.idea/*
 SharedResource/app/build/*
 SharedResource/build/*
+AuthenticationClient/.idea/*
+AuthenticationClient/.gradle/*
+AuthenticationClient/app/build/*
+AuthenticationClient/build/*
