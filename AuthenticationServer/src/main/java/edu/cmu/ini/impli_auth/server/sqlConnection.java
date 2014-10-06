@@ -29,7 +29,7 @@ public class sqlConnection {
     	 Class.forName("com.mysql.jdbc.Driver");
     	 connect = DriverManager.getConnection(URL, USER, PASSWORD);
     	 statement = connect.createStatement();
-    	 String sql = String.format("insert into USER (id, picture) values (%d,'%s')", id, picture_path);
+    	 String sql = String.format("insert into USER values (%d, 'test', 'test', 'test@gmail.com', 'test', '123', '%s')", id, picture_path);
     	 statement.executeUpdate(sql);
     }
     

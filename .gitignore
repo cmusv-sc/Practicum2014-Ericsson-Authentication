@@ -1,3 +1,11 @@
-/target/
 .DS_Store
-.settings/*
+AuthenticationServer/target/*
+AuthenticationServer/.settings/*
+SharedResource/.gradle/*
+SharedResource/.idea/*
+SharedResource/app/build/*
+SharedResource/build/*
+AuthenticationClient/.idea/*
+AuthenticationClient/.gradle/*
+AuthenticationClient/app/build/*
+AuthenticationClient/build/*
