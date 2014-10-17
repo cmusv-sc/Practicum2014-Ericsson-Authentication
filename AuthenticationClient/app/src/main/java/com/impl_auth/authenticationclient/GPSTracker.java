@@ -1,7 +1,12 @@
 package com.impl_auth.authenticationclient;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Binder;
@@ -17,7 +22,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
 public class GPSTracker extends Service implements LocationListener, GooglePlayServicesClient.ConnectionCallbacks,
-GooglePlayServicesClient.OnConnectionFailedListener {
+GooglePlayServicesClient.OnConnectionFailedListener{
 
  
     // flag for GPS status
@@ -38,6 +43,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	LocationRequest mLocationRequest;
 	boolean mUpdatesRequested;
 
+
     private static final long MIN_DISTANCE = 10; // 0 meters
     
     private static final int MILLISECONDS_PER_SECOND = 1000;
@@ -53,6 +59,12 @@ GooglePlayServicesClient.OnConnectionFailedListener {
             MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;
  
     // The minimum time between updates in milliseconds
+
+    private boolean serviceNotRunning = true;
+    private SensorServiceReceiver sensorReceiverDirection;
+    private SensorServiceReceiver sensorReceiverStep;
+    public int stepCounter;
+    public int angle;
 
     
     @Override
@@ -83,6 +95,9 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         }
         mUpdatesRequested = true;
         mLocationClient.connect();
+
+        startService();
+
         return Service.START_NOT_STICKY;
     }
   
@@ -122,11 +137,11 @@ GooglePlayServicesClient.OnConnectionFailedListener {
  
     @Override
     public IBinder onBind(Intent arg0) {
-    	
-    	
+
         return mBinder;
     }
-    
+
+
     public class LocalBinder extends Binder {
     	  public GPSTracker getServerInstance() {
     	   return GPSTracker.this;
@@ -162,11 +177,43 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         return mLocationClient.getLastLocation();
     }
 
+
+
     private class SendPost extends AsyncTask<Void,Integer,Double>{
         @Override
         protected Double doInBackground(Void... voids) {
             jsonOutput.postMobileUsage(mLocationClient.getLastLocation(),ipAddress);
+            System.out.println(stepCounter);
             return null;
+        }
+    }
+
+    private void startService() {
+        if (serviceNotRunning) {
+            startService(new Intent(GPSTracker.this, SensorService.class));
+            regsiterBroadCastReceivers();
+            serviceNotRunning = false;
+        }
+
+    }
+
+    private void regsiterBroadCastReceivers() {
+        IntentFilter directionFilter = new IntentFilter(SensorService.DIRECTION_UPDATE);
+        sensorReceiverDirection = new SensorServiceReceiver();
+        registerReceiver(sensorReceiverDirection, directionFilter);
+        IntentFilter stepsFilter = new IntentFilter(SensorService.STEP_UPDATE);
+        sensorReceiverStep = new SensorServiceReceiver();
+        registerReceiver(sensorReceiverStep, stepsFilter);
+    }
+
+    public class SensorServiceReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(SensorService.STEP_UPDATE))
+                stepCounter = intent.getIntExtra(SensorService.STEPS, 0);
+            else if (intent.getAction().equals(SensorService.DIRECTION_UPDATE))
+                angle = intent.getIntExtra(SensorService.ANGLE, 0);
+            System.out.println(stepCounter + " " + angle);
         }
     }
  

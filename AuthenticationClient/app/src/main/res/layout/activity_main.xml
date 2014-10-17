@@ -13,11 +13,12 @@
         android:orientation="vertical">
 
         <EditText
-            android:layout_width="250dp"
-            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/editText1"
             android:autoText="false"
-            android:text="http://10.0.23.93:8080/CentralService/json/postDevice" />
+            android:text="http://10.0.23.223:8080/CentralServer/json/postLocation"
+            android:singleLine="false" />
 
         <TextView
             android:layout_width="wrap_content"
