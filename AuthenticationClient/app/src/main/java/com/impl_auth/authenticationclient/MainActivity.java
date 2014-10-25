@@ -1,7 +1,10 @@
 package com.impl_auth.authenticationclient;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +23,8 @@ public class MainActivity extends Activity {
     Button send_location;
 
     GPSTracker tracker;
+    private boolean serviceNotRunning = true;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,4 +90,5 @@ public class MainActivity extends Activity {
         super.onResume();
 
     }
+
 }

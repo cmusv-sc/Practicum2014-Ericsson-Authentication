@@ -96,11 +96,12 @@ public class InfoJsonSend{
 
         try{
 
-            userInfo.put("name", "T.V");
-            userInfo.put("type", "T.V");
+            userInfo.put("id", 1);
             userInfo.put("lat", latitudeStr);
             userInfo.put("lon", longitudeStr);
-            userInfo.put("nssid", String.valueOf(signalStrengthDB));
+            userInfo.put("nssid", "CMU-SV-BLDG-19");
+            userInfo.put("user_ID", 2);
+            userInfo.put("imei",String.valueOf(IMEINumber));
 
             jsonOutput = userInfo.toString();
         }
