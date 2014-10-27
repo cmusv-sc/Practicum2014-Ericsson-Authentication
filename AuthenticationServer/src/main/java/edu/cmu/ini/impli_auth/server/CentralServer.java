@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -20,6 +21,31 @@ import javax.xml.bind.DatatypeConverter;
 @Path("/json")
 public class CentralServer {
 	
+	private double distance(double lat1, double lon1, double lat2, double lon2) {
+		  
+		double theta = lon1 - lon2;
+		double dist = Math.sin(deg2rad(lat1)) * 
+								Math.sin(deg2rad(lat2)) + 
+								Math.cos(deg2rad(lat1)) * 
+								Math.cos(deg2rad(lat2)) * 
+								Math.cos(deg2rad(theta));
+		dist = Math.acos(dist);
+		dist = rad2deg(dist);
+		dist = dist * 60 * 1.1515 * 1.609344;
+		
+		return (dist);
+	}
+	
+	private double deg2rad(double deg) {
+		  return (deg * Math.PI / 180.0);
+	}
+
+	
+	private double rad2deg(double rad) {
+		  return (rad * 180 / Math.PI);
+	}
+
+
 	@GET
 	@Path("/db")
 	public void getdata() {
@@ -117,6 +143,24 @@ public class CentralServer {
 	}
 	
 	@GET
+	@Path("/getTEST")
+	@Produces(MediaType.APPLICATION_SVG_XML)
+	public String getTEST(){
+		String print = "HELL";
+		sqlConnection dao = new sqlConnection();
+		try {
+			print = dao.readTEST();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return print; 
+
+	}
+
+	
+	@GET
 	@Path("/getResource")
 	@Produces("application/json")
 	public Resource getResource() {
@@ -144,6 +188,21 @@ public class CentralServer {
 		user.setID(1);
 		user.setUser_ID(1);
 		
+		return user; 
+
+	}
+	
+	@GET
+	@Path("/getPassiveUser")
+	@Produces("application/json")
+	public PassiveUser getPassiveUser() {
+
+		PassiveUser user = new PassiveUser();
+		user.setLat(0);
+		user.setLon(0);
+		user.setNSSID("CMU");
+		user.setUser_ID(1);
+		user.setSteps(0);
 		return user; 
 
 	}
@@ -181,19 +240,58 @@ public class CentralServer {
 	@POST
 	@Path("/postLocation")
 	@Consumes("application/json")
-	public Response createActiveUser(ActiveUser user) {
-
-		String result = "Active User created : " + user;
+	public Response createPassiveUser(PassiveUser user) {
+		
+		ResultSet result = null;
+		double dist;
 		sqlConnection dao = new sqlConnection();
+		System.out.println("Reached POST LOCATION");
+		
 		try {
-			dao.writeToAUT(user);
+			dao.writeTEST("hello");
+			result = dao.readPassiveUser(user.user_id);
+			
+			if(result != null){
+				System.out.println("SHOULD NOT REACH HERE");
+				dao.updatePassiveUser(user.steps,user.user_id);
+			} else {
+				System.out.println("Reached ELSE");
+				result = dao.readResource();
+				while(result.next()){
+					double lat1 = Double.parseDouble(result.getString("LATITUDE"));
+					double lat2 = Double.parseDouble(result.getString("LONGITUDE"));
+					dist = distance(lat1,lat2,user.getLat(),user.getLon());
+					System.out.println("Reached DISTANCE"+dist);
+					
+					if(dist < 1){
+						dao.writePUT(user,result.getInt("ID"));
+					}
+					
+					else
+						result.next();
+				}
+			} 
+		
+		} catch (SQLException e) {
+				e.printStackTrace();
+				return Response.status(304).build();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return Response.status(304).build();
 		}
+		
+		String http_result = "Passive User : " + user;
+		return Response.status(201).entity(http_result).build();
+	}
+	
+	@POST
+	@Path("/AuthResquest")
+	@Consumes("application/json")
+	public Response auth_request() {
+		//TODO Complete this after building application
+		String result = "Authenticated";
 		return Response.status(201).entity(result).build();
 		
 	}
-	
-	
 }

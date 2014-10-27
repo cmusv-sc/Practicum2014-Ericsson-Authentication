@@ -10,10 +10,15 @@ public class sqlConnection {
 	private PreparedStatement preparedStatement = null;
 	private ResultSet resultSet = null;
     //private static sqlConnection instance = new sqlConnection();
-    public static final String URL = "jdbc:mysql://localhost:3306/AUTH?connectTimeout=3000";
-    public static final String USER = "root";
-    public static final String PASSWORD = "";
+    public static final String URL = "jdbc:mysql://10.0.21.163:3306/auth_schema?connectionTimeout=3000";
+    public static final String USER = "central";
+    public static final String PASSWORD = "pass";
     public static final String DRIVER_CLASS = "com.mysql.jdbc.Driver"; 
+    
+    /* 
+     * ############
+     * ############
+     */
      
     public void writeToAUT(ActiveUser user) throws Exception {
    	 Class.forName("com.mysql.jdbc.Driver");
@@ -24,6 +29,92 @@ public class sqlConnection {
    	 					user.getID(), user.getNSSID(),user.getLat(),user.getLon(),user.getUser_ID());
    	 statement.executeUpdate(sql);
    }
+
+    public ResultSet readResource() throws Exception {
+		
+    	ResultSet returnResult;
+    	Class.forName("com.mysql.jdbc.Driver");
+      	connect = DriverManager.getConnection(URL, USER, PASSWORD);
+      	statement = connect.createStatement();
+      	String sql = "SELECT * FROM RESOURCE";
+      	returnResult = statement.executeQuery(sql);
+    	
+    	return returnResult;
+    	
+    }
+    
+    public ResultSet readPassiveUser(int id) throws Exception {
+		
+    	ResultSet returnResult;
+    	Class.forName("com.mysql.jdbc.Driver");
+      	connect = DriverManager.getConnection(URL, USER, PASSWORD);
+      	statement = connect.createStatement();
+      	String sql = String.format("SELECT * FROM PASSIVE_USER WHERE USER_ID = %d", id);
+      	returnResult = statement.executeQuery(sql);
+    	System.out.println("READ");
+    	if(returnResult.next())
+    		return returnResult;
+    	else
+    		return null;
+    }
+    
+    public void updatePassiveUser(int steps, int id) throws Exception {
+		
+    	Class.forName("com.mysql.jdbc.Driver");
+      	connect = DriverManager.getConnection(URL, USER, PASSWORD);
+      	statement = connect.createStatement();
+      	String sql = String.format("UPDATE PASSIVE_USER SET INITIAL_STEP = %d, "
+      									+ "FRESH = FRESH + 1 "
+      									+ "WHERE USER_ID = %d",steps,id);
+      	statement.executeUpdate(sql);
+    	
+    }
+    
+    public void writePUT(PassiveUser user, int resource_id) throws Exception {
+      	 Class.forName("com.mysql.jdbc.Driver");
+      	 connect = DriverManager.getConnection(URL, USER, PASSWORD);
+      	 statement = connect.createStatement();
+      	 String sql = String.format("insert into PASSIVE_USER (user_id,resource_id,fresh,initial_step) "
+      	 		+ "values (%d,%d,%d,%d)", 
+      	 					user.getUser_ID(), resource_id, 1, user.getSteps());
+      	 statement.executeUpdate(sql);
+      	 System.out.println("INSERTED TO PUT");
+      }
+    
+    public void writeTEST(String string) throws Exception {
+     	 Class.forName("com.mysql.jdbc.Driver");
+     	 connect = DriverManager.getConnection(URL, USER, PASSWORD);
+     	 statement = connect.createStatement();
+     	 String sql = String.format("insert into test (string) "
+     	 		+ "values ('%s')", 
+     	 					string);
+     	 statement.executeUpdate(sql);
+     	 System.out.println("INSERTED");
+     }
+    
+    public String readTEST()throws Exception {
+    	
+    	ResultSet returnResult;
+    	Class.forName("com.mysql.jdbc.Driver");
+      	connect = DriverManager.getConnection(URL, USER, PASSWORD);
+      	statement = connect.createStatement();
+      	String sql = String.format("select * from PASSIVE_USER");
+      	returnResult = statement.executeQuery(sql);
+      	
+      	String result="";
+      	if(returnResult.next())
+      		result = String.valueOf(returnResult.getInt(2));
+      	
+      	return result;
+    	
+		
+	}
+    
+    
+    /* 
+     * ############
+     * ############
+     */
     
     public void writeDataBase(int id, String picture_path) throws Exception {
     	 Class.forName("com.mysql.jdbc.Driver");
