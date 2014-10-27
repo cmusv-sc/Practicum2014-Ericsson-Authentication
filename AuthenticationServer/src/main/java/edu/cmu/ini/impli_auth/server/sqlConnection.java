@@ -181,6 +181,50 @@ public class sqlConnection {
    	 	statement.executeUpdate(sql);
     }
     
+    public int authByUsernamePassword(String username, String password) throws Exception{
+    	Class.forName("com.mysql.jdbc.Driver");
+    	connect = DriverManager.getConnection(URL, USER, PASSWORD);
+    	statement = connect.createStatement();
+    	String sql = String.format("select id from user where username='%s' and password='%s'", username, password);
+    	resultSet = statement.executeQuery(sql);
+    	if(resultSet.next()){
+    		return resultSet.getInt("ID");
+    	} else return -1; //return -1 if auth failed.
+    }
+    
+    public void registerResource(String name, String latitude, String longitude, String NSSID, String type, String SKEY, int userId) throws Exception {
+   	 	Class.forName("com.mysql.jdbc.Driver");
+   	 	connect = DriverManager.getConnection(URL, USER, PASSWORD);
+   	 	statement = connect.createStatement();
+   	 	String sql = String.format("insert into resource (name,latitude,longitude,NSSID,type,SKEY,USERID) values ('%s', '%s', '%s', '%s', '%s', '%s', %d)", name,latitude,longitude,NSSID,type,SKEY,userId);
+   	 	statement.executeUpdate(sql);
+    }
+
+    public ResultSet getUserResources(int id) throws Exception{
+    	Class.forName("com.mysql.jdbc.Driver");
+    	connect = DriverManager.getConnection(URL, USER, PASSWORD);
+    	statement = connect.createStatement();
+    	String sql = String.format("select * from resource where userid=%d", id);
+    	resultSet = statement.executeQuery(sql);
+    	return resultSet;
+    }
+    
+    public boolean authByNssidSharedKey(String NSSID, String sharedKey) throws Exception{
+    	Class.forName("com.mysql.jdbc.Driver");
+    	connect = DriverManager.getConnection(URL, USER, PASSWORD);
+    	statement = connect.createStatement();
+    	String sql = String.format("select id from resource where nssid='%s' and skey='%s'", NSSID, sharedKey);
+    	resultSet = statement.executeQuery(sql);
+    	return resultSet.next();
+    }
+    
+    public void deleteResourceById(int id) throws Exception {
+    	Class.forName("com.mysql.jdbc.Driver");
+   	 	connect = DriverManager.getConnection(URL, USER, PASSWORD);
+   	 	statement = connect.createStatement();
+   	 	String sql = String.format("delete from resource where id=%d", id);
+   	 	statement.executeUpdate(sql);
+    }
     
     public ResultSet readDataBase(int id) throws Exception {
         try {

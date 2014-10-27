@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.security.SecureRandom;
+import java.math.BigInteger;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -13,6 +15,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -129,6 +132,56 @@ public class CentralServer {
 	}
 	
 	@GET
+	@Path("/getUserResources/{id}")
+	//@Produces("application/json")
+	public Response getUserResources(@PathParam("id")int id) {
+
+		sqlConnection dao = new sqlConnection();
+		ResultSet resultSet = null;
+		try {
+			resultSet = dao.getUserResources(id);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append("<table><tr><td>name</td><td>delete</td></tr>");
+		String result = "Failed to get result";
+		if(resultSet != null) {
+			try {
+				while(resultSet.next()){
+					sb.append("<tr><td>");
+					sb.append(resultSet.getString("name"));
+					sb.append("</td><td>");
+					sb.append(String.format("<form action=\"/CentralServer/json/deleteResourceById\" method=\"POST\"><input type=\"hidden\" name=\"id\" value=\"%s\"><input type=\"submit\" value=\"Submit\"></form>", resultSet.getString("id")));
+					sb.append("</td></tr>");
+					//System.out.println("Get a resource");
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			sb.append("</table>");
+			result = sb.toString();
+		}
+		return Response.status(200).entity(result).build(); 
+	}
+	
+	@POST
+	@Path("/deleteResourceById")
+	//@Produces("application/json")
+	public void deleteResourceById(@FormParam("id") int id) {
+		sqlConnection dao = new sqlConnection();
+		try {
+			dao.deleteResourceById(id);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@GET
 	@Path("/getDevice")
 	@Produces("application/json")
 	public Device getDevice() {
@@ -229,12 +282,77 @@ public class CentralServer {
 	
 	@POST
 	@Path("/postResource")
-	@Consumes("application/json")
-	public Response createResource(Resource resource) {
-
-		String result = "Resource created : " + resource;
-		return Response.status(201).entity(result).build();
+	//@Consumes("application/json")
+	//information to register a resource: name,latitude,longitude,NSSID,type, send a generated SKEY back.
+	public Response createResource(@FormParam("Username") String username, @FormParam("Password") String password,
+			@FormParam("name") String name, @FormParam("latitude") String latitude,
+			@FormParam("longitude") String longitude, @FormParam("NSSID") String NSSID,
+			@FormParam("type") String type) {
+		sqlConnection dao = new sqlConnection();
+		int result;
+		int userid = 0;
+		try {
+			if((userid=dao.authByUsernamePassword(username, password))>0){
+				//auth pass
+				result = 1;
+			} else {
+				//auth failed
+				result = 0;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = -1;
+		}
 		
+		String returnMessage;
+		switch(result){
+		case 1:
+			SecureRandom random = new SecureRandom();
+			String SKEY = new BigInteger(130, random).toString(32);
+			returnMessage = "Success,"+SKEY;
+			try {
+				dao.registerResource(name, latitude, longitude, NSSID, type, SKEY,userid);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				returnMessage = "Exception";
+			}
+			break;
+		case 0:
+			returnMessage = "Failed";
+			break;
+		case -1:
+			returnMessage = "Exception";
+			break;
+		default:
+			returnMessage = "Error";
+			break;
+		}
+		return Response.status(200).entity(returnMessage).build();
+	}
+	
+	@POST
+	@Path("/authResource")
+	//information to authenticate a resource: NSSID,SKEY
+	public Response authResource(@FormParam("NSSID") String NSSID, @FormParam("SKEY") String sKey) {
+		sqlConnection dao = new sqlConnection();
+		String result;
+		try {
+			if(dao.authByNssidSharedKey(NSSID, sKey)){
+				//auth pass
+				result = "Success";
+			} else {
+				//auth failed
+				result = "Failed";
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = "Exception";
+		}
+		
+		return Response.status(200).entity(result).build();
 	}
 	
 	@POST

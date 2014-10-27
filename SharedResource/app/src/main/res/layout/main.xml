@@ -10,18 +10,19 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"/>
 
-    <EditText
-        android:layout_width="138dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/nameTagBox"
-        android:layout_gravity="center_horizontal|bottom"/>
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Take Picture"
         android:id="@+id/takebutton"
         android:layout_gravity="right|bottom"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign Out"
+        android:id="@+id/signoutbutton"
+        android:layout_gravity="left|bottom"/>
 
     <!-- Button
         android:id="@+id/btnCapture"
