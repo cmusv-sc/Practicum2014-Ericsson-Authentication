@@ -43,14 +43,30 @@ public class sqlConnection {
     	
     }
     
-    public ResultSet readPassiveUser(int id) throws Exception {
+    public ResultSet readPassiveUser(String imei) throws Exception {
 		
     	ResultSet returnResult;
+    	int id;
+    	System.out.println(imei);
+    	
     	Class.forName("com.mysql.jdbc.Driver");
       	connect = DriverManager.getConnection(URL, USER, PASSWORD);
       	statement = connect.createStatement();
-      	String sql = String.format("SELECT * FROM PASSIVE_USER WHERE USER_ID = %d", id);
+      	
+      	
+      	String sql = String.format("SELECT * FROM DEVICE WHERE IMEI = '%s'", imei);
       	returnResult = statement.executeQuery(sql);
+      	if(returnResult.first()){
+      		id = returnResult.getInt("USER_ID");
+          	//returnResult.deleteRow();
+      	}
+      	else
+      		id = -1;
+      	
+      	System.out.println("ID = "+id);
+      	
+      	String sql2 = String.format("SELECT * FROM PASSIVE_USER WHERE USER_ID = %d", id);
+      	returnResult = statement.executeQuery(sql2);
     	System.out.println("READ");
     	if(returnResult.next())
     		return returnResult;
@@ -58,26 +74,59 @@ public class sqlConnection {
     		return null;
     }
     
-    public void updatePassiveUser(int steps, int id) throws Exception {
-		
+    public void updatePassiveUser(PassiveUser user, int id) throws Exception {
+
+    	ResultSet returnResult;
     	Class.forName("com.mysql.jdbc.Driver");
       	connect = DriverManager.getConnection(URL, USER, PASSWORD);
       	statement = connect.createStatement();
-      	String sql = String.format("UPDATE PASSIVE_USER SET INITIAL_STEP = %d, "
-      									+ "FRESH = FRESH + 1 "
-      									+ "WHERE USER_ID = %d",steps,id);
-      	statement.executeUpdate(sql);
+      	
+      	if(id == -1){
+      		String sql = String.format("SELECT USER_ID FROM DEVICE WHERE IMEI = '%s'", user.device_phy_id);
+      		returnResult = statement.executeQuery(sql);
+      		if(returnResult.first()){
+          		id = returnResult.getInt("USER_ID");
+          	}
+          	else
+          		id = -1;
+      	}
+      	
+      	
+      	String sql2 = String.format("UPDATE PASSIVE_USER SET INITIAL_STEP = %d, "
+      									+ "FRESH = FRESH + 1, "
+      									+ "TIMESTAMP = NOW(), "
+      									+ "LATITUDE = '%s', "
+      									+ "LONGITUDE = '%s', "
+      									+ "NSSID = '%s', "
+      									+ "DEVICE_PHY_ID = '%s' "
+      									+ "WHERE USER_ID = %d ", user.steps, user.lat, 
+      															user.lon , user.NSSID,
+      															user.device_phy_id, id);
+      	statement.executeUpdate(sql2);
     	
     }
     
     public void writePUT(PassiveUser user, int resource_id) throws Exception {
-      	 Class.forName("com.mysql.jdbc.Driver");
-      	 connect = DriverManager.getConnection(URL, USER, PASSWORD);
-      	 statement = connect.createStatement();
-      	 String sql = String.format("insert into PASSIVE_USER (user_id,resource_id,fresh,initial_step) "
-      	 		+ "values (%d,%d,%d,%d)", 
-      	 					user.getUser_ID(), resource_id, 1, user.getSteps());
-      	 statement.executeUpdate(sql);
+      	
+    	ResultSet returnResult;
+    	int id;
+    	Class.forName("com.mysql.jdbc.Driver");
+      	connect = DriverManager.getConnection(URL, USER, PASSWORD);
+      	statement = connect.createStatement();
+      	 
+      	String sql = String.format("SELECT USER_ID FROM DEVICE WHERE IMEI = '%s'", user.device_phy_id);
+      	returnResult = statement.executeQuery(sql);
+      	if(returnResult.first()){
+      		id = returnResult.getInt("USER_ID");
+      	}
+      	else id = -1;
+      	      	
+      	
+      	 String sql2 = String.format("insert into PASSIVE_USER (user_id,resource_id,fresh,"
+      	 		+ "initial_step,latitude,longitude,nssid,timestamp,device_phy_id) "
+      	 		+ "values (%d,%d,%d,%d,'%s','%s','%s',NOW(),'%s')", 
+      	 					id, resource_id, 1, user.getSteps(), user.getLat(), user.getLon(), user.getNSSID(), user.getDevice_Phy_ID());
+      	 statement.executeUpdate(sql2);
       	 System.out.println("INSERTED TO PUT");
       }
     

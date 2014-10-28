@@ -201,8 +201,8 @@ public class CentralServer {
 		user.setLat(0);
 		user.setLon(0);
 		user.setNSSID("CMU");
-		user.setUser_ID(1);
 		user.setSteps(0);
+		user.setDevice_Phy_ID("Hello");
 		return user; 
 
 	}
@@ -248,12 +248,13 @@ public class CentralServer {
 		System.out.println("Reached POST LOCATION");
 		
 		try {
-			dao.writeTEST("hello");
-			result = dao.readPassiveUser(user.user_id);
+			//dao.writeTEST("hello");
+			System.out.println("ABOUT TO READ :"+user.device_phy_id);
+			result = dao.readPassiveUser(user.getDevice_Phy_ID());
 			
 			if(result != null){
 				System.out.println("SHOULD NOT REACH HERE");
-				dao.updatePassiveUser(user.steps,user.user_id);
+				dao.updatePassiveUser(user,result.findColumn("USER_ID"));
 			} else {
 				System.out.println("Reached ELSE");
 				result = dao.readResource();

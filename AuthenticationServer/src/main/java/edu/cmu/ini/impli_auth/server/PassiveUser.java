@@ -6,8 +6,7 @@ public class PassiveUser {
 	double lat;
 	double lon;
 	int steps;
-	
-	int user_id;
+	String device_phy_id;
 	
 	public String getNSSID() {
 		return NSSID;
@@ -16,7 +15,7 @@ public class PassiveUser {
 	public void setNSSID(String NSSID) {
 		this.NSSID = NSSID;
 	}
-
+		
 	public double getLat() {
 		return lat;
 	}
@@ -40,19 +39,20 @@ public class PassiveUser {
 	public void setSteps(int steps) {
 		this.steps = steps;
 	}
-
-	public int getUser_ID() {
-		return user_id;
+	
+	public String getDevice_Phy_ID() {
+		return device_phy_id;
 	}
 
-	public void setUser_ID(int user_id) {
-		this.user_id = user_id;
+	public void setDevice_Phy_ID(String device_phy_id) {
+		this.device_phy_id = device_phy_id;
 	}
+
 	
 	@Override
 	public String toString() {
-		return "Passive User [nssid=" + NSSID + ", USER_ID=" + user_id + "LAT=" + lat + "LON=" + lon +
-				"STEPS=" + steps +"]";
+		return "Passive User [nssid=" + NSSID + "LAT=" + lat + "LON=" + lon +
+				"STEPS=" + steps + "DEVICE_ID=" + device_phy_id + "]";
 	}
 
 }
