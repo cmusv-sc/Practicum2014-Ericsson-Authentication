@@ -9,3 +9,6 @@ AuthenticationClient/.idea/*
 AuthenticationClient/.gradle/*
 AuthenticationClient/app/build/*
 AuthenticationClient/build/*
+FaceRecognitionSample/build/*
+FaceRecognitionSample/.gradle/*
+FaceRecognitionSample/.idea/*
