@@ -57,11 +57,28 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.21</version>
 		</dependency>
-		<dependency>
+	    <dependency>
 			<groupId>org.bytedeco</groupId>
 			<artifactId>javacv</artifactId>
-			<version>0.9</version>
+			<version>0.8</version>
 		</dependency>
+		<!-- <dependency>
+			<groupId>com.googlecode.javacpp</groupId>
+			<artifactId>javacpp</artifactId>
+			<version>0.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.javacv</groupId>
+			<artifactId>javacv</artifactId>
+			<version>0.5</version>
+		</dependency> -->
+<!--  		   <dependency>
+        <groupId>org.opencv</groupId>
+        <artifactId>opencv</artifactId>
+        <version>2.4.9</version>
+        <systemPath>/usr/local/Cellar/opencv/2.4.9/share/OpenCV/java/opencv-249.jar</systemPath>
+        <scope>system</scope>
+    </dependency>  -->
 	</dependencies>
 
 	<build>

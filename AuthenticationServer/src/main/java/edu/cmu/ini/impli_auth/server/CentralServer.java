@@ -44,9 +44,10 @@ public class CentralServer {
 		byte[] imageData = DatatypeConverter.parseBase64Binary(image);
 
 		FileOutputStream outStream = null;
-
+/*
 		// Write to local (for test)
 		try {		
+		
 			String fileName = String.format("%d.jpg", System.currentTimeMillis());
 			File outFile = new File(fileName);
 			outStream = new FileOutputStream(outFile);
@@ -81,7 +82,9 @@ public class CentralServer {
 			e.printStackTrace();
 		} finally {
 		}
-		
+		*/
+		AuthFaceRecognizer faceRecognizer = new AuthFaceRecognizer(new File(""));
+		faceRecognizer.run();
 		return Response.status(200).entity("the request is failed").build();
 	}
 	
