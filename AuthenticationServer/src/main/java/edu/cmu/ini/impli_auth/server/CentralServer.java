@@ -1,14 +1,18 @@
 package edu.cmu.ini.impli_auth.server;
  
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.security.SecureRandom;
 import java.math.BigInteger;
 
+import javax.imageio.ImageIO;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -71,6 +75,7 @@ public class CentralServer {
 		//System.out.println(image);
 		int id = Integer.parseInt(id_str);
 		byte[] imageData = DatatypeConverter.parseBase64Binary(image);
+		
 
 		FileOutputStream outStream = null;
 
@@ -386,8 +391,11 @@ public class CentralServer {
 						dao.writePUT(user,result.getInt("ID"));
 					}
 					
-					else
+					else {
 						result.next();
+						System.out.println("You are too far away. No resources. DISTANCE="+dist);
+					}
+						
 				}
 			} 
 		
@@ -405,10 +413,18 @@ public class CentralServer {
 	}
 	
 	@POST
-	@Path("/AuthResquest")
-	@Consumes("application/json")
-	public Response auth_request() {
+	@Path("/AuthRequest")
+	@Consumes("image/png")
+	public Response auth_request(BufferedImage img) throws IOException {
 		//TODO Complete this after building application
+		//String format = getFormatName(new ByteArrayInputStream(image));
+
+		
+		//BufferedImage img = ImageIO.read(new ByteArrayInputStream(image));
+		
+		File outputfile = new File("image.jpg");
+		ImageIO.write(img, "png", outputfile);
+		
 		String result = "Authenticated";
 		return Response.status(201).entity(result).build();
 		
