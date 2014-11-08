@@ -429,4 +429,54 @@ public class CentralServer {
 		return Response.status(201).entity(result).build();
 		
 	}
+	
+	@POST
+	@Path("/postDevice")
+	//@Consumes("application/json")
+	//information to register a resource: name,latitude,longitude,NSSID,type, send a generated SKEY back.
+	public Response createDevice(@FormParam("Username") String username, @FormParam("Password") String password,
+			@FormParam("name") String name, @FormParam("IMEI") String IMEI) {
+		sqlConnection dao = new sqlConnection();
+		int result;
+		int userid = 0;
+		try {
+			if((userid=dao.authByUsernamePassword(username, password))>0){
+				//auth pass
+				result = 1;
+			} else {
+				//auth failed
+				result = 0;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = -1;
+		}
+		
+		String returnMessage;
+		switch(result){
+		case 1:
+			SecureRandom random = new SecureRandom();
+			String credential = new BigInteger(80, random).toString(32);
+			returnMessage = "Success,"+credential;
+			try {
+				dao.registerDevice(name, IMEI, credential, userid);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				returnMessage = "Exception";
+			}
+			break;
+		case 0:
+			returnMessage = "Failed";
+			break;
+		case -1:
+			returnMessage = "Exception";
+			break;
+		default:
+			returnMessage = "Error";
+			break;
+		}
+		return Response.status(200).entity(returnMessage).build();
+	}
 }

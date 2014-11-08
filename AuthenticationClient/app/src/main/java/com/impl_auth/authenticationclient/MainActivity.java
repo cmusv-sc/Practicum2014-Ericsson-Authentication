@@ -1,16 +1,13 @@
 package com.impl_auth.authenticationclient;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ToggleButton;
 
@@ -21,6 +18,7 @@ public class MainActivity extends Activity {
     EditText ipAddressField;
     EditText updateFrequencyField;
     Button send_location;
+    SharedPreferences sharedPref;
 
     GPSTracker tracker;
     private boolean serviceNotRunning = true;
@@ -37,19 +35,22 @@ public class MainActivity extends Activity {
 
         send_location = (Button)findViewById(R.id.button);
 
-        getLocationService.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String registered = sharedPref.getString(getString(R.string.registered_flag),null);
 
-                if (isChecked) {
-                    Intent i = new Intent(MainActivity.this, GPSTracker.class);
-                    i.putExtra("IP", ipAddressField.getText().toString());
-                    i.putExtra("updateInterval",Integer.valueOf(updateFrequencyField.getText().toString()));
-                    startService(i);
-                } else {
-                    stopService(new Intent(MainActivity.this, GPSTracker.class));
-                }
-            }
-        });
+        if(registered != null){
+            // start service if registered.
+            Intent i = new Intent(MainActivity.this, GPSTracker.class);
+            i.putExtra("IP", ipAddressField.getText().toString());
+            i.putExtra("updateInterval",Integer.valueOf(updateFrequencyField.getText().toString()));
+            startService(i);
+        } else {
+            // redirect to login activity if not registered
+            Intent loginActivity = new Intent(this, LoginActivity.class);
+            startActivity(loginActivity);
+        }
+
+
 
 //        send_location.setOnClickListener(new View.OnClickListener() {
 //            @Override

@@ -192,6 +192,23 @@ public class sqlConnection {
     	} else return -1; //return -1 if auth failed.
     }
     
+    public void registerDevice(String name, String IMEI, String credential, int userId) throws Exception {
+   	 	Class.forName("com.mysql.jdbc.Driver");
+   	 	connect = DriverManager.getConnection(URL, USER, PASSWORD);
+   	 	statement = connect.createStatement();
+   	 	String sql = String.format("insert into device (name, IMEI,CREDENTIAL,USER_ID) values ('%s', '%s', '%s', %d)", name,IMEI,credential,userId);
+   	 	statement.executeUpdate(sql);
+    }
+    
+    public boolean authDevice(String IMEI, String credential) throws Exception{
+    	Class.forName("com.mysql.jdbc.Driver");
+    	connect = DriverManager.getConnection(URL, USER, PASSWORD);
+    	statement = connect.createStatement();
+    	String sql = String.format("select id from device where IMEI='%s' and CREDENTIAL='%s'", IMEI, credential);
+    	resultSet = statement.executeQuery(sql);
+    	return resultSet.next();
+    }
+    
     public void registerResource(String name, String latitude, String longitude, String NSSID, String type, String SKEY, int userId) throws Exception {
    	 	Class.forName("com.mysql.jdbc.Driver");
    	 	connect = DriverManager.getConnection(URL, USER, PASSWORD);

@@ -4,5 +4,8 @@
     <string name="app_name">AuthenticationClient</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="registered_flag">registered</string>
+    <string name="device_name">Device Name</string>
+    <string name="share_perf_key">shareKey</string>
 
 </resources>
