@@ -229,21 +229,6 @@ public class CentralServer {
 
 	}
 	
-	@GET
-	@Path("/getPassiveUser")
-	@Produces("application/json")
-	public PassiveUser getPassiveUser() {
-
-		PassiveUser user = new PassiveUser();
-		user.setLat(0);
-		user.setLon(0);
-		user.setNSSID("CMU");
-		user.setSteps(0);
-		user.setDevice_Phy_ID("Hello");
-		return user; 
-
-	}
-	
 
 	@POST
 	@Path("/postUser")
