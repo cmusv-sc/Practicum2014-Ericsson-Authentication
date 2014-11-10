@@ -5,8 +5,8 @@ android {
 
     defaultConfig {
         applicationId "com.example.cam"
-        minSdkVersion 8
-        targetSdkVersion 8
+        minSdkVersion 14
+        targetSdkVersion 15
     }
 
     buildTypes {

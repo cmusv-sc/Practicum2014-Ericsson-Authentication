@@ -1,9 +1,5 @@
 package com.example.cam;
 
-/**
- * @author Jose Davis Nidhin
- */
-
 import java.io.IOException;
 import java.util.List;
 
