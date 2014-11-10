@@ -88,7 +88,7 @@ public class SensorService extends Service implements SensorEventListener{
         fuseTimer.scheduleAtFixedRate(new calculateFusedOrientationTask(),
                 1000, TIME_CONSTANT);
 
-        return START_NOT_STICKY;
+        return START_STICKY;
     };
     public void initListeners(){
         mSensorManager.registerListener(this,

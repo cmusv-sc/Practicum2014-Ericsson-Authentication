@@ -121,22 +121,6 @@ public class CentralServer {
 	
 	
 	@GET
-	@Path("/getUser")
-	@Produces("application/json")
-	public User getUser() {
-
-		User user = new User();
-		user.setFirstName("Alok");
-		user.setLastName("Nerurkar");
-		user.setEmail("alok@email.com");
-		user.setUserName("alok");
-		user.setPassword("password");
-		
-		return user; 
-
-	}
-	
-	@GET
 	@Path("/getUserResources/{id}")
 	//@Produces("application/json")
 	public Response getUserResources(@PathParam("id")int id) {
@@ -186,85 +170,6 @@ public class CentralServer {
 		
 	}
 	
-	@GET
-	@Path("/getDevice")
-	@Produces("application/json")
-	public Device getDevice() {
-
-		Device device = new Device();
-		device.setName("Phone");
-		device.setStrength(10);
-		device.setPhyAttr("IMEI");
-		
-		return device; 
-
-	}
-	
-	@GET
-	@Path("/getTEST")
-	@Produces(MediaType.APPLICATION_SVG_XML)
-	public String getTEST(){
-		String print = "HELL";
-		sqlConnection dao = new sqlConnection();
-		try {
-			print = dao.readTEST();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return print; 
-
-	}
-
-	
-	@GET
-	@Path("/getResource")
-	@Produces("application/json")
-	public Resource getResource() {
-
-		Resource resource = new Resource();
-		resource.setLat("100");
-		resource.setLon("100");
-		resource.setName("TV");
-		resource.setNSSID("CMU");
-		resource.setType("display");
-		
-		return resource; 
-
-	}
-	
-	@GET
-	@Path("/getActiveUser")
-	@Produces("application/json")
-	public ActiveUser getActiveUser() {
-
-		ActiveUser user = new ActiveUser();
-		user.setLat("100");
-		user.setLon("100");
-		user.setNSSID("CMU");
-		user.setID(1);
-		user.setUser_ID(1);
-		
-		return user; 
-
-	}
-	
-	@GET
-	@Path("/getPassiveUser")
-	@Produces("application/json")
-	public PassiveUser getPassiveUser() {
-
-		PassiveUser user = new PassiveUser();
-		user.setLat(0);
-		user.setLon(0);
-		user.setNSSID("CMU");
-		user.setSteps(0);
-		user.setDevice_Phy_ID("Hello");
-		return user; 
-
-	}
-	
 	@POST
 	@Path("/postUser")
 	@Consumes("application/json")
@@ -275,15 +180,6 @@ public class CentralServer {
 		
 	}
 	
-	@POST
-	@Path("/postDevice")
-	@Consumes("application/json")
-	public Response createDevice(Device device) {
-
-		String result = "Device created : " + device;
-		return Response.status(201).entity(result).build();
-		
-	}
 	
 	@POST
 	@Path("/postResource")
@@ -356,6 +252,21 @@ public class CentralServer {
 			e.printStackTrace();
 			result = "Exception";
 		}
+		
+		return Response.status(200).entity(result).build();
+	}
+	@GET
+	@Path("/getPassiveUser")
+	@Produces("application/json")
+	public Response getUser(){
+		PassiveUser user = new PassiveUser();
+		user.setNSSID("CMU");
+		user.setLat(100.0);
+		user.setLon(100.0);
+		user.setSteps(10);
+		user.setDevice_Phy_ID("100");
+		
+		String result = user.toString();
 		
 		return Response.status(200).entity(result).build();
 	}

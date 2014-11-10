@@ -11,6 +11,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ToggleButton;
 
+import java.util.Calendar;
+
+import static com.impl_auth.authenticationclient.R.string.*;
+
 
 public class MainActivity extends Activity {
 
@@ -19,8 +23,9 @@ public class MainActivity extends Activity {
     EditText updateFrequencyField;
     Button send_location;
     SharedPreferences sharedPref;
+    boolean serviceRunning;
+    Intent i;
 
-    GPSTracker tracker;
     private boolean serviceNotRunning = true;
 
 
@@ -35,29 +40,46 @@ public class MainActivity extends Activity {
 
         send_location = (Button)findViewById(R.id.button);
 
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String registered = sharedPref.getString(getString(R.string.registered_flag),null);
+        /*
+        Getting the last recorded day to reset the step counter value everyday.
+        Can be used for context like tired, bored etc.
+         */
 
+        sharedPref = getSharedPreferences("com.impl_auth.authenticationclient_preferences.xml",
+                                            MODE_PRIVATE);
+        String registered = sharedPref.getString(getString(registered_flag),null);
+        int current_day = sharedPref.getInt(getString(R.string.lastRecordedDay),0);
+
+        if(current_day == 0){
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt(getString(lastRecordedDay), Calendar.DAY_OF_YEAR);
+            editor.commit();
+            current_day = sharedPref.getInt(getString(R.string.lastRecordedDay),0);
+        }
+
+        if (current_day != Calendar.DAY_OF_YEAR){
+            if(serviceRunning){
+                //reset
+                stopService(i);
+                //restart
+                i.putExtra("IP", ipAddressField.getText().toString());
+                i.putExtra("updateInterval",Integer.valueOf(updateFrequencyField.getText().toString()));
+                startService(i);
+            }
+        }
         if(registered != null){
             // start service if registered.
-            Intent i = new Intent(MainActivity.this, GPSTracker.class);
+            i = new Intent(MainActivity.this, GPSTracker.class);
             i.putExtra("IP", ipAddressField.getText().toString());
             i.putExtra("updateInterval",Integer.valueOf(updateFrequencyField.getText().toString()));
             startService(i);
+            serviceRunning = true;
         } else {
             // redirect to login activity if not registered
             Intent loginActivity = new Intent(this, LoginActivity.class);
             startActivity(loginActivity);
         }
 
-
-
-//        send_location.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                InfoJsonSend json = new InfoJsonSend(this,)
-//            }
-//        });
     }
 
 
@@ -82,12 +104,6 @@ public class MainActivity extends Activity {
 
     @Override
     public void onResume(){
-//        int errorcode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getBaseContext());
-//        if(errorcode != 0){
-//            int requestCode = 0;
-//            Dialog errorDiag = GooglePlayServicesUtil.getErrorDialog(errorcode, this, requestCode);
-//            errorDiag.show();
-//        }
         super.onResume();
 
     }
