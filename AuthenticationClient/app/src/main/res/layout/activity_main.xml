@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/editText1"
             android:autoText="false"
-            android:text="http://10.0.23.223:8080/CentralServer/json/postLocation"
+            android:text="http://10.0.23.67:8080/CentralServer/json/postLocation"
             android:singleLine="false" />
 
         <TextView

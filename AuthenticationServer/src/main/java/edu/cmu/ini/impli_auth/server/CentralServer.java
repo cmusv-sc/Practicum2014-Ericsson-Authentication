@@ -99,21 +99,6 @@ public class CentralServer {
 		return Response.status(200).entity("post image succeed").build();
 	}
 
-	@GET
-	@Path("/getUser")
-	@Produces("application/json")
-	public User getUser() {
-
-		User user = new User();
-		user.setFirstName("Alok");
-		user.setLastName("Nerurkar");
-		user.setEmail("alok@email.com");
-		user.setUserName("alok");
-		user.setPassword("password");
-
-		return user;
-
-	}
 
 	@GET
 	@Path("/getUserResources/{id}")
@@ -164,88 +149,13 @@ public class CentralServer {
 		}
 		
 	}
-	
-	@GET
-	@Path("/getDevice")
-	@Produces("application/json")
-	public Device getDevice() {
 
-		Device device = new Device();
-		device.setName("Phone");
-		device.setStrength(10);
-		device.setPhyAttr("IMEI");
-
-		return device;
-
-	}
-
-	@GET
-	@Path("/getTEST")
-	@Produces(MediaType.APPLICATION_SVG_XML)
-	public String getTEST(){
-		String print = "HELL";
-		sqlConnection dao = new sqlConnection();
-		try {
-			print = dao.readTEST();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return print; 
-
-	}
-
-	
-	@GET
-	@Path("/getResource")
-	@Produces("application/json")
-	public Resource getResource() {
-
-		Resource resource = new Resource();
-		resource.setLat("100");
-		resource.setLon("100");
-		resource.setName("TV");
-		resource.setNSSID("CMU");
-		resource.setType("display");
-
-		return resource;
-
-	}
-
-	@GET
-	@Path("/getActiveUser")
-	@Produces("application/json")
-	public ActiveUser getActiveUser() {
-
-		ActiveUser user = new ActiveUser();
-		user.setLat("100");
-		user.setLon("100");
-		user.setNSSID("CMU");
-		user.setID(1);
-		user.setUser_ID(1);
-
-		return user;
-
-	}
-	
-
-	@POST
+    @POST
 	@Path("/postUser")
 	@Consumes("application/json")
 	public Response createUser(User user) {
 
 		String result = "User created : " + user;
-		return Response.status(201).entity(result).build();
-
-	}
-
-	@POST
-	@Path("/postDevice")
-	@Consumes("application/json")
-	public Response createDevice(Device device) {
-
-		String result = "Device created : " + device;
 		return Response.status(201).entity(result).build();
 
 	}
@@ -325,7 +235,7 @@ public class CentralServer {
 		return Response.status(200).entity(result).build();
 	}
 
-	@POST
+    @POST
 	@Path("/postLocation")
 	@Consumes("application/json")
 	public Response createPassiveUser(PassiveUser user) {

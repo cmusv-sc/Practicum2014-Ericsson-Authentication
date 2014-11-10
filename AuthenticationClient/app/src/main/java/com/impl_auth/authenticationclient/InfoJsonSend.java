@@ -27,12 +27,9 @@ public class InfoJsonSend{
 
 	double Latitude;
 	double Longitude;
-	String latitudeStr;
-	String longitudeStr;
 	String jsonOutput;
 	TelephonyManager cellInfo;
 	String IMEINumber;
-	String IMSINumber;
 	int signalStrengthDB;
 	Long tsLong;
 	Long timeStamp;
@@ -46,16 +43,15 @@ public class InfoJsonSend{
 		cellInfo = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
 		IMEINumber = cellInfo.getDeviceId();
-		
-		IMSINumber = cellInfo.getSubscriberId();
+
 		my_context = context;
 		signalStrengthDB = 0;
-		 
-		 MyListener = new MyPhoneStateListener();
-		 cellInfo.listen(MyListener , PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
-		 
-		 
-		
+
+        /*
+        This piece of code is used to get the Network signal strength. Phone state listener.
+         */
+		MyListener = new MyPhoneStateListener();
+		cellInfo.listen(MyListener , PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 		}
 
 
@@ -78,14 +74,11 @@ public class InfoJsonSend{
     }/* End of private Class */
 
 
-    public int postMobileUsage(Location location, String ipAddr){
+    public int postMobileUsage(Location location, String ipAddr, int steps){
 
         HttpResponse response = null;
         Latitude = location.getLatitude();
         Longitude = location.getLongitude();
-
-        latitudeStr = String.valueOf(Latitude);
-        longitudeStr = String.valueOf(Longitude);
 
         tsLong = System.currentTimeMillis();
         timeStamp = tsLong/1000;
@@ -96,12 +89,12 @@ public class InfoJsonSend{
 
         try{
 
-            userInfo.put("id", 1);
-            userInfo.put("lat", latitudeStr);
-            userInfo.put("lon", longitudeStr);
             userInfo.put("nssid", "CMU-SV-BLDG-19");
-            userInfo.put("user_ID", 2);
-            userInfo.put("imei",String.valueOf(IMEINumber));
+            userInfo.put("device_Phy_ID",String.valueOf(IMEINumber));
+            userInfo.put("lat", Latitude);
+            userInfo.put("lon", Longitude);
+            userInfo.put("steps",steps);
+
 
             jsonOutput = userInfo.toString();
         }
