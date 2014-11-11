@@ -130,36 +130,7 @@ public class sqlConnection {
       	 System.out.println("INSERTED TO PUT");
       }
     
-    public void writeTEST(String string) throws Exception {
-     	 Class.forName("com.mysql.jdbc.Driver");
-     	 connect = DriverManager.getConnection(URL, USER, PASSWORD);
-     	 statement = connect.createStatement();
-     	 String sql = String.format("insert into test (string) "
-     	 		+ "values ('%s')", 
-     	 					string);
-     	 statement.executeUpdate(sql);
-     	 System.out.println("INSERTED");
-     }
-    
-    public String readTEST()throws Exception {
-    	
-    	ResultSet returnResult;
-    	Class.forName("com.mysql.jdbc.Driver");
-      	connect = DriverManager.getConnection(URL, USER, PASSWORD);
-      	statement = connect.createStatement();
-      	String sql = String.format("select * from PASSIVE_USER");
-      	returnResult = statement.executeQuery(sql);
-      	
-      	String result="";
-      	if(returnResult.next())
-      		result = String.valueOf(returnResult.getInt(2));
-      	
-      	return result;
-    	
-		
-	}
-    
-    
+        
     /* 
      * ############
      * ############
@@ -185,7 +156,7 @@ public class sqlConnection {
     	Class.forName("com.mysql.jdbc.Driver");
     	connect = DriverManager.getConnection(URL, USER, PASSWORD);
     	statement = connect.createStatement();
-    	String sql = String.format("select id from user where username='%s' and password='%s'", username, password);
+    	String sql = String.format("select ID from USER where USERNAME='%s' and PASSWORD='%s'", username, password);
     	resultSet = statement.executeQuery(sql);
     	if(resultSet.next()){
     		return resultSet.getInt("ID");
@@ -196,7 +167,7 @@ public class sqlConnection {
    	 	Class.forName("com.mysql.jdbc.Driver");
    	 	connect = DriverManager.getConnection(URL, USER, PASSWORD);
    	 	statement = connect.createStatement();
-   	 	String sql = String.format("insert into device (name, IMEI,CREDENTIAL,USER_ID) values ('%s', '%s', '%s', %d)", name,IMEI,credential,userId);
+   	 	String sql = String.format("insert into DEVICE (NAME, IMEI,CREDENTIAL,USER_ID) values ('%s', '%s', '%s', %d)", name,IMEI,credential,userId);
    	 	statement.executeUpdate(sql);
     }
     

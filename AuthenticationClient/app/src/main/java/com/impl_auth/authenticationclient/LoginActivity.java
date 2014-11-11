@@ -71,7 +71,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
     String IMEINumber;
 
     //server ip
-    private static final String serverIP = "192.168.0.100";
+    private static final String serverIP = "10.0.23.67";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -361,12 +361,16 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
                     }
                 });
                 String[] elements = content.split(",");
+                sharedPref = getSharedPreferences("com.impl_auth.authenticationclient_preferences.xml",
+                                               MODE_PRIVATE);
+                        //PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 if(elements[0].equalsIgnoreCase("Success")){
                     //store key in element[1]
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putString(getString(R.string.share_perf_key), elements[1]);
                     editor.putString(getString(R.string.registered_flag), "True");
                     editor.commit();
+                    System.out.println("Committed");
                     return true;
                 } else {
                     return false;

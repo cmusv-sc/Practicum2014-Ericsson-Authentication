@@ -7,5 +7,6 @@
     <string name="registered_flag">registered</string>
     <string name="device_name">Device Name</string>
     <string name="share_perf_key">shareKey</string>
+    <string name="lastRecordedDay">lastRecordedDay</string>
 
 </resources>

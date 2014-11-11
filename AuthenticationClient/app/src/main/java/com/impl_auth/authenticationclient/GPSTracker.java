@@ -42,6 +42,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 	IBinder mBinder = new LocalBinder();
 	LocationRequest mLocationRequest;
 	boolean mUpdatesRequested;
+    Intent stepCounterService;
 
 
     private static final long MIN_DISTANCE = 10; // 0 meters
@@ -69,14 +70,11 @@ GooglePlayServicesClient.OnConnectionFailedListener{
     
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-    	ipAddress=intent.getExtras().getString("IP");
-    	int updateInterval = intent.getExtras().getInt("updateInterval");
+    	ipAddress = "http://10.0.23.67:8080/CentralServer/json/postLocation";
+    	int updateInterval = 10;
     	jsonOutput = new InfoJsonSend(this, ipAddress);
         mLocationClient = new LocationClient(this, this, this);	
 
-        //jsonOutput.postToServer(location);	
-       
-        //mLocationClient.requestLocationUpdates()
         
         mLocationRequest = LocationRequest.create();
         // Use high accuracy
@@ -87,7 +85,6 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 
         if(isDynamic){
             mLocationRequest.setSmallestDisplacement(MIN_DISTANCE);
-            //mLocationRequest.setFastestInterval(updateInterval*1000/2);
         }
         else {
             mLocationRequest.setSmallestDisplacement(0);
@@ -98,7 +95,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 
         startService();
 
-        return Service.START_NOT_STICKY;
+        return Service.START_STICKY;
     }
   
      
@@ -111,7 +108,6 @@ GooglePlayServicesClient.OnConnectionFailedListener{
     @Override
     public void onLocationChanged(Location location) {
     	Log.i("cellPhoneInfo", "Location Changed");
-		//jsonOutput.postToServer(mLocationClient.getLastLocation());
         if(isDebugMsg){
 		    Toast.makeText(this, "New Location " + mLocationClient.getLastLocation().toString() + " posted to server", Toast.LENGTH_SHORT).show();
         }
@@ -131,6 +127,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
             mLocationClient.removeLocationUpdates((LocationListener)this);
         }
     	mLocationClient.disconnect();
+        stopService();
     	Toast.makeText(this, "Logging stopped", Toast.LENGTH_SHORT).show();
     }
  
@@ -156,13 +153,17 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 		
 	}
 
+    /*
+    Play services when connected can get the location updates. Hence this method is effectively called
+    first. We start the asyn task here. After this the task is executed onLocationChanged method.
+     */
+
 	@Override
 	public void onConnected(Bundle connectionHint) {
 
 		Log.d("GPSTracker", mLocationClient.getLastLocation().toString());
 		Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
 		mLocationClient.requestLocationUpdates(mLocationRequest, this);
-		//jsonOutput.postMobileUsage(mLocationClient.getLastLocation(),ipAddress);
         new SendPost().execute();
         Log.d("GPSTracker", mLocationRequest.toString());
 	}
@@ -177,27 +178,55 @@ GooglePlayServicesClient.OnConnectionFailedListener{
         return mLocationClient.getLastLocation();
     }
 
-
+    /*
+    Async task to sent post messages. Network messages cannot be sent from the UI thread. So we create
+    an async task to send the messages. Debug print from step counter.
+     */
 
     private class SendPost extends AsyncTask<Void,Integer,Double>{
         @Override
         protected Double doInBackground(Void... voids) {
-            jsonOutput.postMobileUsage(mLocationClient.getLastLocation(),ipAddress);
+            jsonOutput.postMobileUsage(mLocationClient.getLastLocation(),"http://10.0.23.67:8080/CentralServer/json/postLocation",stepCounter);
             System.out.println(stepCounter);
             return null;
         }
     }
 
+    /*
+    Have to unregister receivers everytime the service stops. Hence done separately.
+     */
+
+    private void stopService(){
+        if (!serviceNotRunning) {
+            unregisterReceiver(sensorReceiverDirection);
+            unregisterReceiver(sensorReceiverStep);
+            stopService(stepCounterService);
+            serviceNotRunning = true;
+
+        }
+    }
+    /*
+    Starting the SensorService. We have to register receivers and hence starting the service is done
+    separately.
+     */
+
     private void startService() {
         if (serviceNotRunning) {
-            startService(new Intent(GPSTracker.this, SensorService.class));
-            regsiterBroadCastReceivers();
+            stepCounterService = new Intent(GPSTracker.this, SensorService.class);
+            startService(stepCounterService);
+            registerBroadCastReceivers();
             serviceNotRunning = false;
+
         }
 
     }
+    /*
+    Registering the broadcast receiver for SensorService. This receiver is supposed to listen on
+    updates from the SensorService service. The intent filters are defined in the Manifest file.
+     One if for step counter and one for orientation.
+     */
 
-    private void regsiterBroadCastReceivers() {
+    private void registerBroadCastReceivers() {
         IntentFilter directionFilter = new IntentFilter(SensorService.DIRECTION_UPDATE);
         sensorReceiverDirection = new SensorServiceReceiver();
         registerReceiver(sensorReceiverDirection, directionFilter);
@@ -205,6 +234,11 @@ GooglePlayServicesClient.OnConnectionFailedListener{
         sensorReceiverStep = new SensorServiceReceiver();
         registerReceiver(sensorReceiverStep, stepsFilter);
     }
+
+    /*
+    Broadcast Receiver for Sensor Service to get the value of step counter and orientation.
+    They are explicitly sent from the SensorService as intents.
+     */
 
     public class SensorServiceReceiver extends BroadcastReceiver {
         @Override
