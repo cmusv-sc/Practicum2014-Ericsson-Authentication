@@ -5,6 +5,7 @@ SharedResource/.gradle/*
 SharedResource/.idea/*
 SharedResource/app/build/*
 SharedResource/build/*
+SharedResource/openCVLibrary249/build/*
 AuthenticationClient/.idea/*
 AuthenticationClient/.gradle/*
 AuthenticationClient/app/build/*
