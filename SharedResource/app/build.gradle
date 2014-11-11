@@ -4,9 +4,9 @@ android {
     buildToolsVersion '20.0.0'
 
     defaultConfig {
-        applicationId "com.example.cam"
-        minSdkVersion 8
-        targetSdkVersion 8
+        applicationId "edu.cmu.ini.impli_auth.face"
+        minSdkVersion 14
+        targetSdkVersion 14
     }
 
     buildTypes {
@@ -18,5 +18,8 @@ android {
 }
 
 dependencies {
+    compile project(':openCVLibrary249')
+    compile files('libs/javacpp.jar')
+    compile files('libs/javacv.jar')
     compile 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
 }
