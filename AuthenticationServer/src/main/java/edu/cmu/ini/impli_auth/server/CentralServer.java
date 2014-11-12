@@ -56,7 +56,6 @@ public class CentralServer {
 	@GET
 	@Path("/db")
 	public void getdata() {
-		ConfigValue configValue = new ConfigValue();
 		SqlConnection dao = new SqlConnection();
 		try {
 			dao.readDataBase(1);
