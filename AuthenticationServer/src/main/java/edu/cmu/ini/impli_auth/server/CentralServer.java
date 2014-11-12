@@ -56,7 +56,8 @@ public class CentralServer {
 	@GET
 	@Path("/db")
 	public void getdata() {
-		sqlConnection dao = new sqlConnection();
+		ConfigValue configValue = new ConfigValue();
+		SqlConnection dao = new SqlConnection();
 		try {
 			dao.readDataBase(1);
 			dao.writeDataBase(2, "picture2");
@@ -64,7 +65,6 @@ public class CentralServer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 	@POST
@@ -105,7 +105,7 @@ public class CentralServer {
 	//@Produces("application/json")
 	public Response getUserResources(@PathParam("id")int id) {
 
-		sqlConnection dao = new sqlConnection();
+		SqlConnection dao = new SqlConnection();
 		ResultSet resultSet = null;
 		try {
 			resultSet = dao.getUserResources(id);
@@ -140,7 +140,7 @@ public class CentralServer {
 	@Path("/deleteResourceById")
 	//@Produces("application/json")
 	public void deleteResourceById(@FormParam("id") int id) {
-		sqlConnection dao = new sqlConnection();
+		SqlConnection dao = new SqlConnection();
 		try {
 			dao.deleteResourceById(id);
 		} catch (Exception e) {
@@ -168,7 +168,7 @@ public class CentralServer {
 			@FormParam("name") String name, @FormParam("latitude") String latitude,
 			@FormParam("longitude") String longitude, @FormParam("NSSID") String NSSID,
 			@FormParam("type") String type) {
-		sqlConnection dao = new sqlConnection();
+		SqlConnection dao = new SqlConnection();
 		int result;
 		int userid = 0;
 		try {
@@ -216,7 +216,7 @@ public class CentralServer {
 	@Path("/authResource")
 	//information to authenticate a resource: NSSID,SKEY
 	public Response authResource(@FormParam("NSSID") String NSSID, @FormParam("SKEY") String sKey) {
-		sqlConnection dao = new sqlConnection();
+		SqlConnection dao = new SqlConnection();
 		String result;
 		try {
 			if(dao.authByNssidSharedKey(NSSID, sKey)){
@@ -242,7 +242,7 @@ public class CentralServer {
 		
 		ResultSet result = null;
 		double dist;
-		sqlConnection dao = new sqlConnection();
+		SqlConnection dao = new SqlConnection();
 		System.out.println("Reached POST LOCATION");
 		
 		try {
@@ -294,7 +294,7 @@ public class CentralServer {
 	//information to register a resource: name,latitude,longitude,NSSID,type, send a generated SKEY back.
 	public Response createDevice(@FormParam("Username") String username, @FormParam("Password") String password,
 			@FormParam("name") String name, @FormParam("IMEI") String IMEI) {
-		sqlConnection dao = new sqlConnection();
+		SqlConnection dao = new SqlConnection();
 		int result;
 		int userid = 0;
 		try {
