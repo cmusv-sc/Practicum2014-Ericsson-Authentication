@@ -24,7 +24,7 @@ import com.googlecode.javacv.cpp.opencv_contrib.FaceRecognizer;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 import com.googlecode.javacv.cpp.opencv_core.MatVector;
 
-import android.graphics.Bitmap;
+import android.graphics.*;
 import android.os.*;
 import android.util.*;
 
@@ -35,7 +35,6 @@ public class LBPFaceRecognizer {
 	FaceRecognizer faceRecognizer;
 	String mPath;
 	int count = 0;
-	Labels labelsFile;
 
 	static final int WIDTH = 128;
 	static final int HEIGHT = 128;
@@ -46,9 +45,7 @@ public class LBPFaceRecognizer {
 	LBPFaceRecognizer(String path) {
 		faceRecognizer = com.googlecode.javacv.cpp.opencv_contrib.createLBPHFaceRecognizer(2, 8,
 				8, 8, confidenceThx);
-		// path=Environment.getExternalStorageDirectory()+"/facerecog/faces/";
 		mPath = path;
-		labelsFile = new Labels(mPath);
 	}
 
 	void changeRecognizer(int nRec) {
@@ -78,11 +75,6 @@ public class LBPFaceRecognizer {
 			count++;
 			bmp.compress(Bitmap.CompressFormat.JPEG, 100, f);
 			f.close();
-
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-			new SendHttpRequestTask().execute(baos.toByteArray());
-
 		} catch (Exception e) {
 			Log.e("error", e.getCause() + " " + e.getMessage());
 			e.printStackTrace();
@@ -90,7 +82,6 @@ public class LBPFaceRecognizer {
 	}
 
 	public boolean train() {
-
 		File root = new File(mPath);
 
 		FilenameFilter pngFilter = new FilenameFilter() {
@@ -100,88 +91,20 @@ public class LBPFaceRecognizer {
 			}
 		};
 
-		File[] imageFiles = root.listFiles(pngFilter);
+		File[] imgFiles = root.listFiles(pngFilter);
 
-		MatVector images = new MatVector(imageFiles.length);
-
-		int[] labels = new int[imageFiles.length];
-
-		int counter = 0;
-		int label;
-
-		IplImage img = null;
-		IplImage grayImg;
-
-		int i1 = mPath.length();
-
-
-		for (File image : imageFiles) {
-			String p = image.getAbsolutePath();
-			img = cvLoadImage(p);
-
-			if (img == null)
-				Log.e("Error", "Error cVLoadImage");
-			Log.i("image", p);
-
-			int i2 = p.lastIndexOf("-");
-			int i3 = p.lastIndexOf(".");
-			int icount = Integer.parseInt(p.substring(i2 + 1, i3));
-			if (count < icount) count++;
-
-			String description = p.substring(i1, i2);
-
-			if (labelsFile.get(description) < 0)
-				labelsFile.add(description, labelsFile.max() + 1);
-
-			label = labelsFile.get(description);
-
-			grayImg = IplImage.create(img.width(), img.height(), IPL_DEPTH_8U, 1);
-
-			cvCvtColor(img, grayImg, CV_BGR2GRAY);
-
-			images.put(counter, grayImg);
-
-			labels[counter] = label;
-
-			counter++;
+		for (File imgFile : imgFiles) {
+			if(imgFile.exists()) {
+				Bitmap bmp = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+				new SendHttpRequestTask().execute(baos.toByteArray());
+			}
 		}
-		if (counter > 0)
-			if (labelsFile.max() > 1)
-				faceRecognizer.train(images, labels);
-		labelsFile.Save();
+
 		return true;
 	}
 
-	public boolean canPredict() {
-		if (labelsFile.max() > 1)
-			return true;
-		else
-			return false;
-	}
-
-	public String predict(Mat m) {
-		if (!canPredict())
-			return "";
-		int n[] = new int[1];
-		double p[] = new double[1];
-		IplImage ipl = MatToIplImage(m, WIDTH, HEIGHT);
-		faceRecognizer.predict(ipl, n, p);
-
-		if (n[0] != -1) {
-			mProb = (int) p[0];
-			Log.d(TAG, "Class: " + n[0]);
-			Log.d(TAG, "Prob: " + mProb);
-		}
-		else {
-			mProb = -1;
-		}
-		if (n[0] != -1) {
-			return labelsFile.get(n[0]);
-		}
-		else {
-			return "Unkown";
-		}
-	}
 
 	public String predict(Bitmap mBitmap) {
 
@@ -236,36 +159,6 @@ public class LBPFaceRecognizer {
 		}
 
 		return "not yet!";
-	}
-
-
-	IplImage MatToIplImage(Mat m, int width, int heigth) {
-
-		Bitmap bmp = Bitmap.createBitmap(m.width(), m.height(), Bitmap.Config.ARGB_8888);
-		Utils.matToBitmap(m, bmp);
-		return BitmapToIplImage(bmp, width, heigth);
-	}
-
-	IplImage BitmapToIplImage(Bitmap bmp, int width, int height) {
-
-		if ((width != -1) || (height != -1)) {
-			Bitmap bmp2 = Bitmap.createScaledBitmap(bmp, width, height, false);
-			bmp = bmp2;
-		}
-
-		IplImage image = IplImage.create(bmp.getWidth(), bmp.getHeight(),
-				IPL_DEPTH_8U, 4);
-
-		Log.d(TAG, "width : " + bmp.getWidth());
-		Log.d(TAG, "height : " + bmp.getHeight());
-
-		bmp.copyPixelsToBuffer(image.getByteBuffer());
-
-		IplImage grayImg = IplImage.create(image.width(), image.height(),
-				IPL_DEPTH_8U, 1);
-
-		cvCvtColor(image, grayImg, opencv_imgproc.CV_BGR2GRAY);
-		return grayImg;
 	}
 
 	protected void SaveBmp(Bitmap bmp, String path) {

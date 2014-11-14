@@ -84,8 +84,6 @@ public class CamActivity extends Activity implements CvCameraViewListener2 {
 
 	Map<String, Integer> map = new HashMap<String, Integer>();
 
-	Labels labelsFile;
-
 
 	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
 		@Override
@@ -170,9 +168,6 @@ public class CamActivity extends Activity implements CvCameraViewListener2 {
 		dir.mkdirs();
 		mPath = sdCard.getAbsolutePath() + "/camtest/";
 		//mPath = getFilesDir() + "/facerecogOCV/";
-
-
-		labelsFile = new Labels(mPath);
 
 		//Iv=(ImageView)findViewById(R.id.imageView1);
 		textresult = (TextView) findViewById(R.id.textView1);
@@ -304,11 +299,6 @@ public class CamActivity extends Activity implements CvCameraViewListener2 {
 
 			public void onClick(View v) {
 				if (buttonSearch.isChecked()) {
-					if (!fr.canPredict()) {
-						buttonSearch.setChecked(false);
-						Toast.makeText(getApplicationContext(), getResources().getString(R.string.SCanntoPredic), Toast.LENGTH_LONG).show();
-						return;
-					}
 					textState.setText(getResources().getString(R.string.SSearching));
 					toggleButtonGrabar.setVisibility(View.INVISIBLE);
 					toggleButtonTrain.setVisibility(View.INVISIBLE);
