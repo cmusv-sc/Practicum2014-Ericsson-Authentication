@@ -378,7 +378,7 @@ public class LoginActivity extends Activity{
             showProgress(false);
 
             if (success) {
-                //finish();
+                //TODO: Login should not redirect to camActivity in the future. It should be its own management page.
                 Intent camTestActivity = new Intent(LoginActivity.this, CamActivity.class);
                 startActivity(camTestActivity);
             }
