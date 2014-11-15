@@ -23,7 +23,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
 
-import edu.cmu.ini.impli_auth.face.AuthFaceRecognizer;
+import edu.cmu.ini.impli_auth.face.LBPHFaceRecognizer;
 
 @Path("/json")
 public class CentralServer {
@@ -58,8 +58,13 @@ public class CentralServer {
 	public void getdata() {
 		SqlConnection dao = new SqlConnection();
 		try {
-			dao.readDataBase(1);
-			dao.writeDataBase(2, "picture2");
+			ResultSet resSet = dao.readDataBase(-1);
+			if(resSet != null) {
+				while(resSet.next()) {
+					System.out.print(resSet.getString("email"));
+				}
+			}
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -346,7 +351,7 @@ public class CentralServer {
 			@FormParam("height") int height, @FormParam("image") String image) {
 		byte[] imageData = DatatypeConverter.parseBase64Binary(image);
 
-		AuthFaceRecognizer faceRecognizer = new AuthFaceRecognizer(width,
+		LBPHFaceRecognizer faceRecognizer = new LBPHFaceRecognizer(width,
 				height);
 		faceRecognizer.train();
 		faceRecognizer.test(imageData);

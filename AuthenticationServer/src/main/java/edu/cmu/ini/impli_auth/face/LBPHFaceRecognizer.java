@@ -24,12 +24,12 @@ import static org.bytedeco.javacpp.opencv_core.*;
 import static org.bytedeco.javacpp.opencv_highgui.*;
 import static org.bytedeco.javacpp.opencv_imgproc.*;
 
-public class AuthFaceRecognizer {
+public class LBPHFaceRecognizer {
 
 	FaceRecognizer faceRecognizer = null;
 	int width, height;
 
-	public AuthFaceRecognizer(int width, int height) {
+	public LBPHFaceRecognizer(int width, int height) {
 		this.width = width;
 		this.height = height;
 	}
