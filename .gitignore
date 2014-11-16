@@ -10,6 +10,7 @@ AuthenticationClient/.idea/*
 AuthenticationClient/.gradle/*
 AuthenticationClient/app/build/*
 AuthenticationClient/build/*
+AuthenticationClient/openCVLibrary249/build/*
 FaceRecognitionSample/build/*
 FaceRecognitionSample/.gradle/*
 FaceRecognitionSample/.idea/*
