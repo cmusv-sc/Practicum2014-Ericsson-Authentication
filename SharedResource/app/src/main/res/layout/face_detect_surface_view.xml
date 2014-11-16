@@ -24,7 +24,7 @@
                     android:layout_height="68dp"
                     android:text="@string/SViewAll" />
 
-                <edu.cmu.ini.impli_auth.face.Tutorial3View
+                <edu.cmu.ini.impli_auth.face.CameraView
                     android:id="@+id/tutorial3_activity_java_surface_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

@@ -300,7 +300,7 @@ public class LoginActivity extends Activity{
 
             if (success) {
                 //finish();
-                Intent camTestActivity = new Intent(LoginActivity.this, CamActivity.class);
+                Intent camTestActivity = new Intent(LoginActivity.this, FaceActivity.class);
                 startActivity(camTestActivity);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
@@ -378,8 +378,8 @@ public class LoginActivity extends Activity{
             showProgress(false);
 
             if (success) {
-                //TODO: Login should not redirect to camActivity in the future. It should be its own management page.
-                Intent camTestActivity = new Intent(LoginActivity.this, CamActivity.class);
+                //finish();
+                Intent camTestActivity = new Intent(LoginActivity.this, FaceActivity.class);
                 startActivity(camTestActivity);
             }
         }
