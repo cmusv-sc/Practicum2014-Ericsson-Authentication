@@ -18,9 +18,9 @@ import org.opencv.objdetect.*;
 import java.io.*;
 import java.util.*;
 
-public class CamActivity extends Activity implements CvCameraViewListener2 {
+public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
-	private static final String TAG = "OCVSample::FdActivity";
+	private static final String TAG = "SharedResource::CamActivity";
 	private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
 	public static final int JAVA_DETECTOR = 0;
 	public static final int NATIVE_DETECTOR = 1;
@@ -54,7 +54,7 @@ public class CamActivity extends Activity implements CvCameraViewListener2 {
 
 	String mPath = "";
 
-	private Tutorial3View mOpenCvCameraView;
+	private CameraView mOpenCvCameraView;
 	private int mChooseCamera = backCam;
 
 	EditText text;
@@ -63,7 +63,7 @@ public class CamActivity extends Activity implements CvCameraViewListener2 {
 	Bitmap mBitmap;
 	Handler mHandler;
 
-	LBPFaceRecognizer fr;
+	LBPHFaceExtractor fr;
 	ToggleButton toggleButtonGrabar, toggleButtonTrain, buttonSearch;
 	Button buttonCatalog;
 	ImageView ivGreen, ivYellow, ivRed;
@@ -95,10 +95,10 @@ public class CamActivity extends Activity implements CvCameraViewListener2 {
 					// Load native library after(!) OpenCV initialization
 					//   System.loadLibrary("detection_based_tracker");
 
-					fr = new LBPFaceRecognizer(mPath);
+					fr = new LBPHFaceExtractor(mPath);
 					String s = getResources().getString(R.string.Straininig);
 					Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
-					fr.load();
+					//fr.load();
 
 					try {
 						// load cascade file from application resources
@@ -130,17 +130,17 @@ public class CamActivity extends Activity implements CvCameraViewListener2 {
 						Log.e(TAG, "Failed to load cascade. Exception thrown: " + e);
 					}
 					mOpenCvCameraView.enableView();
+					break;
 				}
-				break;
 				default: {
 					super.onManagerConnected(status);
+					break;
 				}
-				break;
 			}
 		}
 	};
 
-	public CamActivity() {
+	public FaceActivity() {
 		mDetectorName = new String[2];
 		mDetectorName[JAVA_DETECTOR] = "Java";
 		mDetectorName[NATIVE_DETECTOR] = "Native (tracking)";
@@ -158,7 +158,7 @@ public class CamActivity extends Activity implements CvCameraViewListener2 {
 
 		setContentView(R.layout.face_detect_surface_view);
 
-		mOpenCvCameraView = (Tutorial3View) findViewById(R.id.tutorial3_activity_java_surface_view);
+		mOpenCvCameraView = (CameraView) findViewById(R.id.tutorial3_activity_java_surface_view);
 
 		mOpenCvCameraView.setCvCameraViewListener(this);
 

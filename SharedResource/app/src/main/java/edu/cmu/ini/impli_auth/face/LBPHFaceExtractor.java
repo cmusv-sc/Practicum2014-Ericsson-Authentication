@@ -28,9 +28,9 @@ import android.graphics.*;
 import android.os.*;
 import android.util.*;
 
-public class LBPFaceRecognizer {
+public class LBPHFaceExtractor {
 
-	private static final String TAG = "OCVSample::PersonRecognizer";
+	private static final String TAG = "SharedResource::PersonRecognizer";
 	public final static int MAXIMG = 100;
 	FaceRecognizer faceRecognizer;
 	String mPath;
@@ -42,7 +42,7 @@ public class LBPFaceRecognizer {
 
 	static final double confidenceThx = 80;
 
-	LBPFaceRecognizer(String path) {
+	LBPHFaceExtractor(String path) {
 		faceRecognizer = com.googlecode.javacv.cpp.opencv_contrib.createLBPHFaceRecognizer(2, 8,
 				8, 8, confidenceThx);
 		mPath = path;

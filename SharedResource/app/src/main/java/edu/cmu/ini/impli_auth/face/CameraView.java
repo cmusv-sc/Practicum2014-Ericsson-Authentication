@@ -11,11 +11,11 @@ import org.opencv.android.*;
 import java.io.*;
 import java.util.*;
 
-public class Tutorial3View extends JavaCameraView {
+public class CameraView extends JavaCameraView {
 
-	private static final String TAG = "Sample::Tutorial3View";
+	private static final String TAG = "SharedResource::CameraView";
 
-	public Tutorial3View(Context context, AttributeSet attrs) {
+	public CameraView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
 	}
