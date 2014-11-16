@@ -8,5 +8,13 @@
     <string name="device_name">Device Name</string>
     <string name="share_perf_key">shareKey</string>
     <string name="lastRecordedDay">lastRecordedDay</string>
+    <string name="register">register</string>
+    <string name="fisrt_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="email">Email</string>
+    <string name="user_name">User Name</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="log_in">Log In</string>
 
 </resources>
