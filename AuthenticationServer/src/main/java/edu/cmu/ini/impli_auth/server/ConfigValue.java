@@ -21,7 +21,7 @@ public class ConfigValue  {
 	}
 	
 	public String getDBUrl() {
-		return prop.getProperty("url");
+		return String.format("jdbc:mysql://%s:%s/%s?connectionTimeout=3000", prop.getProperty("srvip"), prop.getProperty("port"), prop.getProperty("db"));
 	}
 	
 	public String getDBUser() {
