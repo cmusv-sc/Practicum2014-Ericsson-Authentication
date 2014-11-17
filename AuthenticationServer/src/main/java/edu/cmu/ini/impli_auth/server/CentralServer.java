@@ -32,7 +32,7 @@ public class CentralServer {
 	 * This method is used to obtain the physical distance between two coordinates.
 	 * It is a standard math formula. For the exact formula please refer the documentation.
 	 * 
-	 * The distance value obtained is a scalar. What that means is source and destination 
+	 * The distance value obtained is a scalar. What that means, is source and destination 
 	 * can be interchanged and we will still get the same value. It is basically the distance 
 	 * between two points.
 	 */

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -96,5 +97,20 @@ public class Util {
 			e.printStackTrace();
 		}
 		return id;
+	}
+	
+	public static List<Integer> getPassiveUserList(String Credential){
+		
+		List<Integer> result_list = new LinkedList<Integer>();
+		
+		SqlConnection dao = new SqlConnection();
+		result_list = dao.getPassiveUsers(Credential);
+		
+		if(result_list != null){
+			return result_list;
+		}
+		
+		else
+			return null;
 	}
 }

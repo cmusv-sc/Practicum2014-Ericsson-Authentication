@@ -2,6 +2,8 @@ package edu.cmu.ini.impli_auth.server;
 
 import java.sql.*;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SqlConnection {
 
@@ -381,6 +383,37 @@ public class SqlConnection {
 			System.out.println("User id: " + id);
 			System.out.println("Picure path: " + picture);
 		}
+	}
+
+
+	public List<Integer> getPassiveUsers(String credential) {
+		
+		ResultSet result;
+		List<Integer> user_ids = new LinkedList<Integer>();
+		try {
+			// this will load the MySQL driver, each DB has its own driver
+			Class.forName("com.mysql.jdbc.Driver");
+			// setup the connection with the DB.
+			connect = DriverManager.getConnection(URL, USER, PASSWORD);
+			// statements allow to issue SQL queries to the database
+			statement = connect.createStatement();
+			// resultSet gets the result of the SQL query
+			String sql1 = String.format("select ID from RESOURCE where CREDENTIAL = '%s'", credential);
+			result = statement.executeQuery(sql1);
+			int resource_id;
+			resource_id = result.getInt("ID");
+
+			String sql2 = String.format("select USER_ID from PASSIVE_USER where RESOURCE_ID = %d", resource_id);
+			result = statement.executeQuery(sql2);
+			
+			while(result.next()){
+				user_ids.add(result.getInt("USER_ID"));
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return user_ids;
 	}
 
 }

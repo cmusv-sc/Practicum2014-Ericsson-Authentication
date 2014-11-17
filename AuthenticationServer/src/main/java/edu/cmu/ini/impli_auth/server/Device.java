@@ -1,5 +1,6 @@
 package edu.cmu.ini.impli_auth.server;
 
+
 public class Device {
 
 	String name;
