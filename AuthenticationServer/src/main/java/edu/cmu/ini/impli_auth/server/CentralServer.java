@@ -420,6 +420,8 @@ public class CentralServer {
 		faceRecognizer.train();
 		FaceTestResult result = faceRecognizer.test(imageData);
 		String userName = Util.getUserName(result.label);
+		System.out.println("UserName: " + userName);
+		System.out.println("Prob: " + result.p);
 		return Response.status(200).entity(userName + ":" + result.p).build();
 	}
 }

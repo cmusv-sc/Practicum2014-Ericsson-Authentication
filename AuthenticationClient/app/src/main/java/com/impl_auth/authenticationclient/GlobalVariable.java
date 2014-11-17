@@ -10,6 +10,7 @@ public class GlobalVariable {
 	private static String SERVER_IP = "10.0.17.239";
 	private static String PORT = "8080";
 	private static String TEST_PATH = "postUser/";
+	private static String LOCATION_PATH = "postLocation/";
 
 
 	// Restrict the constructor from being instantiated
@@ -36,5 +37,9 @@ public class GlobalVariable {
 
 	public String getTestPath() {
 		return this.TEST_PATH;
+	}
+
+	public String getLocationURL() {
+		return this.LOCATION_PATH;
 	}
 }

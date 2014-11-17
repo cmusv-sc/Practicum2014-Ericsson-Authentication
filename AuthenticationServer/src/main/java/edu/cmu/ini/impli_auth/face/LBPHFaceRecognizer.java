@@ -80,7 +80,8 @@ public class LBPHFaceRecognizer {
 
 		// faceRecognizer = createFisherFaceRecognizer();
 		// faceRecognizer = createEigenFaceRecognizer();
-		faceRecognizer = createLBPHFaceRecognizer();
+		faceRecognizer = createLBPHFaceRecognizer(2, 8,
+				8, 8, 100);
 		faceRecognizer.train(images, labels);
 	}
 
