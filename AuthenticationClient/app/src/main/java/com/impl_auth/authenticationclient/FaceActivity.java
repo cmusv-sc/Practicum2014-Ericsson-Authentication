@@ -20,7 +20,7 @@ import java.util.*;
 
 public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
-	private static final String TAG = "SharedResource::CamActivity";
+	private static final String TAG = "SharedResource::FaceActivity";
 	private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
 	public static final int JAVA_DETECTOR = 0;
 	public static final int NATIVE_DETECTOR = 1;
@@ -57,15 +57,13 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	private CameraView mOpenCvCameraView;
 	private int mChooseCamera = backCam;
 
-	EditText text;
 	TextView textresult;
-	//private  ImageView Iv;
 	Bitmap mBitmap;
 	Handler mHandler;
 
-	LBPHFaceExtractor fr;
-	ToggleButton toggleButtonGrabar, toggleButtonTrain, buttonSearch;
-	Button buttonCatalog;
+	LBPHFaceExtractor fe;
+	ToggleButton toggleButtonTrain;
+	Button buttonSubmit;
 	ImageView ivGreen, ivYellow, ivRed;
 	ImageButton imCamera;
 
@@ -74,7 +72,6 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
 
 	static final long MAXIMG = 1;
-	static final long MAXIMG_SEARCH = 1;
 
 	ArrayList<Mat> alimgs = new ArrayList<Mat>();
 
@@ -95,9 +92,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 					// Load native library after(!) OpenCV initialization
 					//   System.loadLibrary("detection_based_tracker");
 
-					fr = new LBPHFaceExtractor(mPath);
-					String s = getResources().getString(R.string.Straininig);
-					Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+					fe = new LBPHFaceExtractor(mPath);
 					//fr.load();
 
 					try {
@@ -163,13 +158,10 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		mOpenCvCameraView.setCvCameraViewListener(this);
 
 
-		File sdCard = Environment.getExternalStorageDirectory();
-		File dir = new File(sdCard.getAbsolutePath() + "/camtest");
+		File dir = new File(getFilesDir() + "/camtest");
 		dir.mkdirs();
-		mPath = sdCard.getAbsolutePath() + "/camtest/";
-		//mPath = getFilesDir() + "/facerecogOCV/";
+		mPath = getFilesDir() + "/camtest/";
 
-		//Iv=(ImageView)findViewById(R.id.imageView1);
 		textresult = (TextView) findViewById(R.id.textView1);
 
 		mHandler = new Handler() {
@@ -178,11 +170,6 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 				if (msg.obj == "IMG") {
 					Canvas canvas = new Canvas();
 					canvas.setBitmap(mBitmap);
-					//Iv.setImageBitmap(mBitmap);
-					if (countImages >= MAXIMG - 1) {
-						toggleButtonGrabar.setChecked(false);
-						grabarOnclick();
-					}
 				} else {
 					textresult.setText(msg.obj.toString());
 					ivGreen.setVisibility(View.INVISIBLE);
@@ -201,11 +188,8 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 				}
 			}
 		};
-		text = (EditText) findViewById(R.id.editText1);
-		buttonCatalog = (Button) findViewById(R.id.buttonCat);
-		toggleButtonGrabar = (ToggleButton) findViewById(R.id.toggleButtonGrabar);
-		buttonSearch = (ToggleButton) findViewById(R.id.buttonBuscar);
 		toggleButtonTrain = (ToggleButton) findViewById(R.id.toggleButton1);
+		buttonSubmit = (Button) findViewById(R.id.submitButton);
 		textState = (TextView) findViewById(R.id.textViewState);
 		ivGreen = (ImageView) findViewById(R.id.imageView3);
 		ivYellow = (ImageView) findViewById(R.id.imageView4);
@@ -215,70 +199,37 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		ivGreen.setVisibility(View.INVISIBLE);
 		ivYellow.setVisibility(View.INVISIBLE);
 		ivRed.setVisibility(View.INVISIBLE);
-		text.setVisibility(View.INVISIBLE);
 		textresult.setVisibility(View.INVISIBLE);
-
-		toggleButtonGrabar.setVisibility(View.INVISIBLE);
-/*
-		buttonCatalog.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				Intent i = new Intent(CamActivity.this,
-						ImageGallery.class);
-				i.putExtra("path", mPath);
-				startActivity(i);
-			}
-		});
-*/
-
-		text.setOnKeyListener(new View.OnKeyListener() {
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				if ((text.getText().toString().length() > 0) && (toggleButtonTrain.isChecked()))
-					toggleButtonGrabar.setVisibility(View.VISIBLE);
-				else
-					toggleButtonGrabar.setVisibility(View.INVISIBLE);
-				return false;
-			}
-		});
 
 
 		toggleButtonTrain.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				if (toggleButtonTrain.isChecked()) {
-					textState.setText(getResources().getString(R.string.SEnter));
-					buttonSearch.setVisibility(View.INVISIBLE);
+					countImages = 0;
+					textState.setText("Taking Picture");
 					textresult.setVisibility(View.VISIBLE);
-					text.setVisibility(View.VISIBLE);
-					textresult.setText(getResources().getString(R.string.SFaceName));
-					if (text.getText().toString().length() > 0)
-						toggleButtonGrabar.setVisibility(View.VISIBLE);
-
+					//textresult.setText(getResources().getString(R.string.SFaceName));
 					ivGreen.setVisibility(View.INVISIBLE);
 					ivYellow.setVisibility(View.INVISIBLE);
 					ivRed.setVisibility(View.INVISIBLE);
+					faceState = TRAINING;
 				} else {
-					textState.setText(R.string.Straininig);
+					//textState.setText(R.string.Straininig);
 					textresult.setText("");
-					text.setVisibility(View.INVISIBLE);
-					buttonSearch.setVisibility(View.VISIBLE);
 					textresult.setText("");
-					{
-						toggleButtonGrabar.setVisibility(View.INVISIBLE);
-						text.setVisibility(View.INVISIBLE);
-					}
-					Toast.makeText(getApplicationContext(), getResources().getString(R.string.Straininig), Toast.LENGTH_LONG).show();
-					fr.train();
 					textState.setText(getResources().getString(R.string.SIdle));
+					faceState = IDLE;
 				}
 			}
 		});
 
-
-		toggleButtonGrabar.setOnClickListener(new View.OnClickListener() {
-
-			public void onClick(View v) {
-				grabarOnclick();
+		buttonSubmit.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				sendRegistrationRequest();
 			}
 		});
+
 
 		imCamera.setOnClickListener(new View.OnClickListener() {
 
@@ -295,45 +246,14 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			}
 		});
 
-		buttonSearch.setOnClickListener(new View.OnClickListener() {
-
-			public void onClick(View v) {
-				if (buttonSearch.isChecked()) {
-					textState.setText(getResources().getString(R.string.SSearching));
-					toggleButtonGrabar.setVisibility(View.INVISIBLE);
-					toggleButtonTrain.setVisibility(View.INVISIBLE);
-					text.setVisibility(View.INVISIBLE);
-					countSearch = 0;
-					map = new HashMap<String, Integer>();
-					faceState = SEARCHING;
-					textresult.setVisibility(View.VISIBLE);
-				} else {
-					faceState = IDLE;
-					textState.setText(getResources().getString(R.string.SIdle));
-					toggleButtonGrabar.setVisibility(View.INVISIBLE);
-					toggleButtonTrain.setVisibility(View.VISIBLE);
-					text.setVisibility(View.INVISIBLE);
-					textresult.setVisibility(View.INVISIBLE);
-				}
-			}
-		});
-
 		boolean success = (new File(mPath)).mkdirs();
 		if (!success) {
 			Log.e("Error", "Error creating directory");
 		}
 	}
 
-	void grabarOnclick() {
-		if (toggleButtonGrabar.isChecked())
-			faceState = TRAINING;
-		else {
-			if (faceState == TRAINING) ;
-			// train();
-			//fr.train();
-			countImages = 0;
-			faceState = IDLE;
-		}
+	private void sendRegistrationRequest() {
+		fe.register();
 	}
 
 	@Override
@@ -393,88 +313,23 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		Rect[] facesArray = faces.toArray();
 		Log.d(TAG, "Face number: " + facesArray.length);
 
-		if ((facesArray.length == 1) && (faceState == TRAINING) && (countImages < MAXIMG) && (!text.getText().toString().isEmpty())) {
+		if ((facesArray.length > 0) && (faceState == TRAINING)) {
 
 			Mat m = new Mat();
 			Rect r = facesArray[0];
-
 			m = mRgba.submat(r);
 			mBitmap = Bitmap.createBitmap(m.width(), m.height(), Bitmap.Config.ARGB_8888);
 
 			Utils.matToBitmap(m, mBitmap);
-			// SaveBmp(mBitmap,"/sdcard/db/I("+countTrain+")"+countImages+".jpg");
 
 			Message msg = new Message();
 			String textTochange = "IMG";
 			msg.obj = textTochange;
 			mHandler.sendMessage(msg);
 			if (countImages < MAXIMG) {
-				fr.add(m, text.getText().toString());
+				fe.saveMat(m);
 				countImages++;
 			}
-
-		} else if ((facesArray.length > 0) && (faceState == SEARCHING)) {
-			Mat m = new Mat();
-			m = mGray.submat(facesArray[0]);
-			mBitmap = Bitmap.createBitmap(m.width(), m.height(), Bitmap.Config.ARGB_8888);
-
-
-			Utils.matToBitmap(m, mBitmap);
-			Message msg = new Message();
-			String textTochange = "IMG";
-			msg.obj = textTochange;
-			mHandler.sendMessage(msg);
-
-			if(countSearch < MAXIMG_SEARCH) {
-				textTochange = fr.predict(mBitmap);
-				countSearch++;
-				msg = new Message();
-				msg.obj = "processing...";
-				mHandler.sendMessage(msg);
-				msg = new Message();
-				msg.obj = textTochange;
-				mHandler.sendMessage(msg);
-			}
-
-			/*
-			if(countSearch < MAXIMG_SEARCH) {
-				textTochange = fr.predict(m);
-				mLikely = fr.getProb();
-				if(map.containsKey(textTochange)) {
-					map.put(textTochange, map.get(textTochange) + 1);
-				}
-				else {
-					map.put(textTochange, 1);
-				}
-				countSearch++;
-				msg = new Message();
-				msg.obj = "processing...";
-				mHandler.sendMessage(msg);
-			}
-			else {
-				int max_val = 0;
-				String result_label = null;
-				Iterator<String> iterator = map.keySet().iterator();
-				while(iterator.hasNext()) {
-					String key = iterator.next();
-					int val = map.get(key);
-					if(val > max_val) {
-						result_label = key;
-					}
-				}
-				msg = new Message();
-				msg.obj = result_label;
-				mHandler.sendMessage(msg);
-			}
-			*/
-
-			/*
-			textTochange = fr.predict(m);
-			mLikely = fr.getProb();
-			msg = new Message();
-			msg.obj = textTochange;
-			mHandler.sendMessage(msg);
-			*/
 		}
 		for (int i = 0; i < facesArray.length; i++)
 			Core.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(), FACE_RECT_COLOR, 3);

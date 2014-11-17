@@ -72,9 +72,10 @@ public class CentralServer {
 	@GET
 	@Path("/db")
 	public void getdata() {
+		
 		SqlConnection dao = new SqlConnection();
 		try {
-			ResultSet resSet = dao.readDataBase(-1);
+			ResultSet resSet = dao.getAllUser();
 			if(resSet != null) {
 				while(resSet.next()) {
 					System.out.print(resSet.getString("email"));

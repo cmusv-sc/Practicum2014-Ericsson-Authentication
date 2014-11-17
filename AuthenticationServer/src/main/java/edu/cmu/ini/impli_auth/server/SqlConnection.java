@@ -304,7 +304,17 @@ public class SqlConnection {
 		statement.executeUpdate(sql);
 	}
 
-	public ResultSet readDataBase(int id) throws Exception {
+	public ResultSet getAllUser() {
+		ResultSet res = null;
+		try {
+			res = getUser(-1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+	
+	public ResultSet getUser(int id) throws Exception {
 		try {
 			// this will load the MySQL driver, each DB has its own driver
 			Class.forName("com.mysql.jdbc.Driver");
