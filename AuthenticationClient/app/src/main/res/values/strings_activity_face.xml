@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="BLANK"></string>
+    <string name="SSubmit">Submit</string>
     <string name="STrain">Train</string>
     <string name="SViewAll">View all faces</string>
     <string name="SSearch">Search</string>

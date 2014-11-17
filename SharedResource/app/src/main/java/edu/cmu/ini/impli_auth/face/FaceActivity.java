@@ -62,7 +62,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	Bitmap mBitmap;
 	Handler mHandler;
 
-	LBPHFaceExtractor fr;
+	LBPHFaceExtractor fe;
 	ToggleButton buttonSearch;
 	Button buttonCatalog;
 	ImageView ivGreen, ivYellow, ivRed;
@@ -94,7 +94,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 					// Load native library after(!) OpenCV initialization
 					//   System.loadLibrary("detection_based_tracker");
 
-					fr = new LBPHFaceExtractor(mPath);
+					fe = new LBPHFaceExtractor(mPath);
 					// String s = getResources().getString(R.string.Straininig);
 					// Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
 
@@ -161,13 +161,10 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		mOpenCvCameraView.setCvCameraViewListener(this);
 
 
-		File sdCard = Environment.getExternalStorageDirectory();
-		File dir = new File(sdCard.getAbsolutePath() + "/camtest");
+		File dir = new File(getFilesDir() + "/camtest");
 		dir.mkdirs();
-		mPath = sdCard.getAbsolutePath() + "/camtest/";
-		//mPath = getFilesDir() + "/facerecogOCV/";
+		mPath = getFilesDir() + "/camtest/";
 
-		//Iv=(ImageView)findViewById(R.id.imageView1);
 		textresult = (TextView) findViewById(R.id.textView1);
 
 		mHandler = new Handler() {
@@ -326,7 +323,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			mHandler.sendMessage(msg);
 
 			if(countSearch < MAXIMG_SEARCH) {
-				textTochange = fr.predict(mBitmap);
+				textTochange = fe.predict(mBitmap);
 				countSearch++;
 				msg = new Message();
 				msg.obj = "processing...";

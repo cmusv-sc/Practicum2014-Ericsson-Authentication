@@ -26,25 +26,25 @@ import static com.googlecode.javacv.cpp.opencv_imgproc.*;
 
 public class LBPHFaceExtractor {
 
-	private static final String TAG = "SharedResource::PersonRecognizer";
+	private static final String TAG = "SharedResource::LBPHFaceExtractor";
 	public final static int MAXIMG = 100;
 	FaceRecognizer faceRecognizer;
 	String mPath;
-	int count = 0;
 
 	static final int WIDTH = 128;
 	static final int HEIGHT = 128;
 	private int mProb = 999;
 
 	static final double confidenceThx = 80;
-
-	LBPHFaceExtractor(String path) {
+	private GlobalVariable gv;
+	public LBPHFaceExtractor(String path) {
 		faceRecognizer = com.googlecode.javacv.cpp.opencv_contrib.createLBPHFaceRecognizer(2, 8,
 				8, 8, confidenceThx);
 		mPath = path;
+		gv = GlobalVariable.getInstance();
 	}
 
-	void changeRecognizer(int nRec) {
+	public void changeRecognizer(int nRec) {
 		switch (nRec) {
 			case 0:
 				faceRecognizer = com.googlecode.javacv.cpp.opencv_contrib.createLBPHFaceRecognizer(1, 8, 8, 8, 100);
@@ -56,10 +56,9 @@ public class LBPHFaceExtractor {
 				faceRecognizer = com.googlecode.javacv.cpp.opencv_contrib.createEigenFaceRecognizer();
 				break;
 		}
-		train();
 	}
 
-	void add(Mat m, String description) {
+	public void saveMat(Mat m) {
 		Bitmap bmp = Bitmap.createBitmap(m.width(), m.height(), Bitmap.Config.ARGB_8888);
 
 		Utils.matToBitmap(m, bmp);
@@ -67,17 +66,17 @@ public class LBPHFaceExtractor {
 
 		FileOutputStream f;
 		try {
-			f = new FileOutputStream(mPath + description + "-" + count + ".jpg", true);
-			count++;
+			String fileName = String.format(mPath + "%d.jpg", System.currentTimeMillis());
+			f = new FileOutputStream(fileName, true);
 			bmp.compress(Bitmap.CompressFormat.JPEG, 100, f);
 			f.close();
 		} catch (Exception e) {
-			Log.e("error", e.getCause() + " " + e.getMessage());
+			Log.e(TAG, e.getCause() + " " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
 
-	public boolean train() {
+	public boolean register() {
 		File root = new File(mPath);
 
 		FilenameFilter pngFilter = new FilenameFilter() {
@@ -95,66 +94,11 @@ public class LBPHFaceExtractor {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
 				new SendHttpRequestTask().execute(baos.toByteArray());
+				imgFile.delete();
 			}
 		}
 
 		return true;
-	}
-
-
-	public String predict(Bitmap mBitmap) {
-
-		Bitmap bmp = Bitmap.createScaledBitmap(mBitmap, WIDTH, HEIGHT, false);
-
-		FileOutputStream f;
-		try {
-			/*
-			String fileName = String.format(mPath + "%d.jpg", System.currentTimeMillis());
-			f = new FileOutputStream(fileName, true);
-			bmp.compress(Bitmap.CompressFormat.JPEG, 100, f);
-			f.close();
-			*/
-
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-
-			String image_str = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
-			ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-
-			nameValuePairs.add(new BasicNameValuePair("width", String.valueOf(WIDTH)));
-			nameValuePairs.add(new BasicNameValuePair("height", String.valueOf(HEIGHT)));
-			nameValuePairs.add(new BasicNameValuePair("image",image_str));
-
-			String url = "http://10.0.23.8:8080/CentralServer/json/testImage/";
-
-			Log.d(TAG, "start to post image!");
-			try {
-				HttpClient httpclient = new DefaultHttpClient();
-				HttpPost httppost = new HttpPost(url);
-				httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-				Log.d(TAG, "start to post image1!");
-				HttpResponse response = httpclient.execute(httppost);
-				Log.d(TAG, "start to post image2!");
-				HttpEntity entity = response.getEntity();
-
-				Log.d(TAG, "start to post image3!");
-				//
-				// Read the contents of an entity and return it as a String.
-				//
-				final String content = EntityUtils.toString(entity);
-
-			}
-			catch(Throwable t) {
-				t.printStackTrace();
-				Log.d(TAG, "post image exception!");
-			}
-
-		} catch (Exception e) {
-			Log.e(TAG, e.getCause() + " " + e.getMessage());
-			e.printStackTrace();
-		}
-
-		return "not yet!";
 	}
 
 	protected void SaveBmp(Bitmap bmp, String path) {
@@ -170,10 +114,6 @@ public class LBPHFaceExtractor {
 
 	}
 
-	public void load() {
-		train();
-	}
-
 	public int getProb() {
 		return mProb;
 	}
@@ -187,22 +127,18 @@ public class LBPHFaceExtractor {
 
 			nameValuePairs.add(new BasicNameValuePair("image",image_str));
 
-			String url = "http://10.0.0.4:8080/CentralServer/json/testImage/";
-
-			Log.d(TAG, "start to post image!");
+			// String url = "http://10.0.0.4:8080/CentralServer/json/testImage/";
+			String url = gv.getAuthURL() + gv.getTestPath();
+			Log.d(TAG, url);
 			try {
 				HttpClient httpclient = new DefaultHttpClient();
 				HttpPost httppost = new HttpPost(url);
 				httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-				Log.d(TAG, "start to post image1!");
+				Log.d(TAG, "start to post image!");
 				HttpResponse response = httpclient.execute(httppost);
-				Log.d(TAG, "start to post image2!");
 				HttpEntity entity = response.getEntity();
-
-				Log.d(TAG, "start to post image3!");
-				//
+				Log.d(TAG, "finish to post image!");
 				// Read the contents of an entity and return it as a String.
-				//
 				final String content = EntityUtils.toString(entity);
 
 			}
