@@ -156,15 +156,8 @@ public class LoginActivity extends Activity{
             if (resultCode == RESULT_OK) {
                 // The user picked a contact.
                 // The Intent's data Uri identifies which contact was selected.
-                String sharedKey = data.getStringExtra("Key");
-                sharedPref = getSharedPreferences("com.impl_auth.authenticationclient_preferences.xml",
-                        MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString(getString(R.string.share_perf_key), sharedKey);
-                editor.putString(getString(R.string.registered_flag), "True");
-                editor.commit();
-                Intent mainActivity = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(mainActivity);
+                Toast.makeText(LoginActivity.this, data.getBooleanExtra("Result", false)? "Registered":"Failed to Register",
+                        Toast.LENGTH_LONG).show();
             }
         }
     }
