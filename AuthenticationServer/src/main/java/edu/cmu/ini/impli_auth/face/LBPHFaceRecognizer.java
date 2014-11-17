@@ -13,12 +13,14 @@ import java.nio.IntBuffer;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
 import org.bytedeco.javacpp.BytePointer;
 
 import edu.cmu.ini.impli_auth.server.Labels;
+import edu.cmu.ini.impli_auth.server.Util;
 import static org.bytedeco.javacpp.opencv_contrib.*;
 import static org.bytedeco.javacpp.opencv_core.*;
 import static org.bytedeco.javacpp.opencv_highgui.*;
@@ -35,20 +37,14 @@ public class LBPHFaceRecognizer {
 	}
 
 	public void train() {
-		File root = new File("./");
-		FilenameFilter imgFilter = new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				name = name.toLowerCase();
-				return name.endsWith(".jpg") || name.endsWith(".pgm")
-						|| name.endsWith(".png");
-			}
-		};
+		
+		List<Integer> userList = Util.getAllUserList();
+		Map<File, Integer> userImageMap = Util.getUserImageMap(userList);
+		
+		System.out.println(userImageMap.size());
+		MatVector images = new MatVector(userImageMap.size());
 
-		File[] imageFiles = root.listFiles(imgFilter);
-		System.out.println(imageFiles.length);
-		MatVector images = new MatVector(imageFiles.length);
-
-		Mat labels = new Mat(imageFiles.length, 1, CV_32SC1);
+		Mat labels = new Mat(userImageMap.size(), 1, CV_32SC1);
 		IntBuffer labelsBuf = labels.getIntBuffer();
 		if (labelsBuf == null) {
 			System.out.println("labelsBuf is null!");
@@ -56,27 +52,27 @@ public class LBPHFaceRecognizer {
 
 		int counter = 0;
 
-		Labels labelsFile = new Labels("");
-		labelsFile.Read();
+		//Labels labelsFile = new Labels("");
+		//labelsFile.Read();
 
-		for (File image : imageFiles) {
+		for (File image : userImageMap.keySet()) {
 			String p = image.getName();
 			System.out.println(p);
 
 			Mat img = imread(image.getAbsolutePath(), CV_LOAD_IMAGE_GRAYSCALE);
 
-			int i1 = p.lastIndexOf("-");
+			//int i1 = p.lastIndexOf("-");
 
-			String description = p.substring(0, i1);
+			//String description = p.substring(0, i1);
 
-			if (labelsFile.get(description) < 0)
-				labelsFile.add(description, labelsFile.max() + 1);
+			/*if (labelsFile.get(description) < 0)
+				labelsFile.add(description, labelsFile.max() + 1);*/
 
-			int label = labelsFile.get(description);
+			//int label = labelsFile.get(description);
 
 			images.put(counter, img);
 
-			labelsBuf.put(counter, label);
+			labelsBuf.put(counter, userImageMap.get(image));
 
 			counter++;
 		}
