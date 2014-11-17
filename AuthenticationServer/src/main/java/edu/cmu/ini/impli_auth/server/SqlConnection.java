@@ -36,9 +36,9 @@ public class SqlConnection {
 	}
 	
 	/*
-	 * Read Resource reads all the resources to get their location. In future the recources
+	 * Read Resource reads all the resources to get their location. In future the resources
 	 * will be arranged based on their location. Only the resources near the query location
-	 * will be considered. They will be checked for Geo-fencing.
+	 * will be considered. They will be checked for possible options for users.
 	 */
 
 	public ResultSet readResource() throws Exception {
@@ -53,6 +53,12 @@ public class SqlConnection {
 		return returnResult;
 
 	}
+	
+	/*
+	 * This method is used to check if the user is already present in the PASSIVE_USER. If the 
+	 * user is present in the passive user table we just update the fresh and the step counter value.
+	 * This will be used in deciding the authenticity parameter.
+	 */
 
 	public ResultSet readPassiveUser(String imei) throws Exception {
 
@@ -84,6 +90,11 @@ public class SqlConnection {
 		else
 			return null;
 	}
+	
+	/*
+	 * If the above method does say that the user is present in the PASSIVE_USER
+	 * table then the following method is used to update the PASSIVE_USER.
+	 */
 
 	public void updatePassiveUser(PassiveUser user, int id) throws Exception {
 
@@ -113,6 +124,12 @@ public class SqlConnection {
 		statement.executeUpdate(sql2);
 
 	}
+	
+	/*
+	 * If the user is not present in the PASSIVE_USER table and he triggers the geo-fence 
+	 * of any resource, we will add him to the PASSIVE_USER table to track him and process
+	 * the authentication request. 
+	 */
 
 	public void writePUT(PassiveUser user, int resource_id) throws Exception {
 
@@ -163,6 +180,11 @@ public class SqlConnection {
 				picture_path, id);
 		statement.executeUpdate(sql);
 	}
+	
+	/*
+	 * The method authenticates a user by the username and password of the user. It is a 
+	 * basic check on the username and the password values present in our management database
+	 */
 
 	public int authByUsernamePassword(String username, String password)
 			throws Exception {
@@ -178,6 +200,11 @@ public class SqlConnection {
 		} else
 			return -1; // return -1 if auth failed.
 	}
+	
+	/*
+	 * Along with authenticating the user we also add the device to our device database. This device
+	 * will be the communication link between the user and the authentication server.
+	 */
 
 	public void registerDevice(String name, String IMEI, String credential,
 			int userId) throws Exception {
@@ -189,6 +216,11 @@ public class SqlConnection {
 						name, IMEI, credential, userId);
 		statement.executeUpdate(sql);
 	}
+	
+	/*
+	 * This function is used to authenticate the device based on its physical attributes like 
+	 * its IMEI no and the Shared Key or the Credential. 
+	 */
 
 	public boolean authDevice(String IMEI, String credential) throws Exception {
 		Class.forName("com.mysql.jdbc.Driver");
@@ -200,6 +232,13 @@ public class SqlConnection {
 		resultSet = statement.executeQuery(sql);
 		return resultSet.next();
 	}
+	
+	/*
+	 * Used to register a resource. The admin will have a screen on the resource while setting up the
+	 * resource which he will use to register the resource in the start. At subsequent logins we will
+	 * authenticate the resource based on its physical properties like IMEI no (equivalent) and shared 
+	 * key which we sent while registering.
+	 */
 
 	public void registerResource(String name, String latitude,
 			String longitude, String NSSID, String type, String SKEY, int userId)
@@ -222,6 +261,12 @@ public class SqlConnection {
 		resultSet = statement.executeQuery(sql);
 		return resultSet;
 	}
+	
+	/*
+	 * As we mentioned we will be authenticating the resource using the physical attributes of the
+	 * resource. These physical attributes are the NSSID (WiFi SSID) and the Shared Key provided during
+	 * authentication.  
+	 */
 
 	public boolean authByNssidSharedKey(String NSSID, String sharedKey)
 			throws Exception {
@@ -234,6 +279,11 @@ public class SqlConnection {
 		resultSet = statement.executeQuery(sql);
 		return resultSet.next();
 	}
+	
+	/*
+	 * Management plane function to delete resources which are registered. This function can be used
+	 * only by the system admin to delete a resource or even update the resource if it is being moved.
+	 */
 
 	public void deleteResourceById(int id) throws Exception {
 		Class.forName("com.mysql.jdbc.Driver");
