@@ -83,7 +83,7 @@ public class LBPHFaceRecognizer {
 		faceRecognizer.train(images, labels);
 	}
 
-	public void test(byte[] imageInByte) {
+	public int test(byte[] imageInByte) {
 		Mat mat = new Mat(width, height, CV_8UC1);
 		System.out.println("mat has been created!");
 
@@ -101,7 +101,7 @@ public class LBPHFaceRecognizer {
 			
 			if (faceRecognizer == null) {
 				System.out.println("faceRecognizer hasn't been generated!");
-				return;
+				return -1;
 			}
 
 			int n[] = new int[1];
@@ -109,16 +109,15 @@ public class LBPHFaceRecognizer {
 			faceRecognizer.predict(mat, n, p);
 			System.out.println("n : " + n[0]);
 			if (n[0] != -1) {
-				Labels labelsFile = new Labels("");
-				labelsFile.Read();
-				System.out.println(labelsFile.get(n[0]));
+				System.out.println(n[0]);
 			} else {
 				System.out.println("Unkown");
 			}
+			return n[0];
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		return -1;
 	}
 }

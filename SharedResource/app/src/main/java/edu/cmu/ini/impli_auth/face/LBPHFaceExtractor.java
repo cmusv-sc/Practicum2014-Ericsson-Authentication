@@ -42,12 +42,10 @@ public class LBPHFaceExtractor {
 
 	static final double confidenceThx = 80;
 
-	private GlobalVariable gv;
 	LBPHFaceExtractor(String path) {
 		faceRecognizer = com.googlecode.javacv.cpp.opencv_contrib.createLBPHFaceRecognizer(2, 8,
 				8, 8, confidenceThx);
 		mPath = path;
-		gv = GlobalVariable.getInstance();
 	}
 
 	void changeRecognizer(int nRec) {
@@ -62,58 +60,6 @@ public class LBPHFaceExtractor {
 				faceRecognizer = com.googlecode.javacv.cpp.opencv_contrib.createEigenFaceRecognizer();
 				break;
 		}
-	}
-
-	public String predict(Bitmap mBitmap) {
-
-		Bitmap bmp = Bitmap.createScaledBitmap(mBitmap, WIDTH, HEIGHT, false);
-
-		FileOutputStream f;
-		try {
-			/*
-			String fileName = String.format(mPath + "%d.jpg", System.currentTimeMillis());
-			f = new FileOutputStream(fileName, true);
-			bmp.compress(Bitmap.CompressFormat.JPEG, 100, f);
-			f.close();
-			*/
-
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-
-			String image_str = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
-			ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-
-			nameValuePairs.add(new BasicNameValuePair("width", String.valueOf(WIDTH)));
-			nameValuePairs.add(new BasicNameValuePair("height", String.valueOf(HEIGHT)));
-			nameValuePairs.add(new BasicNameValuePair("image",image_str));
-
-			//String url = "http://10.0.23.8:8080/CentralServer/json/testImage/";
-
-			String url = gv.getAuthURL() + gv.getTestPath();
-			Log.d(TAG, url);
-			try {
-				HttpClient httpclient = new DefaultHttpClient();
-				HttpPost httppost = new HttpPost(url);
-				httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-				Log.d(TAG, "start to post image!");
-				HttpResponse response = httpclient.execute(httppost);
-				HttpEntity entity = response.getEntity();
-				Log.d(TAG, "finish to post image!");
-				// Read the contents of an entity and return it as a String.
-				final String content = EntityUtils.toString(entity);
-
-			}
-			catch(Throwable t) {
-				t.printStackTrace();
-				Log.d(TAG, "post image exception!");
-			}
-
-		} catch (Exception e) {
-			Log.e(TAG, e.getCause() + " " + e.getMessage());
-			e.printStackTrace();
-		}
-
-		return "not yet!";
 	}
 
 	protected void SaveBmp(Bitmap bmp, String path) {

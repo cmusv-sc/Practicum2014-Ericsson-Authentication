@@ -9,6 +9,13 @@ import android.util.*;
 import android.view.*;
 import android.widget.*;
 
+import org.apache.http.*;
+import org.apache.http.client.*;
+import org.apache.http.client.entity.*;
+import org.apache.http.client.methods.*;
+import org.apache.http.impl.client.*;
+import org.apache.http.message.*;
+import org.apache.http.util.*;
 import org.opencv.android.*;
 import org.opencv.android.CameraBridgeViewBase.*;
 import org.opencv.core.*;
@@ -82,7 +89,10 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	int countSearch = 0;
 
 	Map<String, Integer> map = new HashMap<String, Integer>();
-
+	private GlobalVariable gv;
+	public SendAuthTask sendAuthTask;
+	static final int WIDTH = 128;
+	static final int HEIGHT = 128;
 
 	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
 		@Override
@@ -249,6 +259,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		if (!success) {
 			Log.e("Error", "Error creating directory");
 		}
+		gv = GlobalVariable.getInstance();
 	}
 
 
@@ -323,7 +334,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			mHandler.sendMessage(msg);
 
 			if(countSearch < MAXIMG_SEARCH) {
-				textTochange = fe.predict(mBitmap);
+				textTochange = predict(mBitmap);
 				countSearch++;
 				msg = new Message();
 				msg.obj = "processing...";
@@ -420,5 +431,86 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	private void setMinFaceSize(float faceSize) {
 		mRelativeFaceSize = faceSize;
 		mAbsoluteFaceSize = 0;
+	}
+
+	public class SendAuthTask extends AsyncTask<Void, Void, Integer> {
+
+		private final byte[] imageBytes;
+
+		SendAuthTask(byte[] imageBytes) {
+			this.imageBytes = imageBytes;
+		}
+
+		@Override
+		protected Integer doInBackground(Void... params) {
+			String image_str = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+			ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+
+			nameValuePairs.add(new BasicNameValuePair("width", String.valueOf(WIDTH)));
+			nameValuePairs.add(new BasicNameValuePair("height", String.valueOf(HEIGHT)));
+			nameValuePairs.add(new BasicNameValuePair("image",image_str));
+
+			//String url = "http://10.0.23.8:8080/CentralServer/json/testImage/";
+
+			String url = gv.getAuthURL() + gv.getTestPath();
+			Log.d(TAG, url);
+			try {
+				HttpClient httpclient = new DefaultHttpClient();
+				HttpPost httppost = new HttpPost(url);
+				httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+				Log.d(TAG, "start to post image!");
+				HttpResponse response = httpclient.execute(httppost);
+				HttpEntity entity = response.getEntity();
+				Log.d(TAG, "finish to post image!");
+				// Read the contents of an entity and return it as a String.
+				final String content = EntityUtils.toString(entity);
+				return Integer.parseInt(content);
+			}
+			catch(Throwable t) {
+				t.printStackTrace();
+				Log.d(TAG, "post image exception!");
+			}
+
+			return -1;
+		}
+
+		@Override
+		protected void onPostExecute(final Integer success) {
+			sendAuthTask = null;
+			Intent returnIntent = new Intent();
+			returnIntent.putExtra("Result", success);
+			setResult(RESULT_OK, returnIntent);
+			finish();
+		}
+
+		@Override
+		protected void onCancelled() {
+			sendAuthTask = null;
+		}
+	}
+
+	public String predict(Bitmap mBitmap) {
+
+		Bitmap bmp = Bitmap.createScaledBitmap(mBitmap, WIDTH, HEIGHT, false);
+
+		FileOutputStream f;
+		try {
+			/*
+			String fileName = String.format(mPath + "%d.jpg", System.currentTimeMillis());
+			f = new FileOutputStream(fileName, true);
+			bmp.compress(Bitmap.CompressFormat.JPEG, 100, f);
+			f.close();
+			*/
+
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+			sendAuthTask = new SendAuthTask(baos.toByteArray());
+			sendAuthTask.execute();
+		} catch (Exception e) {
+			Log.e(TAG, e.getCause() + " " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return "start to auth";
 	}
 }

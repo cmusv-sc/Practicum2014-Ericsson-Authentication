@@ -418,7 +418,7 @@ public class CentralServer {
 		LBPHFaceRecognizer faceRecognizer = new LBPHFaceRecognizer(width,
 				height);
 		faceRecognizer.train();
-		faceRecognizer.test(imageData);
-		return Response.status(200).entity("the request is ok").build();
+		int user_id = faceRecognizer.test(imageData);
+		return Response.status(200).entity(user_id).build();
 	}
 }
