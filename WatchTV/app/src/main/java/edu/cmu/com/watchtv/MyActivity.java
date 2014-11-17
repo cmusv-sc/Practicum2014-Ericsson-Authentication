@@ -35,7 +35,7 @@ public class MyActivity extends Activity {
             public void onClick(View v) {
 
                 Intent i = new Intent();
-                i.setComponent(new ComponentName("edu.cmu.com.watchtv", "edu.cmu.com.watchtv.CamTestActivity"));
+                i.setComponent(new ComponentName("edu.cmu.com.watchtv", "edu.cmu.ini.impli_auth.face.FaceActivity"));
                 startActivityForResult(i, 1);
             }
         });
@@ -53,7 +53,8 @@ public class MyActivity extends Activity {
                     startActivity(intent);
                         */
                     Intent intent = new Intent(MyActivity.this, PlayVideo.class);
-                    intent.putExtra("probability", data);
+                    intent.putExtra("probability", data.getDoubleExtra("Prob", -1.0));
+                    intent.putExtra("username", data.getStringExtra("UserName"));
                     startActivity(intent);
 
                 }

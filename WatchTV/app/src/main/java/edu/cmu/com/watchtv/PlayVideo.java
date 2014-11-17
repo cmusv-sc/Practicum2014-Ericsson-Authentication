@@ -27,7 +27,6 @@ public class PlayVideo extends Activity {
         final int probability = intent.getIntExtra("probability", 0);
         System.out.println(probability);
 
-
         //View
         GridLayout gridview = (GridLayout) findViewById(R.id.gridlayout);
         final VideoView vidView1 = (VideoView) findViewById(R.id.myVideo1);

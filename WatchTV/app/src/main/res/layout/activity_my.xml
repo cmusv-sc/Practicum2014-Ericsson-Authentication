@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/abc_action_bar_title_text_size"
         android:text="Sign In" />
-    <TextView android:id="@+id/text"
+    <TextView android:id="@+id/text6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="" />
