@@ -59,8 +59,9 @@ public class LoginActivity extends Activity{
     private EditText mEmailView;
     String IMEINumber;
 
+	GlobalVariable gv = GlobalVariable.getInstance();
     //server ip
-    private static final String serverIP = "10.0.23.67";
+    private final String serverIP = gv.getSERVER_IP();
 
     //Request Code
     static final int REGISTER_USER = 1;
