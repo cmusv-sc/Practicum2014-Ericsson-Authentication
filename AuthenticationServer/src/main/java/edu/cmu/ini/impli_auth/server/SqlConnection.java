@@ -34,6 +34,12 @@ public class SqlConnection {
 				user.getUser_ID());
 		statement.executeUpdate(sql);
 	}
+	
+	/*
+	 * Read Resource reads all the resources to get their location. In future the recources
+	 * will be arranged based on their location. Only the resources near the query location
+	 * will be considered. They will be checked for Geo-fencing.
+	 */
 
 	public ResultSet readResource() throws Exception {
 
@@ -189,7 +195,7 @@ public class SqlConnection {
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 		String sql = String.format(
-				"select id from device where IMEI='%s' and CREDENTIAL='%s'",
+				"select ID from DEVICE where IMEI='%s' and CREDENTIAL='%s'",
 				IMEI, credential);
 		resultSet = statement.executeQuery(sql);
 		return resultSet.next();
@@ -202,8 +208,8 @@ public class SqlConnection {
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 		String sql = String
-				.format("insert into resource (name,latitude,longitude,NSSID,type,SKEY,USERID) values ('%s', '%s', '%s', '%s', '%s', '%s', %d)",
-						name, latitude, longitude, NSSID, type, SKEY, userId);
+				.format("insert into RESOURCE (NAME,LATITUDE,LONGITUDE,CREDENTIAL,NSSID,USER_ID,TYPE) values ('%s', '%s', '%s', '%s', '%s', %d , '%s')",
+						name, latitude, longitude, SKEY, NSSID, userId, type);
 		statement.executeUpdate(sql);
 	}
 
@@ -212,7 +218,7 @@ public class SqlConnection {
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 		String sql = String
-				.format("select * from resource where userid=%d", id);
+				.format("select * from RESOURCE where USER_ID=%d", id);
 		resultSet = statement.executeQuery(sql);
 		return resultSet;
 	}
@@ -223,7 +229,7 @@ public class SqlConnection {
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 		String sql = String.format(
-				"select id from resource where nssid='%s' and skey='%s'",
+				"select ID from RESOURCE where NSSID='%s' and CREDENTIAL='%s'",
 				NSSID, sharedKey);
 		resultSet = statement.executeQuery(sql);
 		return resultSet.next();

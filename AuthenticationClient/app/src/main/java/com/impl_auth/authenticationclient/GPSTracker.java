@@ -70,7 +70,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
     
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-    	ipAddress = "http://10.0.23.67:8080/CentralServer/json/postLocation";
+    	ipAddress = "http://10.0.17.13:8080/CentralServer/json/postLocation";
     	int updateInterval = 10;
     	jsonOutput = new InfoJsonSend(this, ipAddress);
         mLocationClient = new LocationClient(this, this, this);	

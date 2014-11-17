@@ -28,6 +28,14 @@ import edu.cmu.ini.impli_auth.face.LBPHFaceRecognizer;
 @Path("/json")
 public class CentralServer {
 	
+	/*
+	 * This method is used to obtain the physical distance between two coordinates.
+	 * It is a standard math formula. For the exact formula please refer the documentation.
+	 * 
+	 * The distance value obtained is a scalar. What that means is source and destination 
+	 * can be interchanged and we will still get the same value. It is basically the distance 
+	 * between two points.
+	 */
 	private double distance(double lat1, double lon1, double lat2, double lon2) {
 		  
 		double theta = lon1 - lon2;
@@ -43,11 +51,19 @@ public class CentralServer {
 		return (dist);
 	}
 	
+
+	/*
+	 * Standard functions to convert angle values from degrees to radians and vice versa. 
+	 * These are values needed in the above trigonometric functions. The latitude and 
+	 * longitude values are nothing but angles and we need to convert them to radians in 
+	 * order to use the trigonometric functions. Then we restore the final value into degrees
+	 * and calculate distance
+	 */
+	
 	private double deg2rad(double deg) {
 		  return (deg * Math.PI / 180.0);
 	}
-
-	
+		
 	private double rad2deg(double rad) {
 		  return (rad * 180 / Math.PI);
 	}
@@ -238,6 +254,23 @@ public class CentralServer {
 		
 		return Response.status(200).entity(result).build();
 	}
+	
+	/* 
+	 * GEO-FENCING
+	 * 
+	 * After the user is successfully signed in the app will constantly be sending us
+	 * location information. Every post from the android app will be handled here. 
+	 * 
+	 * Basically the post has values like the device information and the location of the
+	 * device. We first check if the device is registered again, then we check if the device
+	 * is already in contention for resources i.e it has been previously serviced.
+	 * (Programmatically: If the user is already in the PASSIVE_USER table)
+	 * 
+	 * If not we check from his location if he is near any Resource using the above
+	 * distance calculator. If he is within the threshold we add him to PASSIVE_USER along
+	 * with the resource_id of the resource he is near to.
+	 * 
+	 */
 
     @POST
 	@Path("/postLocation")
