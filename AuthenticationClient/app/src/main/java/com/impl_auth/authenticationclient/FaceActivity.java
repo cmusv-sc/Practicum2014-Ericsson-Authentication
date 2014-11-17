@@ -405,6 +405,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
 	public boolean register(String mUsername, String mPassword, String mFirstName,
 	                        String mLastName, String mEmail) {
+
 		File root = new File(mPath);
 
 		FilenameFilter pngFilter = new FilenameFilter() {
@@ -469,6 +470,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			// String url = "http://10.0.0.4:8080/CentralServer/json/testImage/";
 			String url = gv.getAuthURL() + gv.getTestPath();
 
+			Log.d("SendRegistrationFormTask", "start to send regis!");
 
 			try{
 				HttpClient httpclient = new DefaultHttpClient();
@@ -476,7 +478,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 				httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 				HttpResponse response = httpclient.execute(httppost);
 				HttpEntity entity = response.getEntity();
-
+				Log.d("SendRegistrationFormTask", "finish send regis!");
 				// Read the contents of an entity and return it as a String.
 				final String content = EntityUtils.toString(entity);
 				return content.equalsIgnoreCase("Succeed");

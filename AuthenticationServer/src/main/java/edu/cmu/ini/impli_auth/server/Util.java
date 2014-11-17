@@ -25,7 +25,7 @@ public class Util {
 	}
 	
 	public static void saveImage(int userID, byte[] imageBytes) {
-		String fileName = String.format("%d.jpg", System.currentTimeMillis()); 
+		String fileName = String.format("user-%d/%d.jpg", userID, System.currentTimeMillis()); 
 		File outFile = new File(fileName);
 		
 		FileOutputStream outStream = null;

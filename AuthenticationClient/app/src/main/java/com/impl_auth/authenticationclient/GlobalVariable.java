@@ -7,7 +7,7 @@ public class GlobalVariable {
 	private static GlobalVariable instance;
 
 	// Global variable
-	private static String AUTH_URL = "http://10.0.23.8:8080/CentralServer/json/";
+	private static String AUTH_URL = "http://10.0.0.4:8080/CentralServer/json/";
 	private static String TEST_PATH = "postUser/";
 
 

@@ -177,7 +177,6 @@ public class CentralServer {
 	public Response createUser(@FormParam("Username") String username, @FormParam("Password") String password,
 			@FormParam("FirstName") String firstName, @FormParam("LastName") String lastName,
 			@FormParam("Email") String email, @FormParam("image") String image) {
-
     	
 		SqlConnection dao = new SqlConnection();
 		int result=0;

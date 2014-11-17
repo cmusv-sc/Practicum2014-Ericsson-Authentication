@@ -113,7 +113,7 @@ public class LoginActivity extends Activity{
             @Override
             public void onClick(View view) {
                 //TODO: register a user by sending all info to camera view
-                if(mPasswordView.getText() != mConfirmPasswordView.getText()){
+                if(!mPasswordView.getText().toString().equals(mConfirmPasswordView.getText().toString())){
                     //Password mismatched. Refuse register.
                     mPasswordView.setError("Password does not match.");
                     mPasswordView.requestFocus();
@@ -123,11 +123,11 @@ public class LoginActivity extends Activity{
                 }
 
                 Intent registerUser = new Intent(LoginActivity.this, FaceActivity.class);
-                registerUser.putExtra("UserName", mUserNameView.getText());
-                registerUser.putExtra("Password", mPasswordView.getText());
-                registerUser.putExtra("FirstName", mFirstNameView.getText());
-                registerUser.putExtra("LastName", mLastNameView.getText());
-                registerUser.putExtra("Email", mEmailView.getText());
+                registerUser.putExtra("UserName", mUserNameView.getText().toString());
+                registerUser.putExtra("Password", mPasswordView.getText().toString());
+                registerUser.putExtra("FirstName", mFirstNameView.getText().toString());
+                registerUser.putExtra("LastName", mLastNameView.getText().toString());
+                registerUser.putExtra("Email", mEmailView.getText().toString());
                 startActivityForResult(registerUser, REGISTER_USER);
             }
         });
