@@ -7,7 +7,8 @@ public class GlobalVariable {
 	private static GlobalVariable instance;
 
 	// Global variable
-	private static String AUTH_URL = "http://10.0.23.8:8080/CentralServer/json/";
+	private static String SERVER_IP = "10.0.17.239";
+	private static String PORT = "8080";
 	private static String TEST_PATH = "testImage/";
 
 
@@ -21,8 +22,16 @@ public class GlobalVariable {
 		return instance;
 	}
 
+	public String getSERVER_IP() {
+		return SERVER_IP;
+	}
+
+	public String getPORT() {
+		return PORT;
+	}
+
 	public String getAuthURL() {
-		return this.AUTH_URL;
+		return String.format("http://%s:%s/CentralServer/json/", getSERVER_IP(), getPORT());
 	}
 
 	public String getTestPath() {

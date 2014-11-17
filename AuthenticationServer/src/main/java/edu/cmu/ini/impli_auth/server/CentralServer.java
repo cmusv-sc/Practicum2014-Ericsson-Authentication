@@ -190,7 +190,7 @@ public class CentralServer {
 		
 		if(result != -1) {
 	    	byte[] imageBytes = DatatypeConverter.parseBase64Binary(image);
-	    	int userID = Util.getUserID();
+	    	int userID = Util.getUserID(username);
 	    	Util.createDir(userID);
 	    	Util.saveImage(userID, imageBytes);
 		}
@@ -418,7 +418,8 @@ public class CentralServer {
 		LBPHFaceRecognizer faceRecognizer = new LBPHFaceRecognizer(width,
 				height);
 		faceRecognizer.train();
-		int user_id = faceRecognizer.test(imageData);
-		return Response.status(200).entity(user_id).build();
+		FaceTestResult result = faceRecognizer.test(imageData);
+		String userName = Util.getUserName(result.label);
+		return Response.status(200).entity(userName + ":" + result.p).build();
 	}
 }

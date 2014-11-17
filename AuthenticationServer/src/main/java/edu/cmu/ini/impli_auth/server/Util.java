@@ -80,14 +80,17 @@ public class Util {
 		return map;
 	}
 	
-	public static int getUserID() {
+	public static int getUserID(String username) {
 		int id = 0;
 		SqlConnection dao = new SqlConnection();
 		try {
 			ResultSet resSet = dao.getAllUser();
 			if(resSet != null) {
 				while(resSet.next()) {
-					id = resSet.getInt("ID");
+					if(username.equals(resSet.getString("USERNAME"))) {
+						id = resSet.getInt("ID");
+						return id;
+					}
 				}
 			}
 			
@@ -96,5 +99,26 @@ public class Util {
 			e.printStackTrace();
 		}
 		return id;
+	}
+	
+	public static String getUserName(int id) {
+		String userName = null;
+		SqlConnection dao = new SqlConnection();
+		try {
+			ResultSet resSet = dao.getAllUser();
+			if(resSet != null) {
+				while(resSet.next()) {
+					if(id == resSet.getInt("ID")) {
+						userName = resSet.getString("USERNAME");
+						return userName;
+					}
+				}
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return userName;
 	}
 }

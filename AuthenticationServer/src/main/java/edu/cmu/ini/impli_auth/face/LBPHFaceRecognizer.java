@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
 
 import org.bytedeco.javacpp.BytePointer;
 
+import edu.cmu.ini.impli_auth.server.FaceTestResult;
 import edu.cmu.ini.impli_auth.server.Labels;
 import edu.cmu.ini.impli_auth.server.Util;
 import static org.bytedeco.javacpp.opencv_contrib.*;
@@ -83,7 +84,7 @@ public class LBPHFaceRecognizer {
 		faceRecognizer.train(images, labels);
 	}
 
-	public int test(byte[] imageInByte) {
+	public FaceTestResult test(byte[] imageInByte) {
 		Mat mat = new Mat(width, height, CV_8UC1);
 		System.out.println("mat has been created!");
 
@@ -101,7 +102,7 @@ public class LBPHFaceRecognizer {
 			
 			if (faceRecognizer == null) {
 				System.out.println("faceRecognizer hasn't been generated!");
-				return -1;
+				return new FaceTestResult(-1, 0);
 			}
 
 			int n[] = new int[1];
@@ -110,14 +111,16 @@ public class LBPHFaceRecognizer {
 			System.out.println("n : " + n[0]);
 			if (n[0] != -1) {
 				System.out.println(n[0]);
+				
 			} else {
 				System.out.println("Unkown");
+				return new FaceTestResult(-1, 0);
 			}
-			return n[0];
+			return new FaceTestResult(n[0], p[0]);
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return -1;
+		return new FaceTestResult(-1, 0);
 	}
 }
