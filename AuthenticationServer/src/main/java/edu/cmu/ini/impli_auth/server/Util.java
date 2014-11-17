@@ -79,4 +79,22 @@ public class Util {
 		
 		return map;
 	}
+	
+	public static int getUserID() {
+		int id = 0;
+		SqlConnection dao = new SqlConnection();
+		try {
+			ResultSet resSet = dao.getAllUser();
+			if(resSet != null) {
+				while(resSet.next()) {
+					id = resSet.getInt("ID");
+				}
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return id;
+	}
 }

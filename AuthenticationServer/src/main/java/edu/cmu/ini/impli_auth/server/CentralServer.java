@@ -173,10 +173,12 @@ public class CentralServer {
 
     @POST
 	@Path("/postUser")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response createUser(@FormParam("Username") String username, @FormParam("Password") String password,
 			@FormParam("FirstName") String firstName, @FormParam("LastName") String lastName,
-			@FormParam("Email") String email) {
+			@FormParam("Email") String email, @FormParam("image") String image) {
 
+    	
 		SqlConnection dao = new SqlConnection();
 		int result=0;
 		try {
@@ -186,6 +188,14 @@ public class CentralServer {
 			e.printStackTrace();
 			result = -1;
 		}
+		
+		if(result != -1) {
+	    	byte[] imageBytes = DatatypeConverter.parseBase64Binary(image);
+	    	int userID = Util.getUserID();
+	    	Util.createDir(userID);
+	    	Util.saveImage(userID, imageBytes);
+		}
+		
 		
 		String returnMessage;
 		switch(result){

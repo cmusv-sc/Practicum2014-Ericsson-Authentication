@@ -201,6 +201,24 @@ public class SqlConnection {
 			return -1; // return -1 if auth failed.
 	}
 	
+	public ResultSet getUserID(String userName) {
+		ResultSet resultSet = null;
+		try {
+			// this will load the MySQL driver, each DB has its own driver
+			Class.forName("com.mysql.jdbc.Driver");
+			// setup the connection with the DB.
+			connect = DriverManager.getConnection(URL, USER, PASSWORD);
+			// statements allow to issue SQL queries to the database
+			statement = connect.createStatement();
+			// resultSet gets the result of the SQL query
+			String sql = String.format("select * from USER where USERNAME = %s", userName);
+			resultSet = statement.executeQuery(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+	
 	/*
 	 * Along with authenticating the user we also add the device to our device database. This device
 	 * will be the communication link between the user and the authentication server.
