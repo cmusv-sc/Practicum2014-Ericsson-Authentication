@@ -433,7 +433,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		mAbsoluteFaceSize = 0;
 	}
 
-	public class SendAuthTask extends AsyncTask<Void, Void, Integer> {
+	public class SendAuthTask extends AsyncTask<Void, Void, String> {
 
 		private final byte[] imageBytes;
 
@@ -442,7 +442,8 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		}
 
 		@Override
-		protected Integer doInBackground(Void... params) {
+		protected String doInBackground(Void... params) {
+			String content = null;
 			String image_str = Base64.encodeToString(imageBytes, Base64.DEFAULT);
 			ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 
@@ -453,34 +454,41 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			//String url = "http://10.0.23.8:8080/CentralServer/json/testImage/";
 
 			String url = gv.getAuthURL() + gv.getTestPath();
-			Log.d(TAG, url);
+			Log.d("SendAuthTask", url);
 			try {
 				HttpClient httpclient = new DefaultHttpClient();
 				HttpPost httppost = new HttpPost(url);
 				httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-				Log.d(TAG, "start to post image!");
+				Log.d("SendAuthTask", "start to post image!");
 				HttpResponse response = httpclient.execute(httppost);
 				HttpEntity entity = response.getEntity();
-				Log.d(TAG, "finish to post image!");
+				Log.d("SendAuthTask", "finish to post image!");
 				// Read the contents of an entity and return it as a String.
-				final String content = EntityUtils.toString(entity);
-				return Integer.parseInt(content);
+				content = EntityUtils.toString(entity);
+				return content;
 			}
 			catch(Throwable t) {
 				t.printStackTrace();
-				Log.d(TAG, "post image exception!");
+				Log.d("SendAuthTask", "post image exception!");
 			}
 
-			return -1;
+			return content;
 		}
 
 		@Override
-		protected void onPostExecute(final Integer success) {
+		protected void onPostExecute(final String result) {
 			sendAuthTask = null;
-			Intent returnIntent = new Intent();
-			returnIntent.putExtra("Result", success);
-			setResult(RESULT_OK, returnIntent);
-			finish();
+			if(result != null) {
+				Intent returnIntent = new Intent();
+				String[] extras = result.split(":");
+				returnIntent.putExtra("UserName", extras[0]);
+				returnIntent.putExtra("Prob", extras[1]);
+				setResult(RESULT_OK, returnIntent);
+				finish();
+			}
+			else {
+				Log.d("SendAuthTask", "somthing wrong during postExecution!");
+			}
 		}
 
 		@Override

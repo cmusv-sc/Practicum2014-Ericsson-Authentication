@@ -61,7 +61,8 @@ public class LoginActivity extends Activity{
     private String registered;
 
     //Authentication server ip.
-    private static final String serverIP = "192.168.0.100";
+	private GlobalVariable gv = GlobalVariable.getInstance();
+    private final String serverIP = gv.getSERVER_IP();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

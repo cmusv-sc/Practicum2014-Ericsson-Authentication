@@ -67,10 +67,10 @@ GooglePlayServicesClient.OnConnectionFailedListener{
     public int stepCounter;
     public int angle;
 
-    
+    private GlobalVariable gv = GlobalVariable.getInstance();
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-    	ipAddress = "http://10.0.17.13:8080/CentralServer/json/postLocation";
+    	ipAddress = gv.getAuthURL() + gv.getLocationURL();
     	int updateInterval = 10;
     	jsonOutput = new InfoJsonSend(this, ipAddress);
         mLocationClient = new LocationClient(this, this, this);	
@@ -186,7 +186,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
     private class SendPost extends AsyncTask<Void,Integer,Double>{
         @Override
         protected Double doInBackground(Void... voids) {
-            jsonOutput.postMobileUsage(mLocationClient.getLastLocation(),"http://10.0.23.67:8080/CentralServer/json/postLocation",stepCounter);
+            jsonOutput.postMobileUsage(mLocationClient.getLastLocation(),ipAddress,stepCounter);
             System.out.println(stepCounter);
             return null;
         }
