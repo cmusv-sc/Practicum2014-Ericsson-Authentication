@@ -172,12 +172,33 @@ public class CentralServer {
 
     @POST
 	@Path("/postUser")
-	@Consumes("application/json")
-	public Response createUser(User user) {
+	public Response createUser(@FormParam("Username") String username, @FormParam("Password") String password,
+			@FormParam("FirstName") String firstName, @FormParam("LastName") String lastName,
+			@FormParam("Email") String email) {
 
-		String result = "User created : " + user;
-		return Response.status(201).entity(result).build();
-
+		SqlConnection dao = new SqlConnection();
+		int result=0;
+		try {
+			dao.registerUser(username, password);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = -1;
+		}
+		
+		String returnMessage;
+		switch(result){
+		case 0:
+			returnMessage = "Succeed, ";
+			break;
+		case -1:
+			returnMessage = "Exception";
+			break;
+		default:
+			returnMessage = "Error";
+			break;
+		}
+		return Response.status(200).entity(returnMessage).build();
 	}
 
 	@POST
