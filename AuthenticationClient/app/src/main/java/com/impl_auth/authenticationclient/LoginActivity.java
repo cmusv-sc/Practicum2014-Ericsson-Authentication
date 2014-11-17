@@ -72,6 +72,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
     //server ip
     private static final String serverIP = "10.0.23.67";
 
+    //Request Code
+    static final int REGISTER_USER = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +123,22 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
             @Override
             public void onClick(View view) {
                 //TODO: register a user by sending all info to camera view
+                if(mPasswordView.getText() != mConfirmPasswordView.getText()){
+                    //Password mismatched. Refuse register.
+                    mPasswordView.setError("Password does not match.");
+                    mPasswordView.requestFocus();
+                    mPasswordView.setText("");
+                    mConfirmPasswordView.setText("");
+                    return;
+                }
+
+                Intent registerUser = new Intent(LoginActivity.this, FaceActivity.class);
+                registerUser.putExtra("UserName", mUserNameView.getText());
+                registerUser.putExtra("Password", mPasswordView.getText());
+                registerUser.putExtra("FirstName", mFirstNameView.getText());
+                registerUser.putExtra("LastName", mLastNameView.getText());
+                registerUser.putExtra("Email", mEmailView.getText());
+                startActivityForResult(registerUser, REGISTER_USER);
             }
         });
 
@@ -137,6 +156,27 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
                 mRegisterButton.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == REGISTER_USER) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                // The user picked a contact.
+                // The Intent's data Uri identifies which contact was selected.
+                String sharedKey = data.getStringExtra("Key");
+                sharedPref = getSharedPreferences("com.impl_auth.authenticationclient_preferences.xml",
+                        MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(getString(R.string.share_perf_key), sharedKey);
+                editor.putString(getString(R.string.registered_flag), "True");
+                editor.commit();
+                Intent mainActivity = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(mainActivity);
+            }
+        }
     }
 
     @Override
