@@ -179,7 +179,7 @@ public class CentralServer {
 		SqlConnection dao = new SqlConnection();
 		int result=0;
 		try {
-			dao.registerUser(username, password);
+			dao.registerUser(username, password, firstName, lastName, email);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -189,7 +189,7 @@ public class CentralServer {
 		String returnMessage;
 		switch(result){
 		case 0:
-			returnMessage = "Succeed, ";
+			returnMessage = "Succeed";
 			break;
 		case -1:
 			returnMessage = "Exception";

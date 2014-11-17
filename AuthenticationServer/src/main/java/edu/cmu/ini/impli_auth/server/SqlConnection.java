@@ -206,6 +206,17 @@ public class SqlConnection {
 	 * will be the communication link between the user and the authentication server.
 	 */
 
+	public void registerUser(String username, String password, String firstName, String lastName,
+			String email) throws Exception {
+		Class.forName("com.mysql.jdbc.Driver");
+		connect = DriverManager.getConnection(URL, USER, PASSWORD);
+		statement = connect.createStatement();
+		String sql = String
+				.format("insert into USER (FIRSTNAME, LASTNAME, EMAIL, USERNAME, PASSWORD) values ('%s', '%s', '%s', '%s', '%s')",
+						firstName, lastName, email, username, password);
+		statement.executeUpdate(sql);
+	}
+	
 	public void registerDevice(String name, String IMEI, String credential,
 			int userId) throws Exception {
 		Class.forName("com.mysql.jdbc.Driver");
