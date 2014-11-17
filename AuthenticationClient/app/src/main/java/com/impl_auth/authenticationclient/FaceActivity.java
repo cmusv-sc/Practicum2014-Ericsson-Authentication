@@ -9,6 +9,13 @@ import android.util.*;
 import android.view.*;
 import android.widget.*;
 
+import org.apache.http.*;
+import org.apache.http.client.*;
+import org.apache.http.client.entity.*;
+import org.apache.http.client.methods.*;
+import org.apache.http.impl.client.*;
+import org.apache.http.message.*;
+import org.apache.http.util.*;
 import org.opencv.android.*;
 import org.opencv.android.CameraBridgeViewBase.*;
 import org.opencv.core.*;
@@ -80,7 +87,14 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	int countSearch = 0;
 
 	Map<String, Integer> map = new HashMap<String, Integer>();
+	public SendRegistrationFormTask sendRegistrationFormTask;
+	private GlobalVariable gv;
 
+	private String mUsername;
+	private String mPassword;
+	private String mFirstName;
+	private String mLastName;
+	private String mEmail;
 
 	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
 		@Override
@@ -134,8 +148,8 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			}
 		}
 	};
-
 	public FaceActivity() {
+		gv = GlobalVariable.getInstance();
 		mDetectorName = new String[2];
 		mDetectorName[JAVA_DETECTOR] = "Java";
 		mDetectorName[NATIVE_DETECTOR] = "Native (tracking)";
@@ -250,10 +264,18 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		if (!success) {
 			Log.e("Error", "Error creating directory");
 		}
+
+		Intent intent = getIntent();
+		mUsername = intent.getStringExtra("UserName");
+		mPassword = intent.getStringExtra("Password");
+		mFirstName = intent.getStringExtra("FirstName");
+		mLastName = intent.getStringExtra("LastName");
+		mEmail = intent.getStringExtra("Email");
+
 	}
 
 	private void sendRegistrationRequest() {
-		fe.register();
+		register(mUsername, mPassword, mFirstName, mLastName, mEmail);
 	}
 
 	@Override
@@ -378,5 +400,106 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	private void setMinFaceSize(float faceSize) {
 		mRelativeFaceSize = faceSize;
 		mAbsoluteFaceSize = 0;
+	}
+
+
+	public boolean register(String mUsername, String mPassword, String mFirstName,
+	                        String mLastName, String mEmail) {
+		File root = new File(mPath);
+
+		FilenameFilter pngFilter = new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				return name.toLowerCase().endsWith(".jpg");
+			}
+		};
+
+		File[] imgFiles = root.listFiles(pngFilter);
+
+		for (File imgFile : imgFiles) {
+			if(imgFile.exists()) {
+				Bitmap bmp = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+				sendRegistrationFormTask = new SendRegistrationFormTask(mUsername, mPassword,
+						mFirstName, mLastName,
+						mEmail,
+						baos.toByteArray());
+				sendRegistrationFormTask.execute();
+				imgFile.delete();
+			}
+		}
+
+		return true;
+	}
+
+	public class SendRegistrationFormTask extends AsyncTask<Void, Void, Boolean> {
+
+		private final String mUsername;
+		private final String mPassword;
+		private final String mFirstName;
+		private final String mLastName;
+		private final String mEmail;
+		private final byte[] imageBytes;
+
+
+		SendRegistrationFormTask(String mUsername, String mPassword, String mFirstName,
+		                         String mLastName, String mEmail, byte[] imageBytes) {
+			this.mUsername = mUsername;
+			this.mPassword = mPassword;
+			this.mFirstName = mFirstName;
+			this.mLastName = mLastName;
+			this.mEmail = mEmail;
+			this.imageBytes = imageBytes;
+		}
+
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			ArrayList<NameValuePair> nameValuePairs = new  ArrayList<NameValuePair>();
+
+			nameValuePairs.add(new BasicNameValuePair("Username",mUsername));
+			nameValuePairs.add(new BasicNameValuePair("Password",mPassword));
+			nameValuePairs.add(new BasicNameValuePair("FirstName",mFirstName));
+			nameValuePairs.add(new BasicNameValuePair("LastName",mLastName));
+			nameValuePairs.add(new BasicNameValuePair("Email",mEmail));
+
+			String image_str = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+
+			nameValuePairs.add(new BasicNameValuePair("image",image_str));
+
+			// String url = "http://10.0.0.4:8080/CentralServer/json/testImage/";
+			String url = gv.getAuthURL() + gv.getTestPath();
+
+
+			try{
+				HttpClient httpclient = new DefaultHttpClient();
+				HttpPost httppost = new HttpPost(url);
+				httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+				HttpResponse response = httpclient.execute(httppost);
+				HttpEntity entity = response.getEntity();
+
+				// Read the contents of an entity and return it as a String.
+				final String content = EntityUtils.toString(entity);
+				return content.equalsIgnoreCase("Succeed");
+
+			}catch(final Exception e){
+				System.out.println("Error in http connection "+e.toString());
+			}
+			return false;
+
+		}
+
+		@Override
+		protected void onPostExecute(final Boolean success) {
+			sendRegistrationFormTask = null;
+			Intent returnIntent = new Intent();
+			returnIntent.putExtra("Result", success);
+			setResult(RESULT_OK, returnIntent);
+			finish();
+		}
+
+		@Override
+		protected void onCancelled() {
+			sendRegistrationFormTask = null;
+		}
 	}
 }

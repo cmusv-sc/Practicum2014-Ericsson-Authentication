@@ -3,6 +3,7 @@ package com.impl_auth.authenticationclient;
 import android.graphics.*;
 import android.os.*;
 import android.util.*;
+import android.content.Intent;
 
 import com.googlecode.javacv.cpp.opencv_contrib.*;
 
@@ -36,12 +37,11 @@ public class LBPHFaceExtractor {
 	private int mProb = 999;
 
 	static final double confidenceThx = 80;
-	private GlobalVariable gv;
+
 	public LBPHFaceExtractor(String path) {
 		faceRecognizer = com.googlecode.javacv.cpp.opencv_contrib.createLBPHFaceRecognizer(2, 8,
 				8, 8, confidenceThx);
 		mPath = path;
-		gv = GlobalVariable.getInstance();
 	}
 
 	public void changeRecognizer(int nRec) {
@@ -76,31 +76,6 @@ public class LBPHFaceExtractor {
 		}
 	}
 
-	public boolean register() {
-		File root = new File(mPath);
-
-		FilenameFilter pngFilter = new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				return name.toLowerCase().endsWith(".jpg");
-
-			}
-		};
-
-		File[] imgFiles = root.listFiles(pngFilter);
-
-		for (File imgFile : imgFiles) {
-			if(imgFile.exists()) {
-				Bitmap bmp = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-				new SendHttpRequestTask().execute(baos.toByteArray());
-				imgFile.delete();
-			}
-		}
-
-		return true;
-	}
-
 	protected void SaveBmp(Bitmap bmp, String path) {
 		FileOutputStream file;
 		try {
@@ -127,8 +102,7 @@ public class LBPHFaceExtractor {
 
 			nameValuePairs.add(new BasicNameValuePair("image",image_str));
 
-			// String url = "http://10.0.0.4:8080/CentralServer/json/testImage/";
-			String url = gv.getAuthURL() + gv.getTestPath();
+			String url = "http://10.0.0.4:8080/CentralServer/json/testImage/";
 			Log.d(TAG, url);
 			try {
 				HttpClient httpclient = new DefaultHttpClient();
