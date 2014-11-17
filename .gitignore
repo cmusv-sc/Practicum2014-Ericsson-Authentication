@@ -11,6 +11,10 @@ AuthenticationClient/.gradle/*
 AuthenticationClient/app/build/*
 AuthenticationClient/build/*
 AuthenticationClient/openCVLibrary249/build/*
+WatchTV/build/*
+WatchTV/app/build/*
+WatchTV/.gradle/*
+WatchTV/.idea/*
 FaceRecognitionSample/build/*
 FaceRecognitionSample/.gradle/*
 FaceRecognitionSample/.idea/*

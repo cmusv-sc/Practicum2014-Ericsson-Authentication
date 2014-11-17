@@ -35,7 +35,7 @@ public class PlayVideo extends Activity {
         final VideoView vidView4 = (VideoView) findViewById(R.id.myVideo4);
         final VideoView vidView5 = (VideoView) findViewById(R.id.myVideo5);
         final VideoView vidView6 = (VideoView) findViewById(R.id.myVideo6);
-        String uriPath = "android.resource://edu.cmu.com.watchtv/" + R.raw.film;
+        String uriPath = "android.resource://edu.cmu.com.watchtv/" + R.raw.file;
         Uri uri = Uri.parse(uriPath);
         vidView1.setVideoURI(uri);
         MediaController vidControl1 = new MediaController(this);
