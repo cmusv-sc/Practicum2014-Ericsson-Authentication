@@ -15,6 +15,3 @@ WatchTV/build/*
 WatchTV/app/build/*
 WatchTV/.gradle/*
 WatchTV/.idea/*
-FaceRecognitionSample/build/*
-FaceRecognitionSample/.gradle/*
-FaceRecognitionSample/.idea/*
