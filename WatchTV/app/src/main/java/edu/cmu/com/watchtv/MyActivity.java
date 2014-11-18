@@ -35,7 +35,8 @@ public class MyActivity extends Activity {
             public void onClick(View v) {
 
                 Intent i = new Intent();
-                i.setComponent(new ComponentName("edu.cmu.com.watchtv", "edu.cmu.ini.impli_auth.face.FaceActivity"));
+                i.setComponent(new ComponentName("edu.cmu.ini.impli_auth.face",
+		                "edu.cmu.ini.impli_auth.face.FaceActivity"));
                 startActivityForResult(i, 1);
             }
         });
