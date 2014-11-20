@@ -39,15 +39,6 @@ CREATE TABLE `ACTIVE_USER` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `ACTIVE_USER`
---
-
-LOCK TABLES `ACTIVE_USER` WRITE;
-/*!40000 ALTER TABLE `ACTIVE_USER` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ACTIVE_USER` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `APPLICATION`
 --
 
@@ -62,15 +53,6 @@ CREATE TABLE `APPLICATION` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `APPLICATION`
---
-
-LOCK TABLES `APPLICATION` WRITE;
-/*!40000 ALTER TABLE `APPLICATION` DISABLE KEYS */;
-/*!40000 ALTER TABLE `APPLICATION` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `DEVICE`
@@ -90,16 +72,6 @@ CREATE TABLE `DEVICE` (
   CONSTRAINT `DEVICE_ibfk_1` FOREIGN KEY (`USER_ID`) REFERENCES `USER` (`ID`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `DEVICE`
---
-
-LOCK TABLES `DEVICE` WRITE;
-/*!40000 ALTER TABLE `DEVICE` DISABLE KEYS */;
-INSERT INTO `DEVICE` VALUES (1,'Nexus 4','356489058312336','2qtcjo7e1dprc7ou',2),(14,'Nexus 5','358239054019882','1rvltvjur4g0oh7u',2);
-/*!40000 ALTER TABLE `DEVICE` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `PASSIVE_USER`
@@ -128,16 +100,6 @@ CREATE TABLE `PASSIVE_USER` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `PASSIVE_USER`
---
-
-LOCK TABLES `PASSIVE_USER` WRITE;
-/*!40000 ALTER TABLE `PASSIVE_USER` DISABLE KEYS */;
-INSERT INTO `PASSIVE_USER` VALUES (6,2,1,1,0,'37.4125056','-122.0583326','CMU-SV-BLDG-19','2014-11-10 21:49:25','358239054019882');
-/*!40000 ALTER TABLE `PASSIVE_USER` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `RESOURCE`
 --
 
@@ -147,24 +109,17 @@ DROP TABLE IF EXISTS `RESOURCE`;
 CREATE TABLE `RESOURCE` (
   `ID` int(11) NOT NULL,
   `NAME` varchar(20) DEFAULT NULL,
-  `IMEI` varchar(20) DEFAULT NULL,
   `LATITUDE` varchar(20) DEFAULT NULL,
   `LONGITUDE` varchar(20) DEFAULT NULL,
   `CREDENTIAL` varchar(30) DEFAULT NULL,
   `NSSID` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  `USER_ID` int(11) DEFAULT NULL,
+  `TYPE` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `USERID` (`USER_ID`),
+  CONSTRAINT `RESOURCE_ibfk_1` FOREIGN KEY (`USER_ID`) REFERENCES `USER` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `RESOURCE`
---
-
-LOCK TABLES `RESOURCE` WRITE;
-/*!40000 ALTER TABLE `RESOURCE` DISABLE KEYS */;
-INSERT INTO `RESOURCE` VALUES (1,'Test Resource','12345','37.412591','-122.058409','CMU',NULL);
-/*!40000 ALTER TABLE `RESOURCE` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `USER`
@@ -186,14 +141,23 @@ CREATE TABLE `USER` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `USER`
+-- Table structure for table `USER_APPS`
 --
 
-LOCK TABLES `USER` WRITE;
-/*!40000 ALTER TABLE `USER` DISABLE KEYS */;
-INSERT INTO `USER` VALUES (2,'Alok','Nerurkar','alok@gmail.com','alok','password','');
-/*!40000 ALTER TABLE `USER` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `USER_APPS`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `USER_APPS` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `APP_ID` varchar(20) DEFAULT NULL,
+  `API_KEY` varchar(30) DEFAULT NULL,
+  `USER_ID` int(11) DEFAULT NULL,
+  `COUNTER` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `USER_ID` (`USER_ID`),
+  CONSTRAINT `USER_APPS_ibfk_1` FOREIGN KEY (`USER_ID`) REFERENCES `USER` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `test`
@@ -208,16 +172,6 @@ CREATE TABLE `test` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `test`
---
-
-LOCK TABLES `test` WRITE;
-/*!40000 ALTER TABLE `test` DISABLE KEYS */;
-INSERT INTO `test` VALUES (32,'hello'),(33,'hello'),(34,'hello'),(35,'hello'),(36,'hello'),(37,'hello'),(38,'hello'),(39,'hello'),(40,'hello'),(41,'hello'),(42,'hello'),(43,'hello'),(44,'hello'),(45,'hello'),(46,'hello'),(47,'hello'),(48,'hello'),(49,'hello'),(50,'hello'),(51,'hello'),(52,'hello'),(53,'hello'),(54,'hello'),(55,'hello');
-/*!40000 ALTER TABLE `test` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -228,4 +182,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-11-10 13:49:30
+-- Dump completed on 2014-11-16 17:26:53

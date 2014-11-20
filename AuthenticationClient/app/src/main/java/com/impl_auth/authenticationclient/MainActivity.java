@@ -34,6 +34,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         getLocationService = (ToggleButton) findViewById(R.id.toggleButton1);
         ipAddressField = (EditText)findViewById(R.id.editText1);
         updateFrequencyField = (EditText)findViewById(R.id.editTextUpdateInterval);
@@ -74,6 +75,7 @@ public class MainActivity extends Activity {
             i.putExtra("updateInterval",Integer.valueOf(updateFrequencyField.getText().toString()));
             startService(i);
             serviceRunning = true;
+            super.onStop();
         } else {
             // redirect to login activity if not registered
             Intent loginActivity = new Intent(this, LoginActivity.class);
