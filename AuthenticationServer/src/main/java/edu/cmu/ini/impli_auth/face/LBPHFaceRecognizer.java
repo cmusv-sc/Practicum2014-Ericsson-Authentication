@@ -42,7 +42,6 @@ public class LBPHFaceRecognizer {
 		List<Integer> userList = Util.getAllUserList();
 		Map<File, Integer> userImageMap = Util.getUserImageMap(userList);
 		
-		System.out.println(userImageMap.size());
 		MatVector images = new MatVector(userImageMap.size());
 
 		Mat labels = new Mat(userImageMap.size(), 1, CV_32SC1);
@@ -57,9 +56,6 @@ public class LBPHFaceRecognizer {
 		//labelsFile.Read();
 
 		for (File image : userImageMap.keySet()) {
-			String p = image.getName();
-			System.out.println(p);
-
 			Mat img = imread(image.getAbsolutePath(), CV_LOAD_IMAGE_GRAYSCALE);
 
 			//int i1 = p.lastIndexOf("-");
@@ -80,8 +76,7 @@ public class LBPHFaceRecognizer {
 
 		// faceRecognizer = createFisherFaceRecognizer();
 		// faceRecognizer = createEigenFaceRecognizer();
-		faceRecognizer = createLBPHFaceRecognizer(2, 8,
-				8, 8, 200);
+		faceRecognizer = createLBPHFaceRecognizer();
 		faceRecognizer.train(images, labels);
 	}
 
@@ -91,24 +86,34 @@ public class LBPHFaceRecognizer {
 
 		InputStream in = new ByteArrayInputStream(imageInByte);
 		try {
+			FileOutputStream outStream = null;
+			File outFile = new File("test.jpg");
+			outStream = new FileOutputStream(outFile);
+			outStream.write(imageInByte); 
+			outStream.flush(); 
+			outStream.close();
+			Mat testImage = imread("test.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+			/*
 			BufferedImage bImageFromConvert = ImageIO.read(in);
 			
 			IplImage image = IplImage.create(width, height, IPL_DEPTH_8U, 4);
 			image.copyFrom(bImageFromConvert);
+			cvSaveImage("test1.jpg",image);
 			IplImage grayImg = IplImage.create(image.width(), image.height(),
 					IPL_DEPTH_8U, 1);
 			cvCvtColor(image, grayImg, CV_BGR2GRAY);
 
 			mat.copyFrom(grayImg.getBufferedImage());
-			
+			cvSaveImage("test2.jpg",grayImg);
 			if (faceRecognizer == null) {
 				System.out.println("faceRecognizer hasn't been generated!");
 				return new FaceTestResult(-1, 0);
 			}
-
+			*/
+			
 			int n[] = new int[1];
 			double p[] = new double[1];
-			faceRecognizer.predict(mat, n, p);
+			faceRecognizer.predict(testImage, n, p);
 			System.out.println("n : " + n[0]);
 			if (n[0] != -1) {
 				System.out.println(n[0]);
