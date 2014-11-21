@@ -5,6 +5,7 @@ import android.app.*;
 import android.content.*;
 import android.graphics.*;
 import android.os.*;
+import android.preference.*;
 import android.util.*;
 import android.view.*;
 import android.widget.*;
@@ -93,6 +94,8 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	public SendAuthTask sendAuthTask;
 	static final int WIDTH = 128;
 	static final int HEIGHT = 128;
+
+	private SharedPreferences sharedPref;
 
 	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
 		@Override
@@ -433,6 +436,11 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		mAbsoluteFaceSize = 0;
 	}
 
+	private String getSharedResourceCredential() {
+		sharedPref = PreferenceManager.getDefaultSharedPreferences(FaceActivity.this);
+		return sharedPref.getString(getString(R.string.share_perf_key),null);
+	}
+
 	public class SendAuthTask extends AsyncTask<Void, Void, String> {
 
 		private final byte[] imageBytes;
@@ -447,6 +455,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			String image_str = Base64.encodeToString(imageBytes, Base64.DEFAULT);
 			ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 
+			nameValuePairs.add(new BasicNameValuePair("credential", getSharedResourceCredential()));
 			nameValuePairs.add(new BasicNameValuePair("width", String.valueOf(WIDTH)));
 			nameValuePairs.add(new BasicNameValuePair("height", String.valueOf(HEIGHT)));
 			nameValuePairs.add(new BasicNameValuePair("image",image_str));
@@ -483,6 +492,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 				String[] extras = result.split(":");
 				returnIntent.putExtra("UserName", extras[0]);
 				returnIntent.putExtra("Prob", extras[1]);
+				returnIntent.putExtra("Access", extras[2]);
 				if(extras[0].isEmpty()) {
 					setResult(RESULT_CANCELED, returnIntent);
 				}

@@ -64,7 +64,8 @@ public class LBPHFaceRecognizer {
 
 		// faceRecognizer = createFisherFaceRecognizer();
 		// faceRecognizer = createEigenFaceRecognizer();
-		faceRecognizer = createLBPHFaceRecognizer();
+		faceRecognizer = createLBPHFaceRecognizer(2, 8, 8, 8, 90);
+		// faceRecognizer = createFisherFaceRecognizer(0, 1500);
 		faceRecognizer.train(images, labels);
 	}
 

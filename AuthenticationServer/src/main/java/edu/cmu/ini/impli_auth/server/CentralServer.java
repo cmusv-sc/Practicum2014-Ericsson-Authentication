@@ -432,7 +432,7 @@ public class CentralServer {
 	@POST
 	@Path("/testImage")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response processTestImage(@FormParam("width") int width,
+	public Response processTestImage(@FormParam("credential") String credential, @FormParam("width") int width,
 			@FormParam("height") int height, @FormParam("image") String image) throws Exception {
 		byte[] imageData = DatatypeConverter.parseBase64Binary(image);
 		String userName = "";
@@ -443,12 +443,19 @@ public class CentralServer {
 		faceRecognizer.train();
 		FaceTestResult result = faceRecognizer.test(imageData);
 		
-		if(active_user(result.label,auth) != -1){
+		userName = Util.getUserName(result.label);
+		System.out.println("UserName: " + userName);
+		System.out.println("Prob: " + result.p);
+		return Response.status(200).entity(userName + ":" + 0 + ":public").build();
+		/*
+		if(active_user(result.label, auth) != -1) {
 			userName = Util.getUserName(result.label);
 			System.out.println("UserName: " + userName);
 			System.out.println("Prob: " + result.p);
+			return Response.status(200).entity(userName + ":" + result.p + ":" + Util.getResourceAccessStatus(result.label, credential)).build();
 		}
-		
-		return Response.status(200).entity(userName + ":" + result.p).build();
+		else {
+			return Response.status(200).entity(userName + ":" + 0 + ":public").build();
+		}*/
 	}
 }

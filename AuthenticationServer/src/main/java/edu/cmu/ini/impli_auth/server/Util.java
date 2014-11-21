@@ -136,4 +136,23 @@ public class Util {
 		}
 		return userName;
 	}
+	
+	public static String getResourceAccessStatus(int userID, String credential) {
+		SqlConnection dao = new SqlConnection();
+		try {
+			ResultSet resSet = dao.readResource();
+			if(resSet != null) {
+				while(resSet.next()) {
+					if(credential.equals(resSet.getInt("CREDENTIAL"))) {
+						return (userID == resSet.getInt("USER_ID")) ? "private" : "public";
+					}
+				}
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "public";
+	}
 }
