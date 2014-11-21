@@ -321,7 +321,7 @@ public class CentralServer {
 			
 			if(result != null){
 				System.out.println("SHOULD NOT REACH HERE");
-				dao.updatePassiveUser(user,result.findColumn("USER_ID"));
+				dao.updatePassiveUser(user,result.getInt("USER_ID"));
 			} else {
 				System.out.println("Reached ELSE");
 				result = dao.readResource();
@@ -363,6 +363,7 @@ public class CentralServer {
 	public Response createDevice(@FormParam("Username") String username, @FormParam("Password") String password,
 			@FormParam("name") String name, @FormParam("IMEI") String IMEI) {
 		SqlConnection dao = new SqlConnection();
+		System.out.println("postResource");
 		int result;
 		int userid = 0;
 		try {
@@ -403,6 +404,7 @@ public class CentralServer {
 			returnMessage = "Error";
 			break;
 		}
+		System.out.println(returnMessage);
 		return Response.status(200).entity(returnMessage).build();
 	}
 	

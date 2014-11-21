@@ -103,14 +103,14 @@ public class SqlConnection {
 
 		System.out.println("ID = " + id);
 
+		returnResult = null;
 		String sql2 = String.format(
 				"SELECT * FROM PASSIVE_USER WHERE USER_ID = %d", id);
 		returnResult = statement.executeQuery(sql2);
 		System.out.println("READ");
-		if (returnResult.next())
-			return returnResult;
-		else
-			return null;
+		returnResult.next();
+		System.out.println(returnResult.getInt("USER_ID"));
+		return returnResult;
 	}
 	
 	/*
@@ -129,13 +129,14 @@ public class SqlConnection {
 			String sql = String.format(
 					"SELECT USER_ID FROM DEVICE WHERE IMEI = '%s'",
 					user.device_phy_id);
+			System.out.println(sql);
 			returnResult = statement.executeQuery(sql);
 			if (returnResult.first()) {
 				id = returnResult.getInt("USER_ID");
 			} else
 				id = -1;
 		}
-
+		System.out.println("ID in update passive user"+id);
 		String sql2 = String.format(
 				"UPDATE PASSIVE_USER SET INITIAL_STEP = %d, "
 						+ "FRESH = FRESH + 1, " + "TIMESTAMP = NOW(), "
