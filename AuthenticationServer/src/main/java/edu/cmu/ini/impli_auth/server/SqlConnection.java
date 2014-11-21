@@ -106,8 +106,11 @@ public class SqlConnection {
 		String sql2 = String.format(
 				"SELECT * FROM PASSIVE_USER WHERE USER_ID = %d", id);
 		returnResult = statement.executeQuery(sql2);
-		returnResult.next();
-		return returnResult;
+		if(returnResult.next())
+			return returnResult;
+		else 
+			return null;
+		
 	}
 	
 	/*

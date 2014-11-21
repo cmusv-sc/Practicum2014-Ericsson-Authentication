@@ -368,7 +368,7 @@ public class CentralServer {
     
 	@POST
 	@Path("/postDevice")
-	//@Consumes("application/json")
+	//@Consumes("application/json")	
 	//information to register a resource: name,latitude,longitude,NSSID,type, send a generated SKEY back.
 	public Response createDevice(@FormParam("Username") String username, @FormParam("Password") String password,
 			@FormParam("name") String name, @FormParam("IMEI") String IMEI) {
