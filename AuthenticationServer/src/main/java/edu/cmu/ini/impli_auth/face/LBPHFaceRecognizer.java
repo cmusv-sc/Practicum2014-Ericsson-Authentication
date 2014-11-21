@@ -104,6 +104,7 @@ public class LBPHFaceRecognizer {
 			double p[] = new double[1];
 			faceRecognizer.predict(testImage, n, p);
 			System.out.println("n : " + n[0]);
+			System.out.println("c : " + p[0]);
 			if (n[0] != -1) {
 				System.out.println(n[0]);
 				
@@ -111,7 +112,7 @@ public class LBPHFaceRecognizer {
 				System.out.println("Unkown");
 				return new FaceTestResult(-1, 0);
 			}
-			return new FaceTestResult(n[0], p[0]);
+			return new FaceTestResult(n[0], Util.genProb(p[0]));
 
 		} catch (IOException e) {
 			e.printStackTrace();

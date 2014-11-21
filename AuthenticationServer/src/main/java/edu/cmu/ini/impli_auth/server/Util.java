@@ -155,4 +155,18 @@ public class Util {
 		}
 		return "public";
 	}
+	
+	public static double genProb(double prob) {
+		if(prob <= 50) {
+			return 100;
+		}
+		if(prob <= 80) {
+			return Util.normalDist(50, 80, 70, 100, prob);
+		}
+		return Util.normalDist(80, 90, 0, 70, prob);
+	}
+	public static double normalDist(int sourceStart, int sourceEnd, int targetStart, int targetEnd, double p) {
+		return targetStart + ((targetEnd - targetStart) / (sourceEnd - sourceStart)) * 
+				((sourceEnd - sourceStart) - (p - sourceStart));
+	}
 }
