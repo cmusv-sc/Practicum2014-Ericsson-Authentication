@@ -52,20 +52,8 @@ public class LBPHFaceRecognizer {
 
 		int counter = 0;
 
-		//Labels labelsFile = new Labels("");
-		//labelsFile.Read();
-
 		for (File image : userImageMap.keySet()) {
 			Mat img = imread(image.getAbsolutePath(), CV_LOAD_IMAGE_GRAYSCALE);
-
-			//int i1 = p.lastIndexOf("-");
-
-			//String description = p.substring(0, i1);
-
-			/*if (labelsFile.get(description) < 0)
-				labelsFile.add(description, labelsFile.max() + 1);*/
-
-			//int label = labelsFile.get(description);
 
 			images.put(counter, img);
 
