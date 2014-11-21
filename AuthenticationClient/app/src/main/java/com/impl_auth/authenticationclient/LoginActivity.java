@@ -238,6 +238,11 @@ public class LoginActivity extends Activity{
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        return;
+    }
+
     /**
      * Shows the progress UI and hides the login form.
      */
