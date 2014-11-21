@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS `ACTIVE_USER`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ACTIVE_USER` (
-  `USER_ID` int(11) NOT NULL DEFAULT '0',
+  `USER_ID` int(11) NOT NULL AUTO_INCREMENT,
   `RESOURCE_ID` int(11) NOT NULL DEFAULT '0',
   `INITIAL_STEPS` int(11) DEFAULT NULL,
   `CURRENT_STEPS` int(11) DEFAULT NULL,
@@ -46,7 +46,7 @@ DROP TABLE IF EXISTS `APPLICATION`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `APPLICATION` (
-  `ID` int(11) NOT NULL DEFAULT '0',
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NAME` varchar(20) DEFAULT NULL,
   `SERVER_IP` varchar(20) DEFAULT NULL,
   `SERVER_PORT` int(11) DEFAULT NULL,
@@ -107,7 +107,7 @@ DROP TABLE IF EXISTS `RESOURCE`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `RESOURCE` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NAME` varchar(20) DEFAULT NULL,
   `LATITUDE` varchar(20) DEFAULT NULL,
   `LONGITUDE` varchar(20) DEFAULT NULL,
@@ -129,7 +129,7 @@ DROP TABLE IF EXISTS `USER`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `USER` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `FIRSTNAME` varchar(30) DEFAULT NULL,
   `LASTNAME` varchar(30) DEFAULT NULL,
   `EMAIL` varchar(30) DEFAULT NULL,
