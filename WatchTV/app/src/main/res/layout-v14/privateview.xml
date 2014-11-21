@@ -14,7 +14,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-        <TextView
+        <EditText
             android:id="@+id/text"
             android:layout_column="1"
             android:fontFamily="Arabic"
