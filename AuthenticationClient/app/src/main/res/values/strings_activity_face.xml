@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="SWholePicture">Please take 5 pictures for yourself</string>
+    <string name="SPictureLeft">You have %d pictures left.</string>
+    <string name="SPictureDone">Done picture taking, Go for submitting!</string>
     <string name="BLANK"></string>
+    <string name="SPictake">Take Picture</string>
     <string name="SSubmit">Submit</string>
     <string name="STrain">Train</string>
     <string name="SViewAll">View all faces</string>

@@ -69,8 +69,9 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	Handler mHandler;
 
 	LBPHFaceExtractor fe;
-	ToggleButton toggleButtonTrain;
-	Button buttonSubmit;
+	//ToggleButton toggleButtonTrain;
+	Button pictakeButton;
+	Button submitButton;
 	ImageView ivGreen, ivYellow, ivRed;
 	ImageButton imCamera;
 
@@ -78,7 +79,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	com.googlecode.javacv.cpp.opencv_contrib.FaceRecognizer faceRecognizer;
 
 
-	static final long MAXIMG = 1;
+	static final int MAXIMG = 5;
 
 	ArrayList<Mat> alimgs = new ArrayList<Mat>();
 
@@ -202,8 +203,11 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 				}
 			}
 		};
-		toggleButtonTrain = (ToggleButton) findViewById(R.id.toggleButton1);
-		buttonSubmit = (Button) findViewById(R.id.submitButton);
+
+		countImages = 0;
+		pictakeButton = (Button) findViewById(R.id.pictakeButton);
+		submitButton = (Button) findViewById(R.id.submitButton);
+		submitButton.setEnabled(false);
 		textState = (TextView) findViewById(R.id.textViewState);
 		ivGreen = (ImageView) findViewById(R.id.imageView3);
 		ivYellow = (ImageView) findViewById(R.id.imageView4);
@@ -215,7 +219,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		ivRed.setVisibility(View.INVISIBLE);
 		textresult.setVisibility(View.INVISIBLE);
 
-
+/*
 		toggleButtonTrain.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				if (toggleButtonTrain.isChecked()) {
@@ -236,8 +240,16 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 				}
 			}
 		});
+*/
+		pictakeButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				faceState = TRAINING;
+				textState.setText("Taking Picture");
+			}
+		});
 
-		buttonSubmit.setOnClickListener(new View.OnClickListener() {
+		submitButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				sendRegistrationRequest();
@@ -272,6 +284,9 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		mLastName = intent.getStringExtra("LastName");
 		mEmail = intent.getStringExtra("Email");
 
+
+		Toast.makeText(FaceActivity.this, R.string.SWholePicture,
+				Toast.LENGTH_LONG).show();
 	}
 
 	private void sendRegistrationRequest() {
@@ -335,7 +350,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		Rect[] facesArray = faces.toArray();
 		Log.d(TAG, "Face number: " + facesArray.length);
 
-		if ((facesArray.length > 0) && (faceState == TRAINING)) {
+		if ((facesArray.length == 1) && (faceState == TRAINING)) {
 
 			Mat m = new Mat();
 			Rect r = facesArray[0];
@@ -351,6 +366,17 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			if (countImages < MAXIMG) {
 				fe.saveMat(m);
 				countImages++;
+				faceState = IDLE;
+				if(MAXIMG - countImages == 0) {
+					Toast.makeText(FaceActivity.this, R.string.SPictureDone,
+							Toast.LENGTH_LONG).show();
+					submitButton.setEnabled(true);
+				}
+				else {
+					String formatStr = getString(R.string.SPictureLeft);
+					Toast.makeText(FaceActivity.this, String.format(formatStr, MAXIMG - countImages),
+							Toast.LENGTH_LONG).show();
+				}
 			}
 		}
 		for (int i = 0; i < facesArray.length; i++)
@@ -415,21 +441,22 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		};
 
 		File[] imgFiles = root.listFiles(pngFilter);
+		List<byte[]> imageBytesList = new ArrayList<byte[]>();
 
 		for (File imgFile : imgFiles) {
 			if(imgFile.exists()) {
 				Bitmap bmp = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-				sendRegistrationFormTask = new SendRegistrationFormTask(mUsername, mPassword,
-						mFirstName, mLastName,
-						mEmail,
-						baos.toByteArray());
-				sendRegistrationFormTask.execute();
+				imageBytesList.add(baos.toByteArray());
 				imgFile.delete();
 			}
 		}
-
+		sendRegistrationFormTask = new SendRegistrationFormTask(mUsername, mPassword,
+				mFirstName, mLastName,
+				mEmail,
+				imageBytesList);
+		sendRegistrationFormTask.execute();
 		return true;
 	}
 
@@ -440,17 +467,17 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		private final String mFirstName;
 		private final String mLastName;
 		private final String mEmail;
-		private final byte[] imageBytes;
+		private final List<byte[]> imageBytesList;
 
 
 		SendRegistrationFormTask(String mUsername, String mPassword, String mFirstName,
-		                         String mLastName, String mEmail, byte[] imageBytes) {
+		                         String mLastName, String mEmail, List<byte[]> imageBytesList) {
 			this.mUsername = mUsername;
 			this.mPassword = mPassword;
 			this.mFirstName = mFirstName;
 			this.mLastName = mLastName;
 			this.mEmail = mEmail;
-			this.imageBytes = imageBytes;
+			this.imageBytesList = imageBytesList;
 		}
 
 		@Override
@@ -463,9 +490,10 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			nameValuePairs.add(new BasicNameValuePair("LastName",mLastName));
 			nameValuePairs.add(new BasicNameValuePair("Email",mEmail));
 
-			String image_str = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-
-			nameValuePairs.add(new BasicNameValuePair("image",image_str));
+			for(int i = 0; i < MAXIMG; i++) {
+				String image_str = Base64.encodeToString(imageBytesList.get(i), Base64.DEFAULT);
+				nameValuePairs.add(new BasicNameValuePair(String.format("image%d", i), image_str));
+			}
 
 			// String url = "http://10.0.0.4:8080/CentralServer/json/testImage/";
 			String url = gv.getAuthURL() + gv.getTestPath();
