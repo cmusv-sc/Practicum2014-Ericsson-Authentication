@@ -176,7 +176,9 @@ public class CentralServer {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response createUser(@FormParam("Username") String username, @FormParam("Password") String password,
 			@FormParam("FirstName") String firstName, @FormParam("LastName") String lastName,
-			@FormParam("Email") String email, @FormParam("image") String image) {
+			@FormParam("Email") String email, @FormParam("image1") String image1, @FormParam("image2") String image2, 
+			@FormParam("image3") String image3, @FormParam("image4") String image4, 
+			@FormParam("image5") String image5) {
     	
 		SqlConnection dao = new SqlConnection();
 		int result=0;
@@ -189,10 +191,18 @@ public class CentralServer {
 		}
 		
 		if(result != -1) {
-	    	byte[] imageBytes = DatatypeConverter.parseBase64Binary(image);
 	    	int userID = Util.getUserID(username);
 	    	Util.createDir(userID);
-	    	Util.saveImage(userID, imageBytes);
+	    	byte[] imageBytes = DatatypeConverter.parseBase64Binary(image1);
+	    	Util.saveImage(userID, imageBytes, "image1");
+	    	byte[] imageBytes1 = DatatypeConverter.parseBase64Binary(image2);
+	    	Util.saveImage(userID, imageBytes1, "image2");
+	    	byte[] imageBytes2 = DatatypeConverter.parseBase64Binary(image3);
+	    	Util.saveImage(userID, imageBytes2, "image3");
+	    	byte[] imageBytes3 = DatatypeConverter.parseBase64Binary(image4);
+	    	Util.saveImage(userID, imageBytes3, "image4");
+	    	byte[] imageBytes4 = DatatypeConverter.parseBase64Binary(image5);
+	    	Util.saveImage(userID, imageBytes4, "image5");
 		}
 		
 		

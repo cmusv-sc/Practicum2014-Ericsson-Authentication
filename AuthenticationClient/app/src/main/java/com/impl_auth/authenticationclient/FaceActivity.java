@@ -207,7 +207,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		countImages = 0;
 		pictakeButton = (Button) findViewById(R.id.pictakeButton);
 		submitButton = (Button) findViewById(R.id.submitButton);
-		submitButton.setEnabled(false);
+		//submitButton.setEnabled(false);
 		textState = (TextView) findViewById(R.id.textViewState);
 		ivGreen = (ImageView) findViewById(R.id.imageView3);
 		ivYellow = (ImageView) findViewById(R.id.imageView4);
@@ -352,6 +352,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
 		if ((facesArray.length == 1) && (faceState == TRAINING)) {
 
+			faceState = IDLE;
 			Mat m = new Mat();
 			Rect r = facesArray[0];
 			m = mRgba.submat(r);
@@ -364,18 +365,27 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			msg.obj = textTochange;
 			mHandler.sendMessage(msg);
 			if (countImages < MAXIMG) {
-				fe.saveMat(m);
 				countImages++;
-				faceState = IDLE;
+				fe.saveMat(m);
 				if(MAXIMG - countImages == 0) {
-					Toast.makeText(FaceActivity.this, R.string.SPictureDone,
-							Toast.LENGTH_LONG).show();
-					submitButton.setEnabled(true);
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							Toast.makeText(FaceActivity.this, R.string.SPictureDone,
+									Toast.LENGTH_LONG).show();
+						}
+					});
+					//submitButton.setEnabled(true);
 				}
 				else {
-					String formatStr = getString(R.string.SPictureLeft);
-					Toast.makeText(FaceActivity.this, String.format(formatStr, MAXIMG - countImages),
-							Toast.LENGTH_LONG).show();
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							String formatStr = getString(R.string.SPictureLeft);
+							Toast.makeText(FaceActivity.this, String.format(formatStr, MAXIMG - countImages),
+									Toast.LENGTH_LONG).show();
+						}
+					});
 				}
 			}
 		}
@@ -445,6 +455,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
 		for (File imgFile : imgFiles) {
 			if(imgFile.exists()) {
+				Log.d("SendRegistrationFormTask", "get image!");
 				Bitmap bmp = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -490,9 +501,11 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			nameValuePairs.add(new BasicNameValuePair("LastName",mLastName));
 			nameValuePairs.add(new BasicNameValuePair("Email",mEmail));
 
-			for(int i = 0; i < MAXIMG; i++) {
+			Log.d("SendRegistrationFormTask", "ArrayList size is " + imageBytesList.size());
+			for(int i = 0; i < imageBytesList.size(); i++) {
 				String image_str = Base64.encodeToString(imageBytesList.get(i), Base64.DEFAULT);
-				nameValuePairs.add(new BasicNameValuePair(String.format("image%d", i), image_str));
+				nameValuePairs.add(new BasicNameValuePair(String.format("image%d", i + 1),
+						image_str));
 			}
 
 			// String url = "http://10.0.0.4:8080/CentralServer/json/testImage/";
