@@ -418,10 +418,10 @@ public class CentralServer {
 		return Response.status(200).entity(returnMessage).build();
 	}
 	
-	public int active_user(int id) throws Exception{
+	public int active_user(int id, int auth) throws Exception{
 		
 		SqlConnection dao = new SqlConnection();
-		int result = dao.writeToAUT(id);
+		int result = dao.writeToAUT(id,auth);
 		if (result != -1){
 			return 1;
 		}
@@ -436,13 +436,14 @@ public class CentralServer {
 			@FormParam("height") int height, @FormParam("image") String image) throws Exception {
 		byte[] imageData = DatatypeConverter.parseBase64Binary(image);
 		String userName = "";
+		int auth = 0;
 		
 		LBPHFaceRecognizer faceRecognizer = new LBPHFaceRecognizer(width,
 				height);
 		faceRecognizer.train();
 		FaceTestResult result = faceRecognizer.test(imageData);
 		
-		if(active_user(result.label) != -1){
+		if(active_user(result.label,auth) != -1){
 			userName = Util.getUserName(result.label);
 			System.out.println("UserName: " + userName);
 			System.out.println("Prob: " + result.p);
