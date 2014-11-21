@@ -24,17 +24,37 @@ public class SqlConnection {
 		DRIVER_CLASS = configValue.getDBDriverClass();
 	}
 	
-	
-	public void writeToAUT(ActiveUser user) throws Exception {
+	public int writeToAUT(int id) throws Exception {
+		ResultSet result;
+		int resource_id, initial_steps, fresh, device_no;
 		Class.forName("com.mysql.jdbc.Driver");
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
-		String sql = String.format(
-				"insert into ACTIVE_USER (id, nssid, latitude, longitude, "
-						+ "user_id) values (%d,'%s','%s','%s',%d)",
-				user.getID(), user.getNSSID(), user.getLat(), user.getLon(),
-				user.getUser_ID());
-		statement.executeUpdate(sql);
+		
+		String sql1 = String.format("select * from PASSIVE_USER where USER_ID = %d", id);
+		result = statement.executeQuery(sql1);
+		
+		if(result.first()){
+			//User exists in the Passive User table. Now we need to delete him from the PASSIVE USER and insert him into ACTIVE USER.
+			resource_id = result.getInt("RESOURCE_ID");
+			initial_steps = result.getInt("INITIAL_STEPS");
+			fresh = result.getInt("FRESH");
+			device_no = result.getInt("DEVICES_NO");
+			
+			String sql2 = String.format("insert into ACTIVE_USER (USER_ID,RESOURCE_ID,INITIAL_STEPS,CURRENT_STEPS,"
+													+ "MOVING,FRESH,TIMESTAMP,DEVICES_NO,AUTHENTICITY)"
+													+ "values (%d,%d,%d,%d,1,%d,NOW(),%d,%d)",id,resource_id,
+													initial_steps,initial_steps,fresh,device_no,100);
+			statement.executeUpdate(sql2);
+			
+			String sql3 = String.format("delete from PASSIVE_USER where USER_ID = %d", id);
+			statement.executeUpdate(sql3);
+			return 1;
+		}
+		
+		return 0;
+		
+		
 	}
 	
 	/*

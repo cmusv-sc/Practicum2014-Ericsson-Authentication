@@ -12,40 +12,11 @@
         android:layout_height="fill_parent"
         android:orientation="vertical">
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/editText1"
-            android:autoText="false"
-            android:text="http://10.0.23.67:8080/CentralServer/json/postLocation"
-            android:singleLine="false" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="IP Address"/>
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/editTextUpdateInterval"
-            android:text="10" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Update Interval"/>
-
-        <ToggleButton
-            android:layout_width="70dp"
-            android:layout_height="40dp"
-            android:id="@+id/toggleButton1"/>
-
         <Button
             android:layout_width="100dp"
             android:layout_height="40dp"
             android:id="@+id/button"
-            android:text="Send"/>
+            android:text="Logout"/>
 
     </LinearLayout>
 

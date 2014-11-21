@@ -18,10 +18,7 @@ import static com.impl_auth.authenticationclient.R.string.*;
 
 public class MainActivity extends Activity {
 
-    ToggleButton getLocationService;
-    EditText ipAddressField;
-    EditText updateFrequencyField;
-    Button send_location;
+    Button logout;
     SharedPreferences sharedPref;
     boolean serviceRunning;
     Intent i;
@@ -34,12 +31,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        getLocationService = (ToggleButton) findViewById(R.id.toggleButton1);
-        ipAddressField = (EditText)findViewById(R.id.editText1);
-        updateFrequencyField = (EditText)findViewById(R.id.editTextUpdateInterval);
-
-        send_location = (Button)findViewById(R.id.button);
+        logout = (Button)findViewById(R.id.button);
 
         /*
         Getting the last recorded day to reset the step counter value everyday.
@@ -63,19 +55,14 @@ public class MainActivity extends Activity {
                 //reset
                 stopService(i);
                 //restart
-                i.putExtra("IP", ipAddressField.getText().toString());
-                i.putExtra("updateInterval",Integer.valueOf(updateFrequencyField.getText().toString()));
                 startService(i);
             }
         }
         if(registered != null){
             // start service if registered.
             i = new Intent(MainActivity.this, GPSTracker.class);
-            i.putExtra("IP", ipAddressField.getText().toString());
-            i.putExtra("updateInterval",Integer.valueOf(updateFrequencyField.getText().toString()));
             startService(i);
             serviceRunning = true;
-            super.onStop();
         } else {
             // redirect to login activity if not registered
             Intent loginActivity = new Intent(this, LoginActivity.class);

@@ -316,7 +316,6 @@ public class CentralServer {
 		System.out.println("Reached POST LOCATION");
 		
 		try {
-			//dao.writeTEST("hello");
 			System.out.println("ABOUT TO READ :"+user.device_phy_id);
 			result = dao.readPassiveUser(user.getDevice_Phy_ID());
 			
@@ -356,8 +355,7 @@ public class CentralServer {
 		String http_result = "Passive User : " + user;
 		return Response.status(201).entity(http_result).build();
 	}
-	
-
+    
 	@POST
 	@Path("/postDevice")
 	//@Consumes("application/json")
@@ -407,23 +405,37 @@ public class CentralServer {
 		}
 		return Response.status(200).entity(returnMessage).build();
 	}
-
-
-
+	
+	public int active_user(int id) throws Exception{
+		
+		SqlConnection dao = new SqlConnection();
+		int result = dao.writeToAUT(id);
+		if (result != -1){
+			return 1;
+		}
+		return -1;
+		
+	}
+	
 	@POST
 	@Path("/testImage")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response processTestImage(@FormParam("width") int width,
-			@FormParam("height") int height, @FormParam("image") String image) {
+			@FormParam("height") int height, @FormParam("image") String image) throws Exception {
 		byte[] imageData = DatatypeConverter.parseBase64Binary(image);
-
+		String userName = "";
+		
 		LBPHFaceRecognizer faceRecognizer = new LBPHFaceRecognizer(width,
 				height);
 		faceRecognizer.train();
 		FaceTestResult result = faceRecognizer.test(imageData);
-		String userName = Util.getUserName(result.label);
-		System.out.println("UserName: " + userName);
-		System.out.println("Prob: " + result.p);
+		
+		if(active_user(result.label) != -1){
+			userName = Util.getUserName(result.label);
+			System.out.println("UserName: " + userName);
+			System.out.println("Prob: " + result.p);
+		}
+		
 		return Response.status(200).entity(userName + ":" + result.p).build();
 	}
 }
