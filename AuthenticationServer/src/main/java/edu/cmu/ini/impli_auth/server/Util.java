@@ -136,4 +136,37 @@ public class Util {
 		}
 		return userName;
 	}
+	
+	public static String getResourceAccessStatus(int userID, String credential) {
+		SqlConnection dao = new SqlConnection();
+		try {
+			ResultSet resSet = dao.readResource();
+			if(resSet != null) {
+				while(resSet.next()) {
+					if(credential.equals(resSet.getInt("CREDENTIAL"))) {
+						return (userID == resSet.getInt("USER_ID")) ? "private" : "public";
+					}
+				}
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "public";
+	}
+	
+	public static double genProb(double prob) {
+		if(prob <= 50) {
+			return 100;
+		}
+		if(prob <= 80) {
+			return Util.normalDist(50, 80, 70, 100, prob);
+		}
+		return Util.normalDist(80, 90, 0, 70, prob);
+	}
+	public static double normalDist(int sourceStart, int sourceEnd, int targetStart, int targetEnd, double p) {
+		return targetStart + ((targetEnd - targetStart) / (sourceEnd - sourceStart)) * 
+				((sourceEnd - sourceStart) - (p - sourceStart));
+	}
 }

@@ -101,16 +101,16 @@ public class SqlConnection {
 		} else
 			id = -1;
 
-		System.out.println("ID = " + id);
 
 		returnResult = null;
 		String sql2 = String.format(
 				"SELECT * FROM PASSIVE_USER WHERE USER_ID = %d", id);
 		returnResult = statement.executeQuery(sql2);
-		System.out.println("READ");
-		returnResult.next();
-		System.out.println(returnResult.getInt("USER_ID"));
-		return returnResult;
+		if(returnResult.next())
+			return returnResult;
+		else 
+			return null;
+		
 	}
 	
 	/*
