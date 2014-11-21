@@ -220,6 +220,7 @@ public class CentralServer {
 			@FormParam("longitude") String longitude, @FormParam("NSSID") String NSSID,
 			@FormParam("type") String type) {
 		SqlConnection dao = new SqlConnection();
+		System.out.println("postResource");
 		int result;
 		int userid = 0;
 		try {
@@ -260,6 +261,7 @@ public class CentralServer {
 			returnMessage = "Error";
 			break;
 		}
+		System.out.println(returnMessage);
 		return Response.status(200).entity(returnMessage).build();
 	}
 	
