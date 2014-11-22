@@ -64,18 +64,16 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	private CameraView mOpenCvCameraView;
 	private int mChooseCamera = backCam;
 
-	TextView textresult;
 	Bitmap mBitmap;
 	Handler mHandler;
 
 	LBPHFaceExtractor fe;
 	//ToggleButton toggleButtonTrain;
+	TextView textState;
 	Button pictakeButton;
 	Button submitButton;
-	ImageView ivGreen, ivYellow, ivRed;
 	ImageButton imCamera;
 
-	TextView textState;
 	com.googlecode.javacv.cpp.opencv_contrib.FaceRecognizer faceRecognizer;
 
 
@@ -96,6 +94,9 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	private String mFirstName;
 	private String mLastName;
 	private String mEmail;
+
+	private int FINISH_TRAINING = 1;
+	private int TRAINING_STATE = 2;
 
 	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
 		@Override
@@ -165,23 +166,25 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		Log.i(TAG, "called onCreate");
 		super.onCreate(savedInstanceState);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
 		setContentView(R.layout.face_detect_surface_view);
 
 		mOpenCvCameraView = (CameraView) findViewById(R.id.tutorial3_activity_java_surface_view);
-
 		mOpenCvCameraView.setCvCameraViewListener(this);
-
 
 		File dir = new File(getFilesDir() + "/camtest");
 		dir.mkdirs();
 		mPath = getFilesDir() + "/camtest/";
 
-		textresult = (TextView) findViewById(R.id.textView1);
-
 		mHandler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
+				if (msg.what == FINISH_TRAINING) {
+					submitButton.setVisibility(View.VISIBLE);
+				}
+				else if(msg.what == TRAINING_STATE) {
+					textState.setText(msg.obj.toString());
+				}
+				/*
 				if (msg.obj == "IMG") {
 					Canvas canvas = new Canvas();
 					canvas.setBitmap(mBitmap);
@@ -190,57 +193,17 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 					ivGreen.setVisibility(View.INVISIBLE);
 					ivYellow.setVisibility(View.INVISIBLE);
 					ivRed.setVisibility(View.INVISIBLE);
-
-					/*
-					if (mLikely < 0) ;
-					else if (mLikely < 50)
-						ivGreen.setVisibility(View.VISIBLE);
-					else if (mLikely < 80)
-						ivYellow.setVisibility(View.VISIBLE);
-					else
-						ivRed.setVisibility(View.VISIBLE);
-						*/
-				}
+				}*/
 			}
 		};
 
 		countImages = 0;
 		pictakeButton = (Button) findViewById(R.id.pictakeButton);
 		submitButton = (Button) findViewById(R.id.submitButton);
-		//submitButton.setEnabled(false);
-		textState = (TextView) findViewById(R.id.textViewState);
-		ivGreen = (ImageView) findViewById(R.id.imageView3);
-		ivYellow = (ImageView) findViewById(R.id.imageView4);
-		ivRed = (ImageView) findViewById(R.id.imageView2);
+		submitButton.setVisibility(View.INVISIBLE);
+		textState = (TextView) findViewById(R.id.stateTextView);
 		imCamera = (ImageButton) findViewById(R.id.imageButton1);
 
-		ivGreen.setVisibility(View.INVISIBLE);
-		ivYellow.setVisibility(View.INVISIBLE);
-		ivRed.setVisibility(View.INVISIBLE);
-		textresult.setVisibility(View.INVISIBLE);
-
-/*
-		toggleButtonTrain.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				if (toggleButtonTrain.isChecked()) {
-					countImages = 0;
-					textState.setText("Taking Picture");
-					textresult.setVisibility(View.VISIBLE);
-					//textresult.setText(getResources().getString(R.string.SFaceName));
-					ivGreen.setVisibility(View.INVISIBLE);
-					ivYellow.setVisibility(View.INVISIBLE);
-					ivRed.setVisibility(View.INVISIBLE);
-					faceState = TRAINING;
-				} else {
-					//textState.setText(R.string.Straininig);
-					textresult.setText("");
-					textresult.setText("");
-					textState.setText(getResources().getString(R.string.SIdle));
-					faceState = IDLE;
-				}
-			}
-		});
-*/
 		pictakeButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -284,9 +247,11 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		mLastName = intent.getStringExtra("LastName");
 		mEmail = intent.getStringExtra("Email");
 
-
+		textState.setText(R.string.SWholePicture);
+		/*
 		Toast.makeText(FaceActivity.this, R.string.SWholePicture,
 				Toast.LENGTH_LONG).show();
+		*/
 	}
 
 	private void sendRegistrationRequest() {
@@ -360,24 +325,35 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
 			Utils.matToBitmap(m, mBitmap);
 
+			/*
 			Message msg = new Message();
 			String textTochange = "IMG";
 			msg.obj = textTochange;
 			mHandler.sendMessage(msg);
+			*/
 			if (countImages < MAXIMG) {
 				countImages++;
 				fe.saveMat(m);
 				if(MAXIMG - countImages == 0) {
+					/*
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
 							Toast.makeText(FaceActivity.this, R.string.SPictureDone,
 									Toast.LENGTH_LONG).show();
 						}
-					});
-					//submitButton.setEnabled(true);
+					});*/
+					Message msg = new Message();
+					msg.what = TRAINING_STATE;
+					msg.obj = getString(R.string.SPictureDone);
+					mHandler.sendMessage(msg);
+
+					msg = new Message();
+					msg.what = FINISH_TRAINING;
+					mHandler.sendMessage(msg);
 				}
 				else {
+					/*
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
@@ -385,7 +361,12 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 							Toast.makeText(FaceActivity.this, String.format(formatStr, MAXIMG - countImages),
 									Toast.LENGTH_LONG).show();
 						}
-					});
+					});*/
+					Message msg = new Message();
+					msg.what = TRAINING_STATE;
+					String formatStr = getString(R.string.SPictureLeft);
+					msg.obj = String.format(formatStr, MAXIMG - countImages);
+					mHandler.sendMessage(msg);
 				}
 			}
 		}
