@@ -7,7 +7,7 @@ public class GlobalVariable {
 	private static GlobalVariable instance;
 
 	// Global variable
-	private static String SERVER_IP = "10.0.0.4";
+	private static String SERVER_IP = "10.0.23.83";
 	private static String PORT = "8080";
 	private static String TEST_PATH = "postUser/";
 	private static String LOCATION_PATH = "postLocation/";

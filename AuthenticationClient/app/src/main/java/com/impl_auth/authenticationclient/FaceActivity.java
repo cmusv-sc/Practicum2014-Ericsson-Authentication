@@ -537,7 +537,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			Intent returnIntent = new Intent();
 			returnIntent.putExtra("Result", success);
 			setResult(RESULT_OK, returnIntent);
-			//finish();
+			finish();
 		}
 
 		@Override

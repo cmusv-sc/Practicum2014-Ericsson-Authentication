@@ -15,16 +15,16 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 public class PlayVideo extends Activity {
-    long High = 90;
-    long Medium = 51;
-    long Min = 15;
+    double High = 70;
+    double Medium = 40;
+    double Min = 15;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.playvideo);
         //receiving the intent from the MyActivity
         Intent intent = getIntent();
-        final int probability = intent.getIntExtra("probability", 0);
+        final double probability = intent.getDoubleExtra("probability", 0);
         System.out.println(probability);
 
         //View

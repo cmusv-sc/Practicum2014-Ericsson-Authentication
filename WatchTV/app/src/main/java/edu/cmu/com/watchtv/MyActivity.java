@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.*;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,7 +23,8 @@ public class MyActivity extends Activity {
     boolean pressed = false;
     Button myButton;
     EditText myText;
-    EditText myText2; 
+    EditText myText2;
+	private String TAG = "MyActivity";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,16 +46,22 @@ public class MyActivity extends Activity {
         protected void onActivityResult(int requestCode, int resultCode, Intent data) {
             String location = data.getStringExtra("Access");
             if (requestCode == 1 ) {
-                if(resultCode == RESULT_OK && location== "public"){
+                if(resultCode == RESULT_OK && location.equals("public")){
                     Intent intent = new Intent(MyActivity.this, PlayVideo.class);
+	                Log.d(TAG, String.valueOf(data.getDoubleExtra("Prob", -1.0)));
+	                Log.d(TAG, data.getStringExtra("UserName"));
+	                Log.d(TAG, location);
                     intent.putExtra("probability", data.getDoubleExtra("Prob", -1.0));
-                    intent.putExtra("username", data.getStringExtra("UserName"));
+	                intent.putExtra("username", data.getStringExtra("UserName"));
                     startActivity(intent);
 
                 }
-                if(resultCode == RESULT_OK&& location== "private"){
+                if(resultCode == RESULT_OK&& location.equals("private")){
                     Intent intent = new Intent(MyActivity.this, privateView.class);
                     intent.putExtra("username", data.getStringExtra("UserName"));
+	                Log.d(TAG, String.valueOf(data.getDoubleExtra("Prob", -1.0)));
+	                Log.d(TAG, data.getStringExtra("UserName"));
+	                Log.d(TAG, location);
                     startActivity(intent);
 
                 }

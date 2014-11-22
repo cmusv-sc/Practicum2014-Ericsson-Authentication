@@ -491,7 +491,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 				Intent returnIntent = new Intent();
 				String[] extras = result.split(":");
 				returnIntent.putExtra("UserName", extras[0]);
-				returnIntent.putExtra("Prob", extras[1]);
+				returnIntent.putExtra("Prob", Double.parseDouble(extras[1]));
 				returnIntent.putExtra("Access", extras[2]);
 				if(extras[0].isEmpty()) {
 					setResult(RESULT_CANCELED, returnIntent);
@@ -499,7 +499,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 				else {
 					setResult(RESULT_OK, returnIntent);
 				}
-				//finish();
+				finish();
 			}
 			else {
 				Log.d("SendAuthTask", "somthing wrong during postExecution!");

@@ -143,7 +143,7 @@ public class Util {
 			ResultSet resSet = dao.readResource();
 			if(resSet != null) {
 				while(resSet.next()) {
-					if(credential.equals(resSet.getInt("CREDENTIAL"))) {
+					if(credential.equals(resSet.getString("CREDENTIAL"))) {
 						return (userID == resSet.getInt("USER_ID")) ? "private" : "public";
 					}
 				}

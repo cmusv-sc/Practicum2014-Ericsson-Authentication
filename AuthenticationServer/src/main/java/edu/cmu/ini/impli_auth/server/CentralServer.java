@@ -442,20 +442,22 @@ public class CentralServer {
 				height);
 		faceRecognizer.train();
 		FaceTestResult result = faceRecognizer.test(imageData);
-		
+		/*
 		userName = Util.getUserName(result.label);
 		System.out.println("UserName: " + userName);
 		System.out.println("Prob: " + result.p);
 		return Response.status(200).entity(userName + ":" + 0 + ":public").build();
-		/*
+		*/
 		if(active_user(result.label, auth) != -1) {
 			userName = Util.getUserName(result.label);
 			System.out.println("UserName: " + userName);
 			System.out.println("Prob: " + result.p);
+			System.out.println("Credential: " + credential);
+			System.out.println("Access: " +  Util.getResourceAccessStatus(result.label, credential));
 			return Response.status(200).entity(userName + ":" + result.p + ":" + Util.getResourceAccessStatus(result.label, credential)).build();
 		}
 		else {
 			return Response.status(200).entity(userName + ":" + 0 + ":public").build();
-		}*/
+		}
 	}
 }
