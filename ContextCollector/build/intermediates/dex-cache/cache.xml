@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pre-dex-items>
+
+    <item
+        dex="/Users/CyrilLee/Desktop/USA Dream Realize/CMU/2014 Fall/14-798 INI MSIT Project Practicum/Practicum2014-Ericsson-Authentication/ContextCollector/app/build/intermediates/pre-dexed/debug/classes-45d4e569305c6688bc57fcc09f9339f0fa9aff53.jar"
+        jar="/Users/CyrilLee/Desktop/USA Dream Realize/CMU/2014 Fall/14-798 INI MSIT Project Practicum/Practicum2014-Ericsson-Authentication/ContextCollector/app/build/intermediates/exploded-aar/com.android.support/support-v4/20.0.0/classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="8694693636ab36910c8100ce527c258ff3ebece0"/>
+    <item
+        dex="/Users/CyrilLee/Desktop/USA Dream Realize/CMU/2014 Fall/14-798 INI MSIT Project Practicum/Practicum2014-Ericsson-Authentication/ContextCollector/app/build/intermediates/pre-dexed/debug/javacpp-1a34a8d02e2f9d7459148d336e785c34c2b850a8.jar"
+        jar="/Users/CyrilLee/Desktop/USA Dream Realize/CMU/2014 Fall/14-798 INI MSIT Project Practicum/Practicum2014-Ericsson-Authentication/ContextCollector/app/libs/javacpp.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="08f8b1e3fdcc93a1e9076d6279864d6a46982a85"/>
+    <item
+        dex="/Users/CyrilLee/Desktop/USA Dream Realize/CMU/2014 Fall/14-798 INI MSIT Project Practicum/Practicum2014-Ericsson-Authentication/ContextCollector/app/build/intermediates/pre-dexed/debug/internal_impl-20.0.0-11025385069b73867dcdfaf93a2e55ddab1677bd.jar"
+        jar="/Users/CyrilLee/Desktop/USA Dream Realize/CMU/2014 Fall/14-798 INI MSIT Project Practicum/Practicum2014-Ericsson-Authentication/ContextCollector/app/build/intermediates/exploded-aar/com.android.support/support-v4/20.0.0/libs/internal_impl-20.0.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="e40b3078e3fbd353c9f44da8df25a8fc0078209d"/>
+    <item
+        dex="/Users/CyrilLee/Desktop/USA Dream Realize/CMU/2014 Fall/14-798 INI MSIT Project Practicum/Practicum2014-Ericsson-Authentication/ContextCollector/app/build/intermediates/pre-dexed/debug/javacv-74e97e76e29b1f081588347cf9c810ff280f5a92.jar"
+        jar="/Users/CyrilLee/Desktop/USA Dream Realize/CMU/2014 Fall/14-798 INI MSIT Project Practicum/Practicum2014-Ericsson-Authentication/ContextCollector/app/libs/javacv.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="1824ed7a180ee32aa57f5632a489c10aad8f1804"/>
+    <item
+        dex="/Users/CyrilLee/Desktop/USA Dream Realize/CMU/2014 Fall/14-798 INI MSIT Project Practicum/Practicum2014-Ericsson-Authentication/ContextCollector/app/build/intermediates/pre-dexed/debug/support-annotations-20.0.0-bca9cd8c8082330ef7549e0398af852faae531fd.jar"
+        jar="/Applications/Android Studio.app/sdk/extras/android/m2repository/com/android/support/support-annotations/20.0.0/support-annotations-20.0.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="9d9013e9ff35fc3756411e62873c363c70c638fa"/>
+    <item
+        dex="/Users/CyrilLee/Desktop/USA Dream Realize/CMU/2014 Fall/14-798 INI MSIT Project Practicum/Practicum2014-Ericsson-Authentication/ContextCollector/app/build/intermediates/pre-dexed/debug/classes-732e0a5dec2a8435860e7feaf435ecf95a316fc2.jar"
+        jar="/Users/CyrilLee/Desktop/USA Dream Realize/CMU/2014 Fall/14-798 INI MSIT Project Practicum/Practicum2014-Ericsson-Authentication/ContextCollector/app/build/intermediates/exploded-aar/com.google.android.gms/play-services/6.1.71/classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="0f6d5c1ef2e982c3b7858408e3df389cf5d202da"/>
+    <item
+        dex="/Users/CyrilLee/Desktop/USA Dream Realize/CMU/2014 Fall/14-798 INI MSIT Project Practicum/Practicum2014-Ericsson-Authentication/ContextCollector/app/build/intermediates/pre-dexed/debug/classes-3942671484692338d9eefb9e8f74673682db16d5.jar"
+        jar="/Users/CyrilLee/Desktop/USA Dream Realize/CMU/2014 Fall/14-798 INI MSIT Project Practicum/Practicum2014-Ericsson-Authentication/ContextCollector/app/build/intermediates/exploded-aar/ContextCollector/openCVLibrary249/unspecified/classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="32bd9d7f1bbeb56187a1271234f01345b26ccd22"/>
+
+</pre-dex-items>

@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity" >
+    <item android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+</menu>
+<!-- From: file:/Users/CyrilLee/Desktop/USA%20Dream%20Realize/CMU/2014%20Fall/14-798%20INI%20MSIT%20Project%20Practicum/Practicum2014-Ericsson-Authentication/ContextCollector/app/src/main/res/menu/main.xml -->

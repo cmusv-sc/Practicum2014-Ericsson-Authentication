@@ -1,0 +1,68 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="0.88"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.88" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <edu.cmu.ini.impli_auth.context_collector.face.CameraView
+                    android:id="@+id/tutorial3_activity_java_surface_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.88" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content" >
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/SPictake"
+                android:id="@+id/pictakeButton"
+                android:layout_weight="0.07"/>
+
+            <TextView
+		        android:id="@+id/stateTextView"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="0.71"
+		        android:text="@string/SPictake"
+                />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/SSubmit"
+                android:id="@+id/submitButton"
+                android:layout_weight="0.07"/>
+
+            <ImageButton
+		        android:id="@+id/imageButton1"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="0.3"
+		        android:src="@drawable/ic_stat_camera" />
+
+		</LinearLayout>
+            
+    	</LinearLayout>
+    
+</LinearLayout><!-- From: file:/Users/CyrilLee/Desktop/USA%20Dream%20Realize/CMU/2014%20Fall/14-798%20INI%20MSIT%20Project%20Practicum/Practicum2014-Ericsson-Authentication/ContextCollector/app/src/main/res/layout/face_detect_surface_view.xml -->
