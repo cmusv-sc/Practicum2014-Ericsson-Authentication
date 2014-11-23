@@ -1,149 +1,293 @@
 package edu.cmu.com.watchtv;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.net.Uri;
-import android.text.method.Touch;
-import android.widget.GridLayout;
-import android.widget.MediaController;
-import android.widget.Toast;
-import android.widget.VideoView;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
 import android.view.View;
-import android.view.MotionEvent;
-import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 
 public class PlayVideo extends Activity {
     double High = 70;
     double Medium = 40;
     double Min = 15;
+    String uriPath = "";
+    String username,access;
+
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.playvideo);
+
         //receiving the intent from the MyActivity
         Intent intent = getIntent();
         final double probability = intent.getDoubleExtra("probability", 0);
+        username = intent.getStringExtra("username");
+        access = intent.getStringExtra("access");
+
+        TextView welcome = (TextView)findViewById(R.id.welcome_header);
+        welcome.setText("Welcome back "+username+"...");
+
         System.out.println(probability);
 
         //View
-        GridLayout gridview = (GridLayout) findViewById(R.id.gridlayout);
-        final VideoView vidView1 = (VideoView) findViewById(R.id.myVideo1);
-        final VideoView vidView2 = (VideoView) findViewById(R.id.myVideo2);
-        final VideoView vidView3 = (VideoView) findViewById(R.id.myVideo3);
-        final VideoView vidView4 = (VideoView) findViewById(R.id.myVideo4);
-        final VideoView vidView5 = (VideoView) findViewById(R.id.myVideo5);
-        final VideoView vidView6 = (VideoView) findViewById(R.id.myVideo6);
-        String uriPath = "android.resource://edu.cmu.com.watchtv/" + R.raw.file;
+        final ImageView imgView1 = (ImageView) findViewById(R.id.imageView);
+        final ImageView imgView2 = (ImageView) findViewById(R.id.imageView2);
+        final ImageView imgView3 = (ImageView) findViewById(R.id.imageView3);
+        final ImageView imgView4 = (ImageView) findViewById(R.id.imageView4);
+        final ImageView imgView5 = (ImageView) findViewById(R.id.imageView5);
+        final ImageView imgView6 = (ImageView) findViewById(R.id.imageView6);
+        final ImageView imgView7 = (ImageView) findViewById(R.id.imageView7);
+        final ImageView imgView8 = (ImageView) findViewById(R.id.imageView8);
+        final ImageView imgView9 = (ImageView) findViewById(R.id.imageView9);
+        final ImageView imgView10 = (ImageView) findViewById(R.id.imageView10);
+        final ImageView imgView11 = (ImageView) findViewById(R.id.imageView11);
+        final ImageView imgView12 = (ImageView) findViewById(R.id.imageView12);
+
+        uriPath = "android.resource://edu.cmu.com.watchtv/" + R.raw.file;
+
+        Uri  videoURI = Uri.parse(uriPath);
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(this, videoURI);
+        Bitmap bitmap = retriever
+                .getFrameAtTime(100000,MediaMetadataRetriever.OPTION_PREVIOUS_SYNC);
+        Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+
+        imgView1.setImageBitmap(bitmap);
+        imgView2.setImageBitmap(bitmap);
+        imgView3.setImageBitmap(bitmap);
+        imgView4.setImageBitmap(bitmap);
+        imgView5.setImageBitmap(bitmap);
+        imgView6.setImageBitmap(bitmap);
+        imgView7.setImageBitmap(bitmap);
+        imgView8.setImageBitmap(bitmap);
+        imgView9.setImageBitmap(bitmap);
+        imgView10.setImageBitmap(bitmap);
+        imgView11.setImageBitmap(bitmap);
+        imgView12.setImageBitmap(bitmap);
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.private_message)
+                .setTitle(R.string.app_name).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        imgView1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(access.equals("public")){
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+                if(access.equals("private")){
+                    Intent play_video = new Intent(PlayVideo.this,ViewVideo.class);
+                    play_video.putExtra("videofilename",uriPath);
+                    startActivity(play_video);
+                }
+            }
+        });
+
+        imgView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(access.equals("public")){
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+                if(access.equals("private")){
+                    Intent play_video = new Intent(PlayVideo.this,ViewVideo.class);
+                    play_video.putExtra("videofilename",uriPath);
+                    startActivity(play_video);
+                }
+            }
+        });
+        imgView3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(access.equals("public")){
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+                if(access.equals("private")){
+                    Intent play_video = new Intent(PlayVideo.this,ViewVideo.class);
+                    play_video.putExtra("videofilename",uriPath);
+                    startActivity(play_video);
+                }
+            }
+        });
+
+        imgView4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(access.equals("public")){
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+                if(access.equals("private")){
+                    Intent play_video = new Intent(PlayVideo.this,ViewVideo.class);
+                    play_video.putExtra("videofilename",uriPath);
+                    startActivity(play_video);
+                }
+            }
+        });
+
+        imgView5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(access.equals("public")){
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+                if(access.equals("private")){
+                    Intent play_video = new Intent(PlayVideo.this,ViewVideo.class);
+                    play_video.putExtra("videofilename",uriPath);
+                    startActivity(play_video);
+                }
+            }
+        });
+
+        imgView6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(access.equals("public")){
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+                if(access.equals("private")){
+                    Intent play_video = new Intent(PlayVideo.this,ViewVideo.class);
+                    play_video.putExtra("videofilename",uriPath);
+                    startActivity(play_video);
+                }
+            }
+        });
+
+        imgView7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(probability > Min){
+                    Intent play_video = new Intent(PlayVideo.this, ViewVideo.class);
+                    play_video.putExtra("videofilename", uriPath);
+                    startActivity(play_video);
+                }
+                else{
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+
+            }
+        });
+
+        imgView8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(probability > Min){
+                    Intent play_video = new Intent(PlayVideo.this, ViewVideo.class);
+                    play_video.putExtra("videofilename", uriPath);
+                    startActivity(play_video);
+                }
+                else{
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+
+            }
+        });
+
+        imgView9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(probability > Min){
+                    Intent play_video = new Intent(PlayVideo.this, ViewVideo.class);
+                    play_video.putExtra("videofilename", uriPath);
+                    startActivity(play_video);
+                }
+                else{
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+
+            }
+        });
+
+        imgView10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(probability > Medium){
+                    Intent play_video = new Intent(PlayVideo.this, ViewVideo.class);
+                    play_video.putExtra("videofilename", uriPath);
+                    startActivity(play_video);
+                }
+                else{
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+
+            }
+        });
+
+        imgView11.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(probability > Medium){
+                    Intent play_video = new Intent(PlayVideo.this, ViewVideo.class);
+                    play_video.putExtra("videofilename", uriPath);
+                    startActivity(play_video);
+                }
+                else{
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+
+            }
+        });
+
+        imgView12.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(probability > Medium){
+                    Intent play_video = new Intent(PlayVideo.this, ViewVideo.class);
+                    play_video.putExtra("videofilename", uriPath);
+                    startActivity(play_video);
+                }
+                else{
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+
+            }
+        });
+
         Uri uri = Uri.parse(uriPath);
-        vidView1.setVideoURI(uri);
-        MediaController vidControl1 = new MediaController(this);
-        vidControl1.setAnchorView(vidView1);
-        vidView1.setMediaController(vidControl1);
-        final Button buttonStart = (Button) findViewById(R.id.button1);
-        //setting onCLicklistner for the button to start playing the video
-        buttonStart.setOnClickListener(new OnClickListener() {
-
-            public void onClick(View v) {
-                    buttonStart.setVisibility(View.GONE);
-                    vidView1.start();
-            }
-
-        });
 
 
-        vidView2.setVideoURI(uri);
-        MediaController vidControl2 = new MediaController(this);
-        vidControl2.setAnchorView(vidView2);
-        vidView2.setMediaController(vidControl2);
-        final Button buttonStart2 = (Button) findViewById(R.id.button2);
-        buttonStart2.setOnClickListener(new OnClickListener() {
 
-            public void onClick(View v) {
-                buttonStart2.setVisibility(View.GONE);
-                vidView2.start();
-            }
-
-        });
-
-
-        vidView3.setVideoURI(uri);
-        MediaController vidControl3 = new MediaController(this);
-        vidControl3.setAnchorView(vidView3);
-        vidView3.setMediaController(vidControl3);
-        final Button buttonStart3 = (Button) findViewById(R.id.button3);
-        buttonStart3.setOnClickListener(new OnClickListener() {
-
-            public void onClick(View v) {
-                System.out.println(probability);
-                if (probability > Min) {
-                    buttonStart3.setVisibility(View.GONE);
-                    vidView3.start();
-                }
-                else {
-                    Toast.makeText(PlayVideo.this, "Sorry, you cannot watch this video", Toast.LENGTH_LONG).show();
-                }
-            }
-
-        });
-
-        vidView4.setVideoURI(uri);
-        MediaController vidControl4 = new MediaController(this);
-        vidControl4.setAnchorView(vidView4);
-        vidView4.setMediaController(vidControl4);
-        final Button buttonStart4 = (Button) findViewById(R.id.button4);
-        buttonStart4.setOnClickListener(new OnClickListener() {
-
-            public void onClick(View v) {
-                if(probability > Min) {
-                    buttonStart4.setVisibility(View.GONE);
-                    vidView4.start();
-                }
-                else {
-                    Toast.makeText(PlayVideo.this, "Sorry, you cannot watch this video", Toast.LENGTH_LONG).show();
-                }
-            }
-
-        });
-
-        vidView5.setVideoURI(uri);
-        MediaController vidControl5 = new MediaController(this);
-        vidControl5.setAnchorView(vidView5);
-        vidView5.setMediaController(vidControl5);
-        final Button buttonStart5 = (Button) findViewById(R.id.button5);
-        buttonStart5.setOnClickListener(new OnClickListener() {
-
-            public void onClick(View v) {
-                if (probability > Medium) {
-                    buttonStart5.setVisibility(View.GONE);
-                    vidView5.start();
-                }
-                    else{
-                        Toast.makeText(PlayVideo.this, "Sorry, you cannot watch this Video", Toast.LENGTH_LONG).show();
-                    }
-                }
-
-        });
-
-
-        vidView6.setVideoURI(uri);
-        MediaController vidControl6 = new MediaController(this);
-        vidControl6.setAnchorView(vidView6);
-        vidView6.setMediaController(vidControl6);
-        final Button buttonStart6 = (Button) findViewById(R.id.button6);
-        buttonStart6.setOnClickListener(new OnClickListener() {
-
-            public void onClick(View v) {
-                if (probability > Medium) {
-                    buttonStart6.setVisibility(View.GONE);
-                    vidView6.start();
-                } else {
-                    Toast.makeText(PlayVideo.this, "Sorry, you cannot watch this video", Toast.LENGTH_LONG).show();
-                }
-            }
-
-        });
 
     }
 }

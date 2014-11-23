@@ -21,12 +21,11 @@
         <activity
             android:name="edu.cmu.com.watchtv.PlayVideo"
             android:label="@string/app_name" >
-
         </activity>
-        <activity
-            android:name="edu.cmu.com.watchtv.privateView"
-            android:label="@string/app_name" >
 
+        <activity
+            android:name=".ViewVideo"
+            android:label="@string/app_name">
         </activity>
     </application>
 
