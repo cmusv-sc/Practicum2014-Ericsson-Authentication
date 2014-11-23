@@ -6,7 +6,7 @@
 
 	<context-param>
 		<param-name>resteasy.resources</param-name>
-		<param-value>edu.cmu.ini.impli_auth.server.CentralServer</param-value>
+		<param-value>edu.cmu.ini.impli_auth.auth_server.request.CentralServer</param-value>
 	</context-param>
 
 	<listener>
