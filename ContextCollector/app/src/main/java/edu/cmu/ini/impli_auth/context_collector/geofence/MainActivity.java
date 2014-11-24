@@ -29,6 +29,23 @@ public class MainActivity extends Activity {
 
         logout = (Button)findViewById(R.id.button);
 
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sharedPref = getSharedPreferences("com.impl_auth.authenticationclient_preferences.xml",
+                        MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.clear();
+                editor.commit();
+
+                //TODO: kill started services here
+
+                // Send user back to login page.
+                Intent loginActivity = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(loginActivity);
+            }
+        });
+
         /*
         Getting the last recorded day to reset the step counter value everyday.
         Can be used for context like tired, bored etc.
