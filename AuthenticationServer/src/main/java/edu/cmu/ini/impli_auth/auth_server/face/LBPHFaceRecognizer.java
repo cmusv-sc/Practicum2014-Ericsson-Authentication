@@ -110,7 +110,13 @@ public class LBPHFaceRecognizer {
 				System.out.println("Unkown");
 				return new FaceTestResult(-1, 0);
 			}
-			return new FaceTestResult(n[0], Util.genProb(p[0]));
+			double prob = Util.genProb(p[0]);
+			if(prob < 20) {
+				return new FaceTestResult(-1, 0);
+			}
+			else {
+				return new FaceTestResult(n[0], prob);
+			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
