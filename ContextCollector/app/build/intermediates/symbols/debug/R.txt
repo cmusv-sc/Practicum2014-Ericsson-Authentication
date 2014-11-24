@@ -101,7 +101,7 @@ int drawable icon 0x7f020024
 int drawable lightbulb 0x7f020025
 int drawable powered_by_google_dark 0x7f020026
 int drawable powered_by_google_light 0x7f020027
-int id action_settings 0x7f060030
+int id action_settings 0x7f060031
 int id any 0x7f060000
 int id back 0x7f060001
 int id back_to_login_button 0x7f060025
@@ -111,6 +111,8 @@ int id buttonDel 0x7f06002b
 int id buyButton 0x7f06000d
 int id buy_now 0x7f060012
 int id buy_with_google 0x7f060011
+int id cameraImageButton 0x7f060030
+int id cameraView 0x7f06002c
 int id classic 0x7f060014
 int id email_login_form 0x7f060019
 int id email_reg 0x7f060023
@@ -147,7 +149,6 @@ int id submit_register_button 0x7f060024
 int id switcher 0x7f060028
 int id terrain 0x7f060006
 int id textView1 0x7f06002a
-int id tutorial3_activity_java_surface_view 0x7f06002c
 int id user_name 0x7f06001a
 int id wrap_content 0x7f060010
 int integer google_play_services_version 0x7f080000

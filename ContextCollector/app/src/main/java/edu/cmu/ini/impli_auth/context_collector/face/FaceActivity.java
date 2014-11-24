@@ -171,7 +171,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		setContentView(R.layout.face_detect_surface_view);
 
-		mOpenCvCameraView = (CameraView) findViewById(R.id.tutorial3_activity_java_surface_view);
+		mOpenCvCameraView = (CameraView) findViewById(R.id.cameraView);
 		mOpenCvCameraView.setCvCameraViewListener(this);
 
 		File dir = new File(getFilesDir() + "/camtest");
@@ -206,7 +206,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		submitButton = (Button) findViewById(R.id.submitButton);
 		submitButton.setVisibility(View.INVISIBLE);
 		textState = (TextView) findViewById(R.id.stateTextView);
-		imCamera = (ImageButton) findViewById(R.id.imageButton1);
+		imCamera = (ImageButton) findViewById(R.id.cameraImageButton);
 
 		pictakeButton.setOnClickListener(new View.OnClickListener() {
 			@Override

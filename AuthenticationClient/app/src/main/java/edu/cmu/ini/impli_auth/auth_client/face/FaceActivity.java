@@ -68,18 +68,16 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	private CameraView mOpenCvCameraView;
 	private int mChooseCamera = backCam;
 
-	TextView textresult;
 	//private  ImageView Iv;
 	Bitmap mBitmap;
 	Handler mHandler;
 
 	LBPHFaceExtractor fe;
-	ToggleButton buttonSearch;
+	TextView textResult;
+	ToggleButton searchButton;
 	Button buttonCatalog;
-	ImageView ivGreen, ivYellow, ivRed;
 	ImageButton imCamera;
 
-	TextView textState;
 	com.googlecode.javacv.cpp.opencv_contrib.FaceRecognizer faceRecognizer;
 
 
@@ -172,7 +170,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
 		setContentView(R.layout.face_detect_surface_view);
 
-		mOpenCvCameraView = (CameraView) findViewById(R.id.tutorial3_activity_java_surface_view);
+		mOpenCvCameraView = (CameraView) findViewById(R.id.cameraView);
 
 		mOpenCvCameraView.setCvCameraViewListener(this);
 
@@ -181,43 +179,23 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		dir.mkdirs();
 		mPath = getFilesDir() + "/camtest/";
 
-		textresult = (TextView) findViewById(R.id.textView1);
-
 		mHandler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
+				/*
 				if (msg.obj == "IMG") {
 					Canvas canvas = new Canvas();
 					canvas.setBitmap(mBitmap);
 				} else {
-					textresult.setText(msg.obj.toString());
-					ivGreen.setVisibility(View.INVISIBLE);
-					ivYellow.setVisibility(View.INVISIBLE);
-					ivRed.setVisibility(View.INVISIBLE);
-
-					/*
-					if (mLikely < 0) ;
-					else if (mLikely < 50)
-						ivGreen.setVisibility(View.VISIBLE);
-					else if (mLikely < 80)
-						ivYellow.setVisibility(View.VISIBLE);
-					else
-						ivRed.setVisibility(View.VISIBLE);
-						*/
+					textResult.setText(msg.obj.toString());
 				}
+				*/
 			}
 		};
-		buttonSearch = (ToggleButton) findViewById(R.id.buttonBuscar);
-		textState = (TextView) findViewById(R.id.textViewState);
-		ivGreen = (ImageView) findViewById(R.id.imageView3);
-		ivYellow = (ImageView) findViewById(R.id.imageView4);
-		ivRed = (ImageView) findViewById(R.id.imageView2);
-		imCamera = (ImageButton) findViewById(R.id.imageButton1);
+		textResult = (TextView) findViewById(R.id.resultTextView);
+		searchButton = (ToggleButton) findViewById(R.id.searchButton);
+		imCamera = (ImageButton) findViewById(R.id.cameraImageButton);
 
-		ivGreen.setVisibility(View.INVISIBLE);
-		ivYellow.setVisibility(View.INVISIBLE);
-		ivRed.setVisibility(View.INVISIBLE);
-		textresult.setVisibility(View.INVISIBLE);
 /*
 		buttonCatalog.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
@@ -244,19 +222,17 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			}
 		});
 
-		buttonSearch.setOnClickListener(new View.OnClickListener() {
+		searchButton.setOnClickListener(new View.OnClickListener() {
 
 			public void onClick(View v) {
-				if (buttonSearch.isChecked()) {
-					textState.setText(getResources().getString(R.string.SSearching));
+				if (searchButton.isChecked()) {
+					textResult.setText(getResources().getString(R.string.SSearching));
 					countSearch = 0;
 					map = new HashMap<String, Integer>();
 					faceState = SEARCHING;
-					textresult.setVisibility(View.VISIBLE);
 				} else {
 					faceState = IDLE;
-					textState.setText(getResources().getString(R.string.SIdle));
-					textresult.setVisibility(View.INVISIBLE);
+					textResult.setText(getResources().getString(R.string.SIdle));
 				}
 			}
 		});

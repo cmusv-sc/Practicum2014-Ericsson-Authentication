@@ -432,7 +432,7 @@ containing a value of this type.
         public static final int powered_by_google_light=0x7f020027;
     }
     public static final class id {
-        public static final int action_settings=0x7f060030;
+        public static final int action_settings=0x7f060031;
         public static final int any=0x7f060000;
         public static final int back=0x7f060001;
         public static final int back_to_login_button=0x7f060025;
@@ -442,6 +442,8 @@ containing a value of this type.
         public static final int buyButton=0x7f06000d;
         public static final int buy_now=0x7f060012;
         public static final int buy_with_google=0x7f060011;
+        public static final int cameraImageButton=0x7f060030;
+        public static final int cameraView=0x7f06002c;
         public static final int classic=0x7f060014;
         public static final int email_login_form=0x7f060019;
         public static final int email_reg=0x7f060023;
@@ -478,7 +480,6 @@ containing a value of this type.
         public static final int switcher=0x7f060028;
         public static final int terrain=0x7f060006;
         public static final int textView1=0x7f06002a;
-        public static final int tutorial3_activity_java_surface_view=0x7f06002c;
         public static final int user_name=0x7f06001a;
         public static final int wrap_content=0x7f060010;
     }

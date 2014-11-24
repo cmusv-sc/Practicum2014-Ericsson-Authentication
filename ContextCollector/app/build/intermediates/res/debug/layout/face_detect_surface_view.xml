@@ -19,7 +19,7 @@
                 android:layout_height="match_parent" >
 
                 <edu.cmu.ini.impli_auth.context_collector.face.CameraView
-                    android:id="@+id/tutorial3_activity_java_surface_view"
+                    android:id="@+id/cameraView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="0.88" />
@@ -55,7 +55,7 @@
                 android:layout_weight="0.07"/>
 
             <ImageButton
-		        android:id="@+id/imageButton1"
+		        android:id="@+id/cameraImageButton"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:layout_weight="0.3"
