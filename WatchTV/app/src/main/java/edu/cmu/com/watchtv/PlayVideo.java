@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class PlayVideo extends Activity {
@@ -36,6 +37,8 @@ public class PlayVideo extends Activity {
         final double probability = intent.getDoubleExtra("probability", 0);
         username = intent.getStringExtra("username");
         access = intent.getStringExtra("access");
+
+        Toast.makeText(this, String.format("Username: %s, Access Type: %s, Probability: %f", username, access, probability), Toast.LENGTH_LONG).show();
 
         TextView welcome = (TextView)findViewById(R.id.welcome_header);
         welcome.setText("Welcome back "+username+"...");
