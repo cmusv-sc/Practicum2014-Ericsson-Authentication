@@ -119,7 +119,7 @@ public class Util {
 	}
 	
 	public static String getUserName(int id) {
-		String userName = null;
+		String userName = "";
 		SqlConnection dao = new SqlConnection();
 		try {
 			ResultSet resSet = dao.getAllUser();
@@ -158,6 +158,42 @@ public class Util {
 		return "public";
 	}
 	
+	public static int getResourceID(int userID) {
+		SqlConnection dao = new SqlConnection();
+		try {
+			ResultSet resSet = dao.readPassiveUserByUserID(userID);
+			if(resSet != null) {
+				while(resSet.next()) {
+					return resSet.getInt("RESOURCE_ID");
+				}
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	
+	public static boolean isUserResource(int userID, int resourceID) {
+		SqlConnection dao = new SqlConnection();
+		try {
+			ResultSet resSet = dao.readResource();
+			if(resSet != null) {
+				while(resSet.next()) {
+					if(resourceID == resSet.getInt("ID")) {
+						return (userID == resSet.getInt("USER_ID"));
+					}
+				}
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public static double genProb(double prob) {
 		if(prob <= 50) {
 			return 100;
@@ -167,6 +203,7 @@ public class Util {
 		}
 		return Util.normalDist(80, 90, 0, 70, prob);
 	}
+	
 	public static double normalDist(int sourceStart, int sourceEnd, int targetStart, int targetEnd, double p) {
 		return targetStart + ((targetEnd - targetStart) / (sourceEnd - sourceStart)) * 
 				((sourceEnd - sourceStart) - (p - sourceStart));

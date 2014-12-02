@@ -27,37 +27,37 @@ public class SqlConnection {
 		DRIVER_CLASS = configValue.getDBDriverClass();
 	}
 	
-	public int writeToAUT(int id, int auth) throws Exception {
+	public boolean writeToAUT(int id, int auth) throws Exception {
 		ResultSet result;
-		int resource_id, initial_steps, fresh, device_no;
+		int resource_id, initial_steps, fresh;
+		long device_no;
 		Class.forName("com.mysql.jdbc.Driver");
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 		
+		System.out.println("passive_user id is " + id);
 		String sql1 = String.format("select * from PASSIVE_USER where USER_ID = %d", id);
 		result = statement.executeQuery(sql1);
 		
 		if(result.first()){
+			System.out.println("the user is passive_user");
 			//User exists in the Passive User table. Now we need to delete him from the PASSIVE USER and insert him into ACTIVE USER.
 			resource_id = result.getInt("RESOURCE_ID");
-			initial_steps = result.getInt("INITIAL_STEPS");
+			initial_steps = result.getInt("INITIAL_STEP");
 			fresh = result.getInt("FRESH");
-			device_no = result.getInt("DEVICES_NO");
+			device_no = result.getLong("DEVICE_PHY_ID");
 			
 			String sql2 = String.format("insert into ACTIVE_USER (USER_ID,RESOURCE_ID,INITIAL_STEPS,CURRENT_STEPS,"
 													+ "MOVING,FRESH,TIMESTAMP,DEVICES_NO,AUTHENTICITY)"
 													+ "values (%d,%d,%d,%d,1,%d,NOW(),%d,%d)",id,resource_id,
-													initial_steps,initial_steps,fresh,device_no,auth);
+													initial_steps,initial_steps,fresh,1,auth);
 			statement.executeUpdate(sql2);
 			
 			String sql3 = String.format("delete from PASSIVE_USER where USER_ID = %d", id);
 			statement.executeUpdate(sql3);
-			return 1;
+			return true;
 		}
-		
-		return 0;
-		
-		
+		return false;		
 	}
 	
 	/*
@@ -78,6 +78,19 @@ public class SqlConnection {
 		return returnResult;
 
 	}
+	
+	public ResultSet readPassiveUserByUserID(int userID) throws Exception{
+		ResultSet returnResult;
+
+		Class.forName("com.mysql.jdbc.Driver");
+		connect = DriverManager.getConnection(URL, USER, PASSWORD);
+		statement = connect.createStatement();
+		
+		String sql1 = String.format("select * from PASSIVE_USER where USER_ID = %d", userID);
+		returnResult = statement.executeQuery(sql1);
+		return returnResult;
+	}
+	
 	
 	/*
 	 * This method is used to check if the user is already present in the PASSIVE_USER. If the 

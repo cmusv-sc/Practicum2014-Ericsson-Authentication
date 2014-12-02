@@ -67,19 +67,21 @@ public class LBPHFaceRecognizer {
 		faceRecognizer.train(images, labels);
 	}
 
-	public FaceTestResult test(byte[] imageInByte) {
+	public FaceTestResult test(byte[] imageInByte, String fileName) {
 		Mat mat = new Mat(width, height, CV_8UC1);
 		System.out.println("mat has been created!");
 
 		InputStream in = new ByteArrayInputStream(imageInByte);
 		try {
 			FileOutputStream outStream = null;
-			File outFile = new File("test.jpg");
+			//File outFile = new File("test.jpg");
+			File outFile = new File(fileName);
 			outStream = new FileOutputStream(outFile);
 			outStream.write(imageInByte); 
 			outStream.flush(); 
 			outStream.close();
-			Mat testImage = imread("test.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+			//Mat testImage = imread("test.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+			Mat testImage = imread(fileName, CV_LOAD_IMAGE_GRAYSCALE);
 			/*
 			BufferedImage bImageFromConvert = ImageIO.read(in);
 			

@@ -68,8 +68,6 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	private CameraView mOpenCvCameraView;
 	private int mChooseCamera = backCam;
 
-	//private  ImageView Iv;
-	Bitmap mBitmap;
 	Handler mHandler;
 
 	LBPHFaceExtractor fe;
@@ -303,27 +301,24 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		Log.d(TAG, "Face number: " + facesArray.length);
 
 		if ((facesArray.length > 0) && (faceState == SEARCHING)) {
-			Mat m = new Mat();
-			// Rect r = facesArray[0];
-			// m = mRgba.submat(r);
-			m = mGray.submat(facesArray[0]);
-			mBitmap = Bitmap.createBitmap(m.width(), m.height(), Bitmap.Config.ARGB_8888);
-			Utils.matToBitmap(m, mBitmap);
-
+			/*
 			Message msg = new Message();
 			String textTochange = "IMG";
 			msg.obj = textTochange;
 			mHandler.sendMessage(msg);
-
+			*/
 			if(countSearch < MAXIMG_SEARCH) {
-				textTochange = predict(mBitmap);
+				List<Bitmap> bitmaps = new ArrayList<Bitmap>();
+				for(Rect r : facesArray) {
+					Mat m = new Mat();
+					m = mGray.submat(r);
+					Bitmap mBitmap = Bitmap.createBitmap(m.width(), m.height(),
+							Bitmap.Config.ARGB_8888);
+					Utils.matToBitmap(m, mBitmap);
+					bitmaps.add(mBitmap);
+				}
+				predict(bitmaps);
 				countSearch++;
-				msg = new Message();
-				msg.obj = "processing...";
-				mHandler.sendMessage(msg);
-				msg = new Message();
-				msg.obj = textTochange;
-				mHandler.sendMessage(msg);
 			}
 
 			/*
@@ -422,24 +417,27 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
 	public class SendAuthTask extends AsyncTask<Void, Void, String> {
 
-		private final byte[] imageBytes;
+		private final List<byte[]> imageBytesList;
 
-		SendAuthTask(byte[] imageBytes) {
-			this.imageBytes = imageBytes;
+		SendAuthTask(List<byte[]> imageBytesList) {
+			this.imageBytesList = imageBytesList;
 		}
 
 		@Override
 		protected String doInBackground(Void... params) {
 			String content = null;
-			String image_str = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+
 			ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+			String image_str1 = "", image_str2 = "";
+
+			image_str1 = Base64.encodeToString(imageBytesList.get(0), Base64.DEFAULT);
+			if(imageBytesList.size() > 1) {
+				image_str2 = Base64.encodeToString(imageBytesList.get(1), Base64.DEFAULT);
+			}
 
 			nameValuePairs.add(new BasicNameValuePair("credential", getSharedResourceCredential()));
-			nameValuePairs.add(new BasicNameValuePair("width", String.valueOf(WIDTH)));
-			nameValuePairs.add(new BasicNameValuePair("height", String.valueOf(HEIGHT)));
-			nameValuePairs.add(new BasicNameValuePair("image",image_str));
-
-			//String url = "http://10.0.23.8:8080/CentralServer/json/testImage/";
+			nameValuePairs.add(new BasicNameValuePair("image1", image_str1));
+			nameValuePairs.add(new BasicNameValuePair("image2", image_str2));
 
 			String url = gv.getAuthURL() + gv.getTestPath();
 			Log.d("SendAuthTask", url);
@@ -491,28 +489,22 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		}
 	}
 
-	public String predict(Bitmap mBitmap) {
+	public String predict(List<Bitmap> mBitmaps) {
 
-		Bitmap bmp = Bitmap.createScaledBitmap(mBitmap, WIDTH, HEIGHT, false);
-
-		FileOutputStream f;
-		try {
-			/*
-			String fileName = String.format(mPath + "%d.jpg", System.currentTimeMillis());
-			f = new FileOutputStream(fileName, true);
-			bmp.compress(Bitmap.CompressFormat.JPEG, 100, f);
-			f.close();
-			*/
-
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-			sendAuthTask = new SendAuthTask(baos.toByteArray());
-			sendAuthTask.execute();
-		} catch (Exception e) {
-			Log.e(TAG, e.getCause() + " " + e.getMessage());
-			e.printStackTrace();
+		List<byte[]> byteArrayList = new ArrayList<byte[]>();
+		for(Bitmap mBitmap : mBitmaps) {
+			Bitmap bmp = Bitmap.createScaledBitmap(mBitmap, WIDTH, HEIGHT, false);
+			try {
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+				byteArrayList.add(baos.toByteArray());
+			} catch (Exception e) {
+				Log.e(TAG, e.getCause() + " " + e.getMessage());
+				e.printStackTrace();
+			}
 		}
-
+		sendAuthTask = new SendAuthTask(byteArrayList);
+		sendAuthTask.execute();
 		return "start to auth";
 	}
 }

@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 public class PlayVideo extends Activity {
     double High = 70;
-    double Medium = 40;
+    double Medium = 70;
     double Min = 15;
     String uriPath = "";
     String username,access;

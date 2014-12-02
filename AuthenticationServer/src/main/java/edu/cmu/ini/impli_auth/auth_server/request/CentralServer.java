@@ -32,6 +32,14 @@ import edu.cmu.ini.impli_auth.auth_server.util.Util;
 @Path("/json")
 public class CentralServer {
 	
+	//private LBPHFaceRecognizer faceRecognizer;
+	private static int width = 128, height = 128;
+	
+	//public CentralServer() {
+		//faceRecognizer = new LBPHFaceRecognizer(width, height);
+		//faceRecognizer.train();
+	//}
+	
 	/*
 	 * This method is used to obtain the physical distance between two coordinates.
 	 * It is a standard math formula. For the exact formula please refer the documentation.
@@ -91,39 +99,6 @@ public class CentralServer {
 			e.printStackTrace();
 		}
 	}
-
-	@POST
-	@Path("/trainImage")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response postTrainImage(@FormParam("image") String image) {
-		byte[] imageData = DatatypeConverter.parseBase64Binary(image);
-		
-
-		FileOutputStream outStream = null;
-		/*
-		 * // Write to local (for test) try {
-		 * 
-		 * String fileName = String.format("%d.jpg",
-		 * System.currentTimeMillis()); File outFile = new File(fileName);
-		 * outStream = new FileOutputStream(outFile);
-		 * outStream.write(imageData); outStream.flush(); outStream.close();
-		 * 
-		 * sqlConnection dao = new sqlConnection(); try { ResultSet resultSet =
-		 * dao.readDataBase(id); String picture = null; if(resultSet.next()) {
-		 * AuthFaceRecognizer faceRecognizer = new AuthFaceRecognizer(outFile);
-		 * faceRecognizer.run(); picture = resultSet.getString("PICTURE");
-		 * picture += ";" + fileName; dao.updateDataBase(id, picture); } else {
-		 * picture = fileName; dao.writeDataBase(id, picture); } return
-		 * Response.status(200).entity("This user is " + id).build(); } catch
-		 * (Exception e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); }
-		 * 
-		 * } catch (FileNotFoundException e) { e.printStackTrace(); } catch
-		 * (IOException e) { e.printStackTrace(); } finally { }
-		 */
-		return Response.status(200).entity("post image succeed").build();
-	}
-
 
 	@GET
 	@Path("/getUserResources/{id}")
@@ -207,6 +182,7 @@ public class CentralServer {
 	    	Util.saveImage(userID, imageBytes3, "image4");
 	    	byte[] imageBytes4 = DatatypeConverter.parseBase64Binary(image5);
 	    	Util.saveImage(userID, imageBytes4, "image5");
+	    	//faceRecognizer.train();
 		}
 		
 		
@@ -422,45 +398,58 @@ public class CentralServer {
 		return Response.status(200).entity(returnMessage).build();
 	}
 	
-	public int active_user(int id, int auth) throws Exception{
-		
+	public boolean active_user(int id, int auth) throws Exception{
 		SqlConnection dao = new SqlConnection();
-		int result = dao.writeToAUT(id,auth);
-		if (result != -1){
-			return 1;
-		}
-		return -1;
-		
+		return dao.writeToAUT(id,auth);
 	}
 	
 	@POST
 	@Path("/testImage")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response processTestImage(@FormParam("credential") String credential, @FormParam("width") int width,
-			@FormParam("height") int height, @FormParam("image") String image) throws Exception {
-		byte[] imageData = DatatypeConverter.parseBase64Binary(image);
+	public Response processTestImage(@FormParam("credential") String credential, 
+			@FormParam("image1") String image1, @FormParam("image2") String image2) throws Exception {
+		
+		byte[] imageData = DatatypeConverter.parseBase64Binary(image1);
 		String userName = "";
 		int auth = 0;
 		
-		LBPHFaceRecognizer faceRecognizer = new LBPHFaceRecognizer(width,
-				height);
+		LBPHFaceRecognizer faceRecognizer = new LBPHFaceRecognizer(width, height);
 		faceRecognizer.train();
-		FaceTestResult result = faceRecognizer.test(imageData);
-		/*
+		FaceTestResult result = faceRecognizer.test(imageData, "test1.jpg");
 		userName = Util.getUserName(result.label);
+		System.out.println("first user");
 		System.out.println("UserName: " + userName);
 		System.out.println("Prob: " + result.p);
-		return Response.status(200).entity(userName + ":" + 0 + ":public").build();
-		*/
-		if(active_user(result.label, auth) != -1) {
+		System.out.println("Credential: " + credential);
+		System.out.println("Access: " +  Util.getResourceAccessStatus(result.label, credential));
+		
+		FaceTestResult targetResult = result;
+		
+		if(!image2.isEmpty()) {
+			imageData = DatatypeConverter.parseBase64Binary(image2);
+			result = faceRecognizer.test(imageData, "test2.jpg");
 			userName = Util.getUserName(result.label);
+			System.out.println("second user");
 			System.out.println("UserName: " + userName);
 			System.out.println("Prob: " + result.p);
 			System.out.println("Credential: " + credential);
 			System.out.println("Access: " +  Util.getResourceAccessStatus(result.label, credential));
-			return Response.status(200).entity(userName + ":" + result.p + ":" + Util.getResourceAccessStatus(result.label, credential)).build();
+			
+			if(result.label != -1) {
+				int resourceID = Util.getResourceID(result.label);
+				if(Util.isUserResource(result.label, resourceID)) {
+					targetResult = result;
+				}
+			}
+		}
+		
+		
+		if(active_user(targetResult.label, auth)) {
+			return Response.status(200).entity(Util.getUserName(targetResult.label) + ":" + targetResult.p + ":" + Util.getResourceAccessStatus(targetResult.label, credential)).build();
 		}
 		else {
+			System.out.println("the user is not an active user!");
+			userName = "";
 			return Response.status(200).entity(userName + ":" + 0 + ":public").build();
 		}
 	}
