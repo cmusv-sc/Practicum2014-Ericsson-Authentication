@@ -1,17 +1,15 @@
 package edu.cmu.ini.impli_auth.context_collector.util;
 
-/**
- * Created by CyrilLee on 11/16/14.
- */
+
 public class GlobalVariable {
 	private static GlobalVariable instance;
 
 	// Global variable
 	// private static String SERVER_IP = "192.168.1.100";
-	private static String SERVER_IP = "10.0.17.239";
-	private static String PORT = "8080";
-	private static String TEST_PATH = "postUser/";
-	private static String LOCATION_PATH = "postLocation/";
+	private final static String SERVER_IP = "10.0.17.239";
+	private final static String PORT = "8080";
+	private final static String TEST_PATH = "postUser/";
+	private final static String LOCATION_PATH = "postLocation/";
 
 
 	// Restrict the constructor from being instantiated
@@ -37,10 +35,10 @@ public class GlobalVariable {
 	}
 
 	public String getTestPath() {
-		return this.TEST_PATH;
+		return TEST_PATH;
 	}
 
 	public String getLocationURL() {
-		return this.LOCATION_PATH;
+		return LOCATION_PATH;
 	}
 }
