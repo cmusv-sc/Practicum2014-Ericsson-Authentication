@@ -13,9 +13,9 @@ Authentication Server
 
 #### Required Software
 
-Install Eclipse LUNA
+Install Eclipse Java EE developer
 ```
-https://eclipse.org/downloads/packages/eclipse-standard-44/lunar
+https://eclipse.org/downloads/index-developer.php
 ```
 
 #### Install additional software for Web Tool Platform (WTP)
