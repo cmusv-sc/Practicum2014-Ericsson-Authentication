@@ -30,7 +30,7 @@ public class SqlConnection {
 	public boolean writeToAUT(int id, int auth) throws Exception {
 		ResultSet result;
 		int resource_id, initial_steps, fresh;
-		long device_no;
+		int device_no;
 		Class.forName("com.mysql.jdbc.Driver");
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
@@ -45,7 +45,11 @@ public class SqlConnection {
 			resource_id = result.getInt("RESOURCE_ID");
 			initial_steps = result.getInt("INITIAL_STEP");
 			fresh = result.getInt("FRESH");
-			device_no = result.getLong("DEVICE_PHY_ID");
+			/*
+			String sqlCountRows = String.format("select COUNT(*) from PASSIVE_USER where USER_ID = %d", id);
+			result = statement.executeQuery(sqlCountRows);
+			device_no = result.getInt("COUNT");
+			*/
 			
 			String sql2 = String.format("insert into ACTIVE_USER (USER_ID,RESOURCE_ID,INITIAL_STEPS,CURRENT_STEPS,"
 													+ "MOVING,FRESH,TIMESTAMP,DEVICES_NO,AUTHENTICITY)"
