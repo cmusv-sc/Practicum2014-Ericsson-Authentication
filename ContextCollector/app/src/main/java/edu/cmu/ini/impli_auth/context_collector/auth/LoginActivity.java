@@ -29,36 +29,35 @@ import edu.cmu.ini.impli_auth.context_collector.util.*;
 
 
 /**
- * A login screen that offers login via email/password.
-
+ * The LoginActivity registers the context collector to the authentication server.
+ * User credentials is used to authenticate the user at initial connection. After
+ * registering the context collector, a per device credential is generated for
+ * authenticating future connection.
  */
 public class LoginActivity extends Activity{
-
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
 
-    // UI references.
+    // Views for UI references.
     private AutoCompleteTextView mUserNameView;
     private EditText mPasswordView;
     private EditText mNameView;
     private View mProgressView;
     private View mLoginFormView;
-    private SharedPreferences sharedPref;
-    private String registered;
-    private TelephonyManager cellInfo;
     private EditText mFirstNameView;
     private EditText mLastNameView;
     private EditText mConfirmPasswordView;
     private EditText mEmailView;
+
     String IMEINumber;
 
+    // Load global variables.
 	GlobalVariable gv = GlobalVariable.getInstance();
-    //server ip
     private final String serverIP = gv.getSERVER_IP();
 
-    //Request Code
+    //Request Code.
     static final int REGISTER_USER = 1;
 
     @Override
@@ -70,8 +69,8 @@ public class LoginActivity extends Activity{
         mUserNameView = (AutoCompleteTextView) findViewById(R.id.user_name);
         mPasswordView = (EditText) findViewById(R.id.password);
 
-        final Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        final Button mSignInButton = (Button) findViewById(R.id.SIGN_IN_BUTTON);
+        mSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
@@ -90,6 +89,7 @@ public class LoginActivity extends Activity{
         final Button mSubmitRegisterButton = (Button) findViewById(R.id.submit_register_button);
         final Button mBackToLoginButton = (Button) findViewById(R.id.back_to_login_button);
 
+        // Change the visibility of form for registration with button.
         mRegisterButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,17 +98,18 @@ public class LoginActivity extends Activity{
                 mFirstNameView.setVisibility(View.VISIBLE);
                 mLastNameView.setVisibility(View.VISIBLE);
                 mEmailView.setVisibility(View.VISIBLE);
-                mEmailSignInButton.setVisibility(View.GONE);
+                mSignInButton.setVisibility(View.GONE);
                 mRegisterButton.setVisibility(View.GONE);
                 mSubmitRegisterButton.setVisibility(View.VISIBLE);
                 mBackToLoginButton.setVisibility(View.VISIBLE);
             }
         });
 
+        // Submit registration request with button.
         mSubmitRegisterButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: register a user by sending all info to camera view
+                // Stop sending the request if password and confirm password are different.
                 if(!mPasswordView.getText().toString().equals(mConfirmPasswordView.getText().toString())){
                     //Password mismatched. Refuse register.
                     mPasswordView.setError("Password does not match.");
@@ -118,6 +119,7 @@ public class LoginActivity extends Activity{
                     return;
                 }
 
+                // Getting necessary fields to send register request, pass control to FaceActivity.
                 Intent registerUser = new Intent(LoginActivity.this, FaceActivity.class);
                 registerUser.putExtra("UserName", mUserNameView.getText().toString());
                 registerUser.putExtra("Password", mPasswordView.getText().toString());
@@ -128,6 +130,7 @@ public class LoginActivity extends Activity{
             }
         });
 
+        // Set visibilities for login form.
         mBackToLoginButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -136,7 +139,7 @@ public class LoginActivity extends Activity{
                 mFirstNameView.setVisibility(View.GONE);
                 mLastNameView.setVisibility(View.GONE);
                 mEmailView.setVisibility(View.GONE);
-                mEmailSignInButton.setVisibility(View.VISIBLE);
+                mSignInButton.setVisibility(View.VISIBLE);
                 mSubmitRegisterButton.setVisibility(View.GONE);
                 mBackToLoginButton.setVisibility(View.GONE);
                 mRegisterButton.setVisibility(View.VISIBLE);
@@ -150,8 +153,7 @@ public class LoginActivity extends Activity{
         if (requestCode == REGISTER_USER) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                // The user picked a contact.
-                // The Intent's data Uri identifies which contact was selected.
+                // Update the user if register is successful.
                 Toast.makeText(LoginActivity.this, data.getBooleanExtra("Result", false)? "Registered":"Failed to Register",
                         Toast.LENGTH_LONG).show();
             }
@@ -165,12 +167,17 @@ public class LoginActivity extends Activity{
 
     /**
      * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
      */
     public void attemptLogin() {
+        // Try hiding soft input from window. Continue even if failed.
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        View focus = getCurrentFocus();
+        if(focus != null) {
+            IBinder windowToken = focus.getWindowToken();
+            inputMethodManager.hideSoftInputFromWindow(windowToken, 0);
+        }
+
+        // Start only one authentication task.
         if (mAuthTask != null) {
             return;
         }
@@ -180,62 +187,49 @@ public class LoginActivity extends Activity{
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mUserNameView.getText().toString();
+        String userName = mUserNameView.getText().toString();
         String password = mPasswordView.getText().toString();
         String deviceName = mNameView.getText().toString();
 
-        cellInfo = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        // Get IMEI number to identify the context collector. May change other information in the future.
+        TelephonyManager cellInfo = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         IMEINumber = cellInfo.getDeviceId();
 
+        // Variables for stopping the login procedure if any checks failed and get focus.
         boolean cancel = false;
         View focusView = null;
 
-
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+        if (!TextUtils.isEmpty(password)) {
+            mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
         }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
+        if (TextUtils.isEmpty(userName)) {
             mUserNameView.setError(getString(R.string.error_field_required));
-            focusView = mUserNameView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mUserNameView.setError(getString(R.string.error_invalid_email));
             focusView = mUserNameView;
             cancel = true;
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
+            // There was an error; don't attempt login and focus the first form field with an error.
             focusView.requestFocus();
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password, deviceName, IMEINumber);
+            mAuthTask = new UserLoginTask(userName, password, deviceName, IMEINumber);
             mAuthTask.execute((Void) null);
         }
     }
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        //return email.contains("@");
-        return true;
-    }
 
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        //return password.length() > 4;
-        return true;
-    }
-
+    /**
+     * Override the back button to avoid user bypassing the login process.
+     */
     @Override
     public void onBackPressed() {
-        return;
     }
 
     /**
@@ -275,16 +269,15 @@ public class LoginActivity extends Activity{
     }
 
     /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
+     * Represents an asynchronous login task used to authenticate the user.
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
+        // Information to send during user login.
         private final String mEmail;
         private final String mPassword;
         private final String mName;
         private final String mIMEI;
-
 
         UserLoginTask(String mEmail, String mPassword, String mName, String mIMEI) {
             this.mEmail = mEmail;
@@ -293,6 +286,11 @@ public class LoginActivity extends Activity{
             this.mIMEI = mIMEI;
         }
 
+        /**
+         * The method to run login logic in the background.
+         * @param params No used for now.
+         * @return a boolean indicating the login status.
+         */
         @Override
         protected Boolean doInBackground(Void... params) {
             ArrayList<NameValuePair> nameValuePairs = new  ArrayList<NameValuePair>();
@@ -304,15 +302,14 @@ public class LoginActivity extends Activity{
 
 
             try{
+                // Setup http client for connection.
                 HttpClient httpclient = new DefaultHttpClient();
                 HttpPost httppost = new HttpPost(String.format("http://%s:8080/CentralServer/json/postDevice/", serverIP));
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 HttpResponse response = httpclient.execute(httppost);
                 HttpEntity entity = response.getEntity();
 
-                //
-                // Read the contents of an entity and return it as a String.
-                //
+                // Get the response.
                 final String content = EntityUtils.toString(entity);
                 runOnUiThread(new Runnable() {
 
@@ -322,31 +319,23 @@ public class LoginActivity extends Activity{
                                 Toast.LENGTH_LONG).show();
                     }
                 });
+
+                // Get information from response.
                 String[] elements = content.split(",");
-                sharedPref = getSharedPreferences("com.impl_auth.authenticationclient_preferences.xml",
+                SharedPreferences sharedPref = getSharedPreferences("com.impl_auth.authenticationclient_preferences.xml",
                                                MODE_PRIVATE);
-                        //PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+                // Handle different login status.
                 if(elements[0].equalsIgnoreCase("Success")){
                     //store key in element[1]
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putString(getString(R.string.share_perf_key), elements[1]);
                     editor.putString(getString(R.string.registered_flag), "True");
-                    editor.commit();
-                    System.out.println("Committed");
+                    editor.apply();
                     return true;
                 } else {
                     return false;
                 }
-
-				/*final String the_string_response = convertResponseToString(response);
-				runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-						Toast.makeText(CamTestActivity.this, "Response " + the_string_response,
-								Toast.LENGTH_LONG).show();
-					}
-				});*/
 
             }catch(final Exception e){
                 runOnUiThread(new Runnable() {
@@ -363,21 +352,29 @@ public class LoginActivity extends Activity{
 
         }
 
+        /**
+         * Handle the login result.
+         * @param success a boolean indicates the login status.
+         */
         @Override
         protected void onPostExecute(final Boolean success) {
+            // Remove the tracking login task and hide the progress bar.
             mAuthTask = null;
             showProgress(false);
 
             if (success) {
-                //finish();
+                // Redirect to main activity after login.
                 Intent mainActivity = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(mainActivity);
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.setError("Failed to authenticate with server");
                 mPasswordView.requestFocus();
             }
         }
 
+        /**
+         * Reset view and remove task if canceled.
+         */
         @Override
         protected void onCancelled() {
             mAuthTask = null;
