@@ -133,7 +133,7 @@ Download Android Studio from https://developer.android.com/sdk/installing/studio
 ####Build Instructions
 
 1. Open Android Studio
-2. Go to File > Import Project, select [PROJECT_DIRECTORY]/AuthenticationClient as parent folder, and click OK.
+2. Select Import Project, select [PROJECT_DIRECTORY]/AuthenticationClient as parent folder, and click OK.
 3. Go to [PROJECT_DIRECTORY]/AuthenticationClient/app/src/main/java/edu/cmu/ini/impli_auth/auth_client/util/GlobalVariable.java, and change value of Global variable SERVER_IP as AuthenticationServer IP. 
 
 Context Collector
@@ -148,7 +148,7 @@ Android 4.0.3 API 15 (Minimum requirement)
 ####Build Instructions
 
 1. Open Android Studio
-2. Go to File > Import Project, select [PROJECT_DIRECTORY]/ContextCollector as parent folder, and click OK.
+2. Select Import Project, select [PROJECT_DIRECTORY]/ContextCollector as parent folder, and click OK.
 3. Go to 
 [PROJECT_DIRECTORY]/ContextCollector/app/src/main/java/edu/cmu/ini/impli_auth/context_collector/util/GlobalVariable.java, and change value of Global variable SERVER_IP as AuthenticationServer IP. 
 
@@ -164,6 +164,6 @@ Android 4.0.3 API 15 (Minimum requirement)
 ####Build Instructions
 
 1. Open Android Studio
-2. Go to File > Import Project, select [PROJECT_DIRECTORY]/WatchTV as parent folder, and click OK.
+2. Select Import Project, select [PROJECT_DIRECTORY]/WatchTV as parent folder, and click OK.
 
 
