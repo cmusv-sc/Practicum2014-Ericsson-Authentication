@@ -4,7 +4,7 @@ public class GlobalVariable {
 	private static GlobalVariable instance;
 
 	// Global variable
-	private static final String SERVER_IP = "10.0.17.239";
+	private static final String SERVER_IP = "10.0.0.4";
 	private static final String PORT = "8080";
 	private static final String TEST_PATH = "testImage/";
 

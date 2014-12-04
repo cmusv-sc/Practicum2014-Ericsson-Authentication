@@ -1,7 +1,6 @@
 package edu.cmu.ini.impli_auth.auth_server.database;
 
 import java.sql.*;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,7 +11,6 @@ public class SqlConnection {
 
 	private Connection connect = null;
 	private Statement statement = null;
-	private PreparedStatement preparedStatement = null;
 	private ResultSet resultSet = null;
 	private String URL;
 	private String USER;
@@ -31,7 +29,7 @@ public class SqlConnection {
 		ResultSet result;
 		int resource_id, initial_steps, fresh;
 		int device_no;
-		Class.forName("com.mysql.jdbc.Driver");
+		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 		
@@ -73,7 +71,7 @@ public class SqlConnection {
 	public ResultSet readResource() throws Exception {
 
 		ResultSet returnResult;
-		Class.forName("com.mysql.jdbc.Driver");
+		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 		String sql = "SELECT * FROM RESOURCE";
@@ -86,7 +84,7 @@ public class SqlConnection {
 	public ResultSet readPassiveUserByUserID(int userID) throws Exception{
 		ResultSet returnResult;
 
-		Class.forName("com.mysql.jdbc.Driver");
+		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 		
@@ -108,7 +106,7 @@ public class SqlConnection {
 		int id;
 		System.out.println(imei);
 
-		Class.forName("com.mysql.jdbc.Driver");
+		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 
@@ -117,7 +115,6 @@ public class SqlConnection {
 		returnResult = statement.executeQuery(sql);
 		if (returnResult.first()) {
 			id = returnResult.getInt("USER_ID");
-			// returnResult.deleteRow();
 		} else
 			id = -1;
 
@@ -141,7 +138,7 @@ public class SqlConnection {
 	public void updatePassiveUser(PassiveUser user, int id) throws Exception {
 
 		ResultSet returnResult;
-		Class.forName("com.mysql.jdbc.Driver");
+		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 
@@ -178,7 +175,7 @@ public class SqlConnection {
 
 		ResultSet returnResult;
 		int id;
-		Class.forName("com.mysql.jdbc.Driver");
+		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 
@@ -201,12 +198,9 @@ public class SqlConnection {
 		System.out.println("INSERTED TO PUT");
 	}
 
-	/*
-	 * ############ ############
-	 */
 
 	public void writeDataBase(int id, String picture_path) throws Exception {
-		Class.forName("com.mysql.jdbc.Driver");
+		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 		String sql = String
@@ -216,7 +210,7 @@ public class SqlConnection {
 	}
 
 	public void updateDataBase(int id, String picture_path) throws Exception {
-		Class.forName("com.mysql.jdbc.Driver");
+		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 		String sql = String.format("UPDATE USER SET picture='%s' where id=%d",
@@ -231,7 +225,7 @@ public class SqlConnection {
 
 	public int authByUsernamePassword(String username, String password)
 			throws Exception {
-		Class.forName("com.mysql.jdbc.Driver");
+		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 		String sql = String.format(
@@ -248,7 +242,7 @@ public class SqlConnection {
 		ResultSet resultSet = null;
 		try {
 			// this will load the MySQL driver, each DB has its own driver
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName(DRIVER_CLASS);
 			// setup the connection with the DB.
 			connect = DriverManager.getConnection(URL, USER, PASSWORD);
 			// statements allow to issue SQL queries to the database
@@ -269,7 +263,7 @@ public class SqlConnection {
 
 	public void registerUser(String username, String password, String firstName, String lastName,
 			String email) throws Exception {
-		Class.forName("com.mysql.jdbc.Driver");
+		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 		String sql = String
@@ -280,7 +274,7 @@ public class SqlConnection {
 	
 	public void registerDevice(String name, String IMEI, String credential,
 			int userId) throws Exception {
-		Class.forName("com.mysql.jdbc.Driver");
+		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 		String sql = String
@@ -295,7 +289,7 @@ public class SqlConnection {
 	 */
 
 	public boolean authDevice(String IMEI, String credential) throws Exception {
-		Class.forName("com.mysql.jdbc.Driver");
+		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 		String sql = String.format(
@@ -315,7 +309,7 @@ public class SqlConnection {
 	public void registerResource(String name, String latitude,
 			String longitude, String NSSID, String type, String SKEY, int userId)
 			throws Exception {
-		Class.forName("com.mysql.jdbc.Driver");
+		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 		String sql = String
@@ -325,7 +319,7 @@ public class SqlConnection {
 	}
 
 	public ResultSet getUserResources(int id) throws Exception {
-		Class.forName("com.mysql.jdbc.Driver");
+		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 		String sql = String
@@ -342,7 +336,7 @@ public class SqlConnection {
 
 	public boolean authByNssidSharedKey(String NSSID, String sharedKey)
 			throws Exception {
-		Class.forName("com.mysql.jdbc.Driver");
+		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 		String sql = String.format(
@@ -358,7 +352,7 @@ public class SqlConnection {
 	 */
 
 	public void deleteResourceById(int id) throws Exception {
-		Class.forName("com.mysql.jdbc.Driver");
+		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
 		String sql = String.format("delete from resource where id=%d", id);
@@ -378,7 +372,7 @@ public class SqlConnection {
 	public ResultSet getUser(int id) throws Exception {
 		try {
 			// this will load the MySQL driver, each DB has its own driver
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName(DRIVER_CLASS);
 			// setup the connection with the DB.
 			connect = DriverManager.getConnection(URL, USER, PASSWORD);
 
@@ -402,38 +396,13 @@ public class SqlConnection {
 		}
 	}
 
-	private void writeMetaData(ResultSet resultSet) throws SQLException {
-		// now get some metadata from the database
-		System.out.println("The columns in the table are: ");
-		System.out.println("Table: " + resultSet.getMetaData().getTableName(1));
-		for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
-			System.out.println("Column " + i + " "
-					+ resultSet.getMetaData().getColumnName(i));
-		}
-	}
-
-	private void writeResultSet(ResultSet resultSet) throws SQLException {
-		// resultSet is initialised before the first data set
-		while (resultSet.next()) {
-			// it is possible to get the columns via name
-			// also possible to get the columns via the column number
-			int id = resultSet.getInt("ID");
-			String picture = resultSet.getString("PICTURE");
-
-			// print the data
-			System.out.println("User id: " + id);
-			System.out.println("Picure path: " + picture);
-		}
-	}
-
-
 	public List<Integer> getPassiveUsers(String credential) {
 		
 		ResultSet result;
 		List<Integer> user_ids = new LinkedList<Integer>();
 		try {
 			// this will load the MySQL driver, each DB has its own driver
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName(DRIVER_CLASS);
 			// setup the connection with the DB.
 			connect = DriverManager.getConnection(URL, USER, PASSWORD);
 			// statements allow to issue SQL queries to the database

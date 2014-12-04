@@ -1,24 +1,16 @@
 package edu.cmu.ini.impli_auth.auth_server.request;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.security.SecureRandom;
 import java.math.BigInteger;
 
-import javax.imageio.ImageIO;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
@@ -95,14 +87,12 @@ public class CentralServer {
 			}
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	@GET
 	@Path("/getUserResources/{id}")
-	//@Produces("application/json")
 	public Response getUserResources(@PathParam("id")int id) {
 
 		SqlConnection dao = new SqlConnection();
@@ -110,7 +100,6 @@ public class CentralServer {
 		try {
 			resultSet = dao.getUserResources(id);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		StringBuilder sb = new StringBuilder();
@@ -124,10 +113,8 @@ public class CentralServer {
 					sb.append("</td><td>");
 					sb.append(String.format("<form action=\"/CentralServer/json/deleteResourceById\" method=\"POST\"><input type=\"hidden\" name=\"id\" value=\"%s\"><input type=\"submit\" value=\"Submit\"></form>", resultSet.getString("id")));
 					sb.append("</td></tr>");
-					//System.out.println("Get a resource");
 				}
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			sb.append("</table>");
@@ -144,7 +131,6 @@ public class CentralServer {
 		try {
 			dao.deleteResourceById(id);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -164,7 +150,6 @@ public class CentralServer {
 		try {
 			dao.registerUser(username, password, firstName, lastName, email);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			result = -1;
 		}
@@ -222,7 +207,6 @@ public class CentralServer {
 				result = 0;
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			result = -1;
 		}
@@ -236,7 +220,6 @@ public class CentralServer {
 			try {
 				dao.registerResource(name, latitude, longitude, NSSID, type, SKEY,userid);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				returnMessage = "Exception";
 			}
@@ -270,7 +253,6 @@ public class CentralServer {
 				result = "Failed";
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			result = "Exception";
 		}
@@ -337,7 +319,6 @@ public class CentralServer {
 				e.printStackTrace();
 				return Response.status(304).build();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return Response.status(304).build();
 		}
@@ -365,7 +346,6 @@ public class CentralServer {
 				result = 0;
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			result = -1;
 		}
@@ -379,7 +359,6 @@ public class CentralServer {
 			try {
 				dao.registerDevice(name, IMEI, credential, userid);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				returnMessage = "Exception";
 			}

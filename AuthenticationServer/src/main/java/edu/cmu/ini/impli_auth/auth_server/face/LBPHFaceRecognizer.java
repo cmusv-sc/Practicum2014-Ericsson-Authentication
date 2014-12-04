@@ -1,29 +1,17 @@
 package edu.cmu.ini.impli_auth.auth_server.face;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.IntBuffer;
-import java.sql.ResultSet;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
-
-import org.bytedeco.javacpp.BytePointer;
 
 import edu.cmu.ini.impli_auth.auth_server.util.Util;
 import static org.bytedeco.javacpp.opencv_contrib.*;
 import static org.bytedeco.javacpp.opencv_core.*;
 import static org.bytedeco.javacpp.opencv_highgui.*;
-import static org.bytedeco.javacpp.opencv_imgproc.*;
 
 public class LBPHFaceRecognizer {
 
@@ -60,45 +48,19 @@ public class LBPHFaceRecognizer {
 			counter++;
 		}
 
-		// faceRecognizer = createFisherFaceRecognizer();
-		// faceRecognizer = createEigenFaceRecognizer();
 		faceRecognizer = createLBPHFaceRecognizer(2, 8, 8, 8, 90);
-		// faceRecognizer = createFisherFaceRecognizer(0, 1500);
 		faceRecognizer.train(images, labels);
 	}
 
 	public FaceTestResult test(byte[] imageInByte, String fileName) {
-		Mat mat = new Mat(width, height, CV_8UC1);
-		System.out.println("mat has been created!");
-
-		InputStream in = new ByteArrayInputStream(imageInByte);
 		try {
 			FileOutputStream outStream = null;
-			//File outFile = new File("test.jpg");
 			File outFile = new File(fileName);
 			outStream = new FileOutputStream(outFile);
 			outStream.write(imageInByte); 
 			outStream.flush(); 
 			outStream.close();
-			//Mat testImage = imread("test.jpg", CV_LOAD_IMAGE_GRAYSCALE);
 			Mat testImage = imread(fileName, CV_LOAD_IMAGE_GRAYSCALE);
-			/*
-			BufferedImage bImageFromConvert = ImageIO.read(in);
-			
-			IplImage image = IplImage.create(width, height, IPL_DEPTH_8U, 4);
-			image.copyFrom(bImageFromConvert);
-			cvSaveImage("test1.jpg",image);
-			IplImage grayImg = IplImage.create(image.width(), image.height(),
-					IPL_DEPTH_8U, 1);
-			cvCvtColor(image, grayImg, CV_BGR2GRAY);
-
-			mat.copyFrom(grayImg.getBufferedImage());
-			cvSaveImage("test2.jpg",grayImg);
-			if (faceRecognizer == null) {
-				System.out.println("faceRecognizer hasn't been generated!");
-				return new FaceTestResult(-1, 0);
-			}
-			*/
 			
 			int n[] = new int[1];
 			double p[] = new double[1];
