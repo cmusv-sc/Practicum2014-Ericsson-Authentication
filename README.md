@@ -19,9 +19,22 @@ Authentication Server
 
 #### Required Software
 
-Install Eclipse IDE for Java EE Developers
+###### Eclipse (Mars) 
+Install Eclipse IDE for Java EE Developers (Mars)
 ```
 https://eclipse.org/downloads/index-developer.php
+```
+
+###### OpenCV
+Config most recent version of OpenCV into system path, here we use Homebrew to simplify things.
+
+- add homebrew/science which is where OpenCV is located using
+```
+brew tap homebrew/science
+```
+- Go ahead and install OpenCV
+```
+brew install opencv
 ```
 
 ## Setup Tomcat on Eclipse
@@ -120,7 +133,7 @@ Download Android Studio from https://developer.android.com/sdk/installing/studio
 1. Open Android Studio
 2. Select Import Project, select [PROJECT_DIRECTORY]/AuthenticationClient as parent folder, and click OK.
 3. Go to [PROJECT_DIRECTORY]/AuthenticationClient/app/src/main/java/edu/cmu/ini/impli_auth/auth_client/util/GlobalVariable.java, and change value of Global variable SERVER_IP as AuthenticationServer IP. [If you are using your local machine as Authentication Server use IP of your machine]
-4. Connect your Android device (in developer mode) and Run the AuthenticationClient on the Phone.
+4. Connect your Android device(Display Resource) in developer mode and Run the AuthenticationClient on the Phone.
 
 Context Collector
 -----------------
@@ -140,7 +153,7 @@ Google Play Services 6.1.71 (Google Play Services for Froyo)
 2. Select Import Project, select [PROJECT_DIRECTORY]/ContextCollector as parent folder, and click OK.
 3. Go to 
 [PROJECT_DIRECTORY]/ContextCollector/app/src/main/java/edu/cmu/ini/impli_auth/context_collector/util/GlobalVariable.java, and change value of Global variable SERVER_IP as AuthenticationServer IP. 
-4. Connect your Android device (in developer mode) and Run the ContextCollector on the Phone.
+4. Connect your Android device (Personal mobile device) in developer mode and Run the ContextCollector on the Phone.
 
 Third Party App Sample (WatchTV)
 --------------------------------
@@ -155,6 +168,6 @@ Android 4.0.3 API 15 (Minimum requirement)
 
 1. Open Android Studio
 2. Select Import Project, select [PROJECT_DIRECTORY]/WatchTV as parent folder, and click OK.
-3. Connect your Android device (in developer mode) and Run the WatchTV on the Phone.
+3. Connect your Android device (Personal mobile device) in developer mode and Run the WatchTV on the Phone.
 
 
