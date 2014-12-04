@@ -18,6 +18,7 @@ public class LBPHFaceExtractor {
 
 	public LBPHFaceExtractor(String path) {
 		mPath = path;
+		Log.d(TAG, "Start LBPHFaceExtractor");
 	}
 
 	public void saveMat(Mat m) {

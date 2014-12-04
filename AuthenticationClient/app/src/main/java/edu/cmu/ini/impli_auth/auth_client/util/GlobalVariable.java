@@ -1,15 +1,12 @@
 package edu.cmu.ini.impli_auth.auth_client.util;
 
-/**
- * Created by CyrilLee on 11/16/14.
- */
 public class GlobalVariable {
 	private static GlobalVariable instance;
 
 	// Global variable
-	private static String SERVER_IP = "10.0.17.239";
-	private static String PORT = "8080";
-	private static String TEST_PATH = "testImage/";
+	private static final String SERVER_IP = "10.0.17.239";
+	private static final String PORT = "8080";
+	private static final String TEST_PATH = "testImage/";
 
 
 	// Restrict the constructor from being instantiated
@@ -35,6 +32,6 @@ public class GlobalVariable {
 	}
 
 	public String getTestPath() {
-		return this.TEST_PATH;
+		return TEST_PATH;
 	}
 }

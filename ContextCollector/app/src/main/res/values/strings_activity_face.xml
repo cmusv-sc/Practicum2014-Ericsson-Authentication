@@ -3,21 +3,7 @@
     <string name="SWholePicture">Please take 5 pictures for yourself</string>
     <string name="SPictureLeft">You have %d pictures left.</string>
     <string name="SPictureDone">Done picture taking, Go for submitting!</string>
-    <string name="BLANK"></string>
     <string name="SPictake">Take Picture</string>
+    <string name="SPictaking">Taking Picture</string>
     <string name="SSubmit">Submit</string>
-    <string name="STrain">Train</string>
-    <string name="SViewAll">View all faces</string>
-    <string name="SSearch">Search</string>
-    <string name="SDelete">Delete</string>
-    <string name="SEnter">Enter face name, then pres Rec</string>
-    <string name="SStopTrain">Stop Training</string>
-    <string name="SStopSearch">Stop Search</string>
-    <string name="Straininig">Training...</string>
-    <string name="SCanntoPredic">More then one face is needed to predict</string>
-    <string name="SIdle">Idle</string>
-    <string name="SFaceName">Face name:</string>
-    <string name="SSearching">Searching</string>
-    <string name="SFrontCamera">Front Camera</string>
-    <string name="SBackCamera">Back Camera</string>
 </resources>

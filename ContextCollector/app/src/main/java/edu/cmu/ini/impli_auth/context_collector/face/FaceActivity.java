@@ -31,47 +31,42 @@ import edu.cmu.ini.impli_auth.context_collector.util.*;
 public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
 	private static final String TAG = "ContextCollector::FaceActivity";
-	private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
 
 	private static final int TRAINING = 0;
 	private static final int IDLE = 1;
+	private int faceState = IDLE;
 
 	private static final int frontCam = 0;
 	private static final int backCam = 1;
+	private int mChooseCamera = frontCam;
+	private CameraView mOpenCvCameraView;
 
 	private static final int MAX_PIC = 5;
+	private int countImages = 0;
 
+	private Handler mHandler;
 	private static final int FINISH_TRAINING = 0;
 	private static final int TRAINING_STATE = 1;
 
-	private int countImages = 0;
 
-	private int faceState = IDLE;
-
+	LBPHFaceExtractor fe;
 	private Mat mRgba;
 	private Mat mGray;
 	private CascadeClassifier mJavaDetector;
-
+	private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
 	private static final float RELATIVE_FACE_SIZE = 0.2f;
 	private int mAbsoluteFaceSize = 0;
 
-	String mPath = "";
-
-	private CameraView mOpenCvCameraView;
-	private int mChooseCamera = frontCam;
+	private String mPath = "";
 
 	Bitmap mBitmap;
-	Handler mHandler;
-
-	LBPHFaceExtractor fe;
 	TextView textState;
 	Button pictakeButton;
 	Button submitButton;
 	ImageButton imCamera;
 
-
-	private SendRegistrationFormTask sendRegistrationFormTask;
 	private GlobalVariable gv;
+	private SendRegistrationFormTask sendRegistrationFormTask;
 
 	private String mUsername;
 	private String mPassword;
@@ -106,8 +101,9 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 						if (mJavaDetector.empty()) {
 							Log.e(TAG, "Failed to load cascade classifier");
 							mJavaDetector = null;
-						} else
+						} else {
 							Log.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
+						}
 
 						if(!cascadeDir.delete()) {
 							Log.e("Error", "Error deleting face model cascade directory");
@@ -145,6 +141,11 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		mOpenCvCameraView = (CameraView) findViewById(R.id.cameraView);
 		mOpenCvCameraView.setCvCameraViewListener(this);
 
+		if(mOpenCvCameraView.numberCameras() < 2) {
+			Log.e(TAG, "You are supposed to have front and back camera");
+		}
+
+
 		mHandler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
@@ -169,7 +170,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			@Override
 			public void onClick(View view) {
 				faceState = TRAINING;
-				textState.setText("Taking Picture");
+				textState.setText(R.string.SPictaking);
 			}
 		});
 
