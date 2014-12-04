@@ -360,6 +360,10 @@ public class LoginActivity extends Activity{
 
         }
 
+        /**
+         * Method to handle login result.
+         * @param success A boolean value indicates login status.
+         */
         @Override
         protected void onPostExecute(final Boolean success) {
             mShareSecretLoginTask = null;
