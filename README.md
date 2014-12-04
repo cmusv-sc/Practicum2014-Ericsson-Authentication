@@ -59,7 +59,7 @@ This will start a Tomcat server from Eclipse. Easier for testing.
 
 1. Open Eclipse
 2. Go to File > Import... > General > Existing projects into workspace > Select [PROJECT_DIRECTORY]/AuthenticationServer
-3. Waiting for build, and run it.
+3. Wait for build, and run it.
 
 MySQL Database
 --------------
@@ -127,6 +127,8 @@ IDE, Android Studio (suggested)
 
 Android 4.0.3 API 15 (Minimum requirement)
 - With Android Studio, Go to Tools > Android > SDK Manager, to install required SDK.
+
+Download Android Studio from https://developer.android.com/sdk/installing/studio.html
 
 ####Build Instructions
 
