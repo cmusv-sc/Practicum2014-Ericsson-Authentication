@@ -146,7 +146,7 @@ IDE, Android Studio (suggested)
 Android 4.0.3 API 15 (Minimum requirement)
 - With Android Studio, Go to Tools > Android > SDK Manager, to install required SDK.
 
-Google Play Services 6.1.71
+Google Play Services 6.1.71 (Google Play Services for Froyo)
 - With Android Studio, Go to Tools > Android > SDK Manager, to install required package.
 
 ####Build Instructions
