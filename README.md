@@ -24,22 +24,6 @@ Install Eclipse IDE for Java EE Developers
 https://eclipse.org/downloads/index-developer.php
 ```
 
-#### Install additional software for Web Tool Platform (WTP)
-
-1. Open Eclipse > Help > Install New Software...
-
-2. Work with: Select All available sites
-
-3. Select "Web, XML, Java EE Development and OSGi Enterprise Development" category
-
-4. Select..
-
-  1. Eclipse Java EE Developer Tools
-  2. Eclipse Java Web Developer Tools
-  3. Eclipse Web Developer Tools
-  4. JST Server Adapters
-  5. JST Server Adapters Extensions
-
 ## Setup Tomcat on Eclipse
 
 #### Install Tomcat 7.0
@@ -104,6 +88,7 @@ source <script name>;
 5. grant a user with the right of accessing the database with password
 ```
 GRANT ALL ON <db name>.* TO 'user'@'localhost' IDENTIFIED BY 'some_password';
+
 FLUSH PRIVILEGES;
 ```
 ###### In AuthenticationServer/src/main/resources/config.properties
