@@ -7,13 +7,19 @@ We have 5 Components (Authentication Server, Authentication Client, Personal Con
 
 Except for Third Party App server program, we have Authentication Server, Authentication Client, Personal Context Collector program, and sample Third Party App client into this package.
 
+Downloads
+---------
+```
+git clone https://github.com/cmusv-sc/Practicum2014-Ericsson-Authentication.git
+```
+
 
 Authentication Server
 ---------------------
 
 #### Required Software
 
-Install Eclipse Java EE developer
+Install Eclipse IDE for Java EE Developers
 ```
 https://eclipse.org/downloads/index-developer.php
 ```
@@ -40,18 +46,20 @@ https://eclipse.org/downloads/index-developer.php
 ```
 http://tomcat.apache.org/download-70.cgi
 ```
-
-1. Go to Preferences > Server(left side bar) > Runtime Environments > Add..
-2. Select Apache Tomcat 7.0
-3. Select Tomcat 7.0 unpacked folder
-4. Finish
+1. Open Eclipse
+2. Go to Preferences > Server(left side bar) > Runtime Environments > Add..
+3. Select Apache Tomcat 7.0
+4. Select Tomcat 7.0 unpacked folder
+5. Finish
 
 This will start a Tomcat server from Eclipse. Easier for testing.
 
 
 #### Build Instructions
 
-1. Go to File > Import... > General > Existing projects into workspace > Select working directory
+1. Open Eclipse
+2. Go to File > Import... > General > Existing projects into workspace > Select [PROJECT_DIRECTORY]/AuthenticationServer
+3. Waiting for build, and run it.
 
 MySQL Database
 --------------
