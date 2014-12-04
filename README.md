@@ -150,7 +150,7 @@ Android 4.0.3 API 15 (Minimum requirement)
 1. Open Android Studio
 2. Select Import Project, select [PROJECT_DIRECTORY]/ContextCollector as parent folder, and click OK.
 3. Go to 
-[PROJECT_DIRECTORY]/ContextCollector/app/src/main/java/edu/cmu/ini/impli_auth/context_collector/util/GlobalVariable.java, and change value of Global variable SERVER_IP as AuthenticationServer IP. 
+[PROJECT_DIRECTORY]/ContextCollector/app/src/main/java/edu/cmu/ini/impli_auth/context_collector/util/GlobalVariable.java, and change value of Global variable SERVER_IP as AuthenticationServer IP. [If you are using your local machine as Authentication Server use IP of your machine]
 
 Third Party App Sample (WatchTV)
 --------------------------------
