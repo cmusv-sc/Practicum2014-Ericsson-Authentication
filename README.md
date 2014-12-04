@@ -13,9 +13,45 @@ Authentication Server
 
 #### Required Software
 
-Authentication Server is supposed to run over TomCat servlet container and JBoss module.
+Install Eclipse Java EE developer
+```
+https://eclipse.org/downloads/index-developer.php
+```
+
+#### Install additional software for Web Tool Platform (WTP)
+
+1. Open Eclipse > Help > Install New Software...
+
+2. Work with: Select All available sites
+
+3. Select "Web, XML, Java EE Development and OSGi Enterprise Development" category
+
+4. Select..
+
+  1. Eclipse Java EE Developer Tools
+  2. Eclipse Java Web Developer Tools
+  3. Eclipse Web Developer Tools
+  4. JST Server Adapters
+  5. JST Server Adapters Extensions
+
+## Setup Tomcat on Eclipse
+
+#### Install Tomcat 7.0
+```
+http://tomcat.apache.org/download-70.cgi
+```
+
+1. Go to Preferences > Server(left side bar) > Runtime Environments > Add..
+2. Select Apache Tomcat 7.0
+3. Select Tomcat 7.0 unpacked folder
+4. Finish
+
+This will start a Tomcat server from Eclipse. Easier for testing.
+
 
 #### Build Instructions
+
+1. Go to File > Import... > General > Existing projects into workspace > Select working directory
 
 MySQL Database
 --------------

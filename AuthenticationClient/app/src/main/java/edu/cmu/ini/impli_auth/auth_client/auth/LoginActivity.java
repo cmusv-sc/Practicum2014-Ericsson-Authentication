@@ -11,6 +11,7 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -37,7 +38,6 @@ import edu.cmu.ini.impli_auth.auth_client.*;
 import edu.cmu.ini.impli_auth.auth_client.face.*;
 import edu.cmu.ini.impli_auth.auth_client.util.*;
 
-
 /**
  * Login the authentication client on share resource. Obtain the share secret for
  * future communication.
@@ -62,7 +62,6 @@ public class LoginActivity extends Activity{
 
     // Shared preference.
     private SharedPreferences sharedPref;
-    private String registered;
 
     //Authentication server ip.
 	private GlobalVariable gv = GlobalVariable.getInstance();
@@ -97,7 +96,7 @@ public class LoginActivity extends Activity{
     protected void onResume(){
         super.onResume();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
-        registered = sharedPref.getString(getString(R.string.registered_flag),null);
+        String registered = sharedPref.getString(getString(R.string.registered_flag),null);
         Toast.makeText(LoginActivity.this, registered,
                 Toast.LENGTH_LONG).show();
         if (registered != null){
@@ -116,10 +115,12 @@ public class LoginActivity extends Activity{
      * Attempts to sign in.
      */
     public void attemptLogin() {
+        // Try hiding soft input from window. Continue even if failed.
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        if (mAuthTask != null) {
-            return;
+        View focus = getCurrentFocus();
+        if(focus != null) {
+            IBinder windowToken = focus.getWindowToken();
+            inputMethodManager.hideSoftInputFromWindow(windowToken, 0);
         }
 
         // Reset errors.
@@ -206,8 +207,7 @@ public class LoginActivity extends Activity{
     }
 
     /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
+     * Represents an asynchronous login task used to authenticate the client on share resource.
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -249,9 +249,7 @@ public class LoginActivity extends Activity{
                 HttpResponse response = httpclient.execute(httppost);
                 HttpEntity entity = response.getEntity();
 
-                //
-                // Read the contents of an entity and return it as a String.
-                //
+                // Handle the response.
                 final String content = EntityUtils.toString(entity);
                 runOnUiThread(new Runnable() {
 
@@ -267,22 +265,11 @@ public class LoginActivity extends Activity{
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putString(getString(R.string.share_perf_key), elements[1]);
                     editor.putString(getString(R.string.registered_flag), "True");
-                    editor.commit();
+                    editor.apply();
                     return true;
                 } else {
                     return false;
                 }
-
-				/*final String the_string_response = convertResponseToString(response);
-				runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-						Toast.makeText(CamTestActivity.this, "Response " + the_string_response,
-								Toast.LENGTH_LONG).show();
-					}
-				});*/
-
             }catch(final Exception e){
                 runOnUiThread(new Runnable() {
 
@@ -304,11 +291,10 @@ public class LoginActivity extends Activity{
             showProgress(false);
 
             if (success) {
-                //finish();
                 Intent camTestActivity = new Intent(LoginActivity.this, FaceActivity.class);
                 startActivity(camTestActivity);
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.setError("Failed to authenticate with server");
                 mPasswordView.requestFocus();
             }
         }
@@ -321,8 +307,7 @@ public class LoginActivity extends Activity{
     }
 
     /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
+     * Represents an asynchronous login task using share secret.
      */
     public class ShareSecretLoginTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -348,9 +333,7 @@ public class LoginActivity extends Activity{
                 HttpResponse response = httpclient.execute(httppost);
                 HttpEntity entity = response.getEntity();
 
-                //
-                // Read the contents of an entity and return it as a String.
-                //
+                // Handle response.
                 final String content = EntityUtils.toString(entity);
                 runOnUiThread(new Runnable() {
 
@@ -383,7 +366,7 @@ public class LoginActivity extends Activity{
             showProgress(false);
 
             if (success) {
-                //finish();
+                // Redirect to face activity after login.
                 Intent camTestActivity = new Intent(LoginActivity.this, FaceActivity.class);
                 startActivity(camTestActivity);
             }
