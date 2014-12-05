@@ -285,10 +285,22 @@ public class SqlConnection {
 		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
-		String sql = String
-				.format("insert into DEVICE (NAME, IMEI,CREDENTIAL,USER_ID) values ('%s', '%s', '%s', %d)",
-						name, IMEI, credential, userId);
-		statement.executeUpdate(sql);
+		String sql = String.format("select ID from DEVICE where IMEI='%s'", IMEI);
+		resultSet = statement.executeQuery(sql);
+		if(resultSet.next()){
+			// Update when exist.
+			sql = String
+					.format("replace into DEVICE values (%d, '%s', '%s', '%s', %d)",
+							resultSet.getInt("ID"), name, IMEI, credential, userId);
+			statement.executeUpdate(sql);
+		} else {
+			// Insert if not.
+			sql = String
+					.format("insert into DEVICE (NAME, IMEI,CREDENTIAL,USER_ID) values ('%s', '%s', '%s', %d)",
+							name, IMEI, credential, userId);
+			statement.executeUpdate(sql);
+		}
+		
 	}
 
 	/*

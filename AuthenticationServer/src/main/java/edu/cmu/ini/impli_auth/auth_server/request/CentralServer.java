@@ -109,7 +109,7 @@ public class CentralServer {
 					sb.append(resultSet.getString("name"));
 					sb.append("</td><td>");
 					sb.append(String
-							.format("<form action=\"/CentralServer/json/deleteResourceById\" method=\"POST\"><input type=\"hidden\" name=\"id\" value=\"%s\"><input type=\"submit\" value=\"Submit\"></form>",
+							.format("<form action=\"/CentralServer/json/deleteResourceById\" method=\"POST\"><input type=\"hidden\" name=\"id\" value=\"%s\"><input type=\"submit\" value=\"Delete\"></form>",
 									resultSet.getString("id")));
 					sb.append("</td></tr>");
 				}
