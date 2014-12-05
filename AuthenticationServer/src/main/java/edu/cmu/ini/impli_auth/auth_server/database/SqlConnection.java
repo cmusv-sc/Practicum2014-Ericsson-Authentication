@@ -45,18 +45,18 @@ public class SqlConnection {
 			resource_id = result.getInt("RESOURCE_ID");
 			initial_steps = result.getInt("INITIAL_STEP");
 			fresh = result.getInt("FRESH");
-			/*
-			 * String sqlCountRows =
-			 * String.format("select COUNT(*) from PASSIVE_USER where USER_ID = %d"
-			 * , id); result = statement.executeQuery(sqlCountRows); device_no =
-			 * result.getInt("COUNT");
-			 */
+
+			String sqlCountRows = String.format(
+					"select COUNT(*) as DEVICE_NO from PASSIVE_USER where USER_ID = %d", id);
+			result = statement.executeQuery(sqlCountRows);
+			result.next();
+			device_no = result.getInt("DEVICE_NO");
 
 			String sql2 = String.format(
 					"insert into ACTIVE_USER (USER_ID,RESOURCE_ID,INITIAL_STEPS,CURRENT_STEPS,"
 							+ "MOVING,FRESH,TIMESTAMP,DEVICES_NO,AUTHENTICITY)"
 							+ "values (%d,%d,%d,%d,1,%d,NOW(),%d,%d)", id,
-					resource_id, initial_steps, initial_steps, fresh, 1, auth);
+					resource_id, initial_steps, initial_steps, fresh, device_no, auth);
 			statement.executeUpdate(sql2);
 
 			String sql3 = String.format(

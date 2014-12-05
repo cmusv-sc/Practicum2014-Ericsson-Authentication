@@ -39,7 +39,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
 	private static final int frontCam = 0;
 	private static final int backCam = 1;
-	private int mChooseCamera = frontCam;
+	private int mChooseCamera = backCam;
 	private CameraView mOpenCvCameraView;
 
 	LBPHFaceExtractor fe;
