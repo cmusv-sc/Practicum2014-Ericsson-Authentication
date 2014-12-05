@@ -123,10 +123,13 @@ Authentication Client
 ####Required Software
 IDE, Android Studio (suggested)
 
+Download Android Studio from https://developer.android.com/sdk/installing/studio.html
+
 Android 4.0.3 API 15 (Minimum requirement)
 - With Android Studio, Go to Tools > Android > SDK Manager, to install required SDK.
 
-Download Android Studio from https://developer.android.com/sdk/installing/studio.html
+OpenCV Manager (OpenCV hardware optimized support for Android)
+- When you first time lanuch camera view in Authentication Client, it will guide you to Google Play Store to install it.
 
 ####Build Instructions
 
@@ -143,6 +146,9 @@ IDE, Android Studio (suggested)
 
 Android 4.0.3 API 15 (Minimum requirement)
 - With Android Studio, Go to Tools > Android > SDK Manager, to install required SDK.
+
+OpenCV Manager (OpenCV hardware optimized support for Android)
+- When you first time lanuch camera view in Context Collector, it will guide you to Google Play Store to install it.
 
 Google Play Services 6.1.71 (Google Play Services for Froyo)
 - With Android Studio, Go to Tools > Android > SDK Manager, to install required package.
