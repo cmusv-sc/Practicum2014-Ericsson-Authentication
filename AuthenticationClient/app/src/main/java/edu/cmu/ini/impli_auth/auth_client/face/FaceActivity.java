@@ -90,7 +90,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 							Log.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
 						}
 
-						if(!cascadeDir.delete()) {
+						if (!cascadeDir.delete()) {
 							Log.e("Error", "Error deleting face model cascade directory");
 						}
 					} catch (IOException e) {
@@ -128,7 +128,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
 		mOpenCvCameraView.setCvCameraViewListener(this);
 
-		if(mOpenCvCameraView.numberCameras() < 2) {
+		if (mOpenCvCameraView.numberCameras() < 2) {
 			Log.e(TAG, "You are supposed to have front and back camera");
 		}
 
@@ -224,9 +224,9 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		Log.d(TAG, "Face number: " + facesArray.length);
 
 		if ((facesArray.length > 0) && (faceState == SEARCHING)) {
-			if(countSearch < MAX_SEARCH_PIC) {
+			if (countSearch < MAX_SEARCH_PIC) {
 				List<Bitmap> bitmaps = new ArrayList<Bitmap>();
-				for(Rect r : facesArray) {
+				for (Rect r : facesArray) {
 					Mat m = mGray.submat(r);
 					Bitmap mBitmap = Bitmap.createBitmap(m.width(), m.height(),
 							Bitmap.Config.ARGB_8888);
@@ -238,7 +238,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			}
 		}
 
-		for(Rect r : facesArray) {
+		for (Rect r : facesArray) {
 			Core.rectangle(mRgba, r.tl(), r.br(), FACE_RECT_COLOR, 3);
 		}
 		return mRgba;
@@ -248,7 +248,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	private String getSharedResourceCredential() {
 		SharedPreferences sharedPref;
 		sharedPref = PreferenceManager.getDefaultSharedPreferences(FaceActivity.this);
-		return sharedPref.getString(getString(R.string.share_perf_key),null);
+		return sharedPref.getString(getString(R.string.share_perf_key), null);
 	}
 
 	public class SendAuthTask extends AsyncTask<Void, Void, String> {
@@ -267,7 +267,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			String image_str1 = Base64.encodeToString(imageBytesList.get(0), Base64.DEFAULT);
 
 			String image_str2 = "";
-			if(imageBytesList.size() > 1) {
+			if (imageBytesList.size() > 1) {
 				image_str2 = Base64.encodeToString(imageBytesList.get(1), Base64.DEFAULT);
 			}
 
@@ -288,8 +288,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 				// Read the contents of an entity and return it as a String.
 				content = EntityUtils.toString(entity);
 				return content;
-			}
-			catch(Throwable t) {
+			} catch (Throwable t) {
 				t.printStackTrace();
 				Log.d("SendAuthTask", "post image exception!");
 			}
@@ -300,21 +299,19 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		@Override
 		protected void onPostExecute(final String result) {
 			sendAuthTask = null;
-			if(!result.isEmpty()) {
+			if (!result.isEmpty()) {
 				Intent returnIntent = new Intent();
 				String[] extras = result.split(":");
 				returnIntent.putExtra("UserName", extras[0]);
 				returnIntent.putExtra("Prob", Double.parseDouble(extras[1]));
 				returnIntent.putExtra("Access", extras[2]);
-				if(extras[0].isEmpty()) {
+				if (extras[0].isEmpty()) {
 					setResult(RESULT_CANCELED, returnIntent);
-				}
-				else {
+				} else {
 					setResult(RESULT_OK, returnIntent);
 				}
 				finish();
-			}
-			else {
+			} else {
 				Log.d("SendAuthTask", "somthing wrong during postExecution!");
 			}
 		}
