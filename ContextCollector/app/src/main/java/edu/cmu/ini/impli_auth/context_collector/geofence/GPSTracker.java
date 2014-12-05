@@ -3,6 +3,8 @@ package edu.cmu.ini.impli_auth.context_collector.geofence;
 import android.app.*;
 import android.content.*;
 import android.location.*;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.*;
 import android.util.*;
 import android.widget.*;
@@ -16,57 +18,44 @@ import edu.cmu.ini.impli_auth.context_collector.util.*;
 public class GPSTracker extends Service implements LocationListener, GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener{
 
- 
-    // flag for GPS status
-    boolean canGetLocation = false;
-
-    
+    // Object for locationClient
     LocationClient mLocationClient;
-
     // Do we want debug toast messages?
     boolean isDebugMsg;
-
     // Do we want dynamic location updates?
     boolean isDynamic;
-
+    // Object for InfoJsonSend class defined in the same package used to send JSON messages
     InfoJsonSend jsonOutput;
-	String ipAddress, ipAddressMobile;
+    // Ipaddress of Server
+	String ipAddress;
 	IBinder mBinder = new LocalBinder();
+    // Location Request object
 	LocationRequest mLocationRequest;
 	boolean mUpdatesRequested;
+    // Intent for StepCounter service
     Intent stepCounterService;
 
+    WifiManager wifiManager;
+    WifiInfo wifiInfo;
+    String wifiSsid = "";
 
-    private static final long MIN_DISTANCE = 10; // 0 meters
-    
-    private static final int MILLISECONDS_PER_SECOND = 1000;
-    // Update frequency in seconds
-    public static final int UPDATE_INTERVAL_IN_SECONDS = 10;
-    // Update frequency in milliseconds
-    private static final long UPDATE_INTERVAL =
-            MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS;
-    // The fastest update frequency, in seconds
-    private static final int FASTEST_INTERVAL_IN_SECONDS = 10;
-    // A fast frequency ceiling in milliseconds
-    private static final long FASTEST_INTERVAL =
-            MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;
- 
-    // The minimum time between updates in milliseconds
-
+    private static final long MIN_DISTANCE = 10;
+    // Boolean to check if service is running
     private boolean serviceNotRunning = true;
+    // Broadcast Receiver object to get direction updates
     private SensorServiceReceiver sensorReceiverDirection;
+    // Broadcast Receiver object to get step updates
     private SensorServiceReceiver sensorReceiverStep;
     public int stepCounter;
     public int angle;
-
     private GlobalVariable gv = GlobalVariable.getInstance();
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
     	ipAddress = gv.getAuthURL() + gv.getLocationURL();
     	int updateInterval = 10;
     	jsonOutput = new InfoJsonSend(this, ipAddress);
-        mLocationClient = new LocationClient(this, this, this);	
-
+        mLocationClient = new LocationClient(this, this, this);
         
         mLocationRequest = LocationRequest.create();
         // Use high accuracy
@@ -89,14 +78,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 
         return Service.START_STICKY;
     }
-  
-     
-    public boolean canGetLocation() {
-        return this.canGetLocation;
-    }
-     
-    
- 
+
     @Override
     public void onLocationChanged(Location location) {
     	Log.i("cellPhoneInfo", "Location Changed");
@@ -116,7 +98,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
              * The current Activity is the listener, so
              * the argument is "this".
              */
-            mLocationClient.removeLocationUpdates((LocationListener)this);
+            mLocationClient.removeLocationUpdates(this);
         }
     	mLocationClient.disconnect();
         stopService();
@@ -130,11 +112,10 @@ GooglePlayServicesClient.OnConnectionFailedListener{
         return mBinder;
     }
 
-
     public class LocalBinder extends Binder {
-    	  public GPSTracker getServerInstance() {
-    	   return GPSTracker.this;
-    	  }
+//    	  public GPSTracker getServerInstance() {
+//    	   return GPSTracker.this;
+//    	  }
     	 }
 
 	@Override
@@ -145,9 +126,12 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 		
 	}
 
-    /*
-    Play services when connected can get the location updates. Hence this method is effectively called
-    first. We start the asyn task here. After this the task is executed onLocationChanged method.
+    /**
+     * Play services when connected can get the location updates. Hence this method is effectively
+     * called first. We start the async task here. After this the task is executed onLocationChanged
+     * method.
+     * @param connectionHint Bundle of data provided to clients by Google Play services.
+     *                       May be null if no content is provided by the service.
      */
 
 	@Override
@@ -166,26 +150,28 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 		
 	}
 
-    public Location getLocation(){
-        return mLocationClient.getLastLocation();
-    }
-
-    /*
-    Async task to sent post messages. Network messages cannot be sent from the UI thread. So we create
-    an async task to send the messages. Debug print from step counter.
+    /**
+     * Async task to sent post messages. Network messages cannot be sent from the UI thread.
+     * So we create an async task to send the messages. Debug print from step counter.
      */
 
     private class SendPost extends AsyncTask<Void,Integer,Double>{
         @Override
         protected Double doInBackground(Void... voids) {
-            jsonOutput.postMobileUsage(mLocationClient.getLastLocation(),ipAddress,stepCounter);
-            System.out.println(stepCounter);
+            wifiManager = (WifiManager)getSystemService(WIFI_SERVICE);
+            wifiInfo = wifiManager.getConnectionInfo();
+
+            if(wifiInfo.getSSID() != null)
+                wifiSsid = wifiInfo.getSSID();
+
+            jsonOutput.postMobileUsage(mLocationClient.getLastLocation(),ipAddress,stepCounter,
+                                                                                    wifiSsid);
             return null;
         }
     }
 
-    /*
-    Have to unregister receivers everytime the service stops. Hence done separately.
+    /**
+     * Have to unregister receivers everytime the service stops. Hence done separately.
      */
 
     private void stopService(){
@@ -197,9 +183,10 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 
         }
     }
-    /*
-    Starting the SensorService. We have to register receivers and hence starting the service is done
-    separately.
+
+    /**
+     * Starting the SensorService. We have to register receivers and hence starting the service
+     * is done separately.
      */
 
     private void startService() {
@@ -212,10 +199,11 @@ GooglePlayServicesClient.OnConnectionFailedListener{
         }
 
     }
-    /*
-    Registering the broadcast receiver for SensorService. This receiver is supposed to listen on
-    updates from the SensorService service. The intent filters are defined in the Manifest file.
-     One if for step counter and one for orientation.
+
+    /**
+     * Registering the broadcast receiver for SensorService. This receiver is supposed to listen on
+     * updates from the SensorService service. The intent filters are defined in the Manifest file.
+     * One if for step counter and one for orientation.
      */
 
     private void registerBroadCastReceivers() {
@@ -227,9 +215,9 @@ GooglePlayServicesClient.OnConnectionFailedListener{
         registerReceiver(sensorReceiverStep, stepsFilter);
     }
 
-    /*
-    Broadcast Receiver for Sensor Service to get the value of step counter and orientation.
-    They are explicitly sent from the SensorService as intents.
+    /**
+     * Broadcast Receiver for Sensor Service to get the value of step counter and orientation.
+     * They are explicitly sent from the SensorService as intents.
      */
 
     public class SensorServiceReceiver extends BroadcastReceiver {
@@ -244,7 +232,3 @@ GooglePlayServicesClient.OnConnectionFailedListener{
     }
  
 }
-
-
-
-

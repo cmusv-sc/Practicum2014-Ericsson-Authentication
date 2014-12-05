@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- From: file:/Users/CyrilLee/Desktop/USA%20Dream%20Realize/CMU/2014%20Fall/14-798%20INI%20MSIT%20Project%20Practicum/Practicum2014-Ericsson-Authentication/ContextCollector/openCVLibrary249/src/main/res/values/attrs.xml -->
+    <!-- From: file:/Users/aloknerurkar/Documents/Practicum2014-Ericsson-Authentication/ContextCollector/openCVLibrary249/src/main/res/values/attrs.xml -->
     <eat-comment />
 
     <declare-styleable name="CameraBridgeViewBase">

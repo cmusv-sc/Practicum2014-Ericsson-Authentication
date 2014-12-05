@@ -16,10 +16,10 @@ public class MainActivity extends Activity {
 
     Button logout;
     SharedPreferences sharedPref;
+    //Boolean to check if GPS Tracker service is running
     boolean serviceRunning;
     Intent i;
 
-    private boolean serviceNotRunning = true;
 
 
     @Override
@@ -37,8 +37,8 @@ public class MainActivity extends Activity {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.clear();
                 editor.commit();
-
-                //TODO: kill started services here
+                //Stop services
+                stopService(i);
 
                 // Send user back to login page.
                 Intent loginActivity = new Intent(MainActivity.this, LoginActivity.class);
