@@ -7,8 +7,7 @@ public class User {
 	String email;
 	String username;
 	String password;
-	
-	
+
 	public String getFirstName() {
 		return first_name;
 	}
@@ -16,7 +15,7 @@ public class User {
 	public void setFirstName(String name) {
 		this.first_name = name;
 	}
-	
+
 	public String getLastName() {
 		return last_name;
 	}
@@ -51,7 +50,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [name="+first_name+" "+last_name+ ", Email=" + email + "]";
+		return "User [name=" + first_name + " " + last_name + ", Email="
+				+ email + "]";
 	}
 
 }

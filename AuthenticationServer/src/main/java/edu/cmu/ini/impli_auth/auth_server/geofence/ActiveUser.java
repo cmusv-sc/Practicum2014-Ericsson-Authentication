@@ -7,7 +7,7 @@ public class ActiveUser {
 	String lat;
 	String lon;
 	int user_id;
-	
+
 	public int getID() {
 		return id;
 	}
@@ -15,7 +15,7 @@ public class ActiveUser {
 	public void setID(int id) {
 		this.id = id;
 	}
-	
+
 	public String getNSSID() {
 		return NSSID;
 	}
@@ -31,7 +31,7 @@ public class ActiveUser {
 	public void setLat(String name) {
 		this.lat = name;
 	}
-	
+
 	public String getLon() {
 		return lon;
 	}
@@ -47,7 +47,7 @@ public class ActiveUser {
 	public void setUser_ID(int user_id) {
 		this.user_id = user_id;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Active User [nssid=" + NSSID + ", USER_ID=" + user_id + "]";

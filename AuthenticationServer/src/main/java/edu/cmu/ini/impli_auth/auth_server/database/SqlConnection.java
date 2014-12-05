@@ -24,7 +24,7 @@ public class SqlConnection {
 		PASSWORD = configValue.getDBPassword();
 		DRIVER_CLASS = configValue.getDBDriverClass();
 	}
-	
+
 	public boolean writeToAUT(int id, int auth) throws Exception {
 		ResultSet result;
 		int resource_id, initial_steps, fresh;
@@ -32,40 +32,46 @@ public class SqlConnection {
 		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
-		
+
 		System.out.println("passive_user id is " + id);
-		String sql1 = String.format("select * from PASSIVE_USER where USER_ID = %d", id);
+		String sql1 = String.format(
+				"select * from PASSIVE_USER where USER_ID = %d", id);
 		result = statement.executeQuery(sql1);
-		
-		if(result.first()){
+
+		if (result.first()) {
 			System.out.println("the user is passive_user");
-			//User exists in the Passive User table. Now we need to delete him from the PASSIVE USER and insert him into ACTIVE USER.
+			// User exists in the Passive User table. Now we need to delete him
+			// from the PASSIVE USER and insert him into ACTIVE USER.
 			resource_id = result.getInt("RESOURCE_ID");
 			initial_steps = result.getInt("INITIAL_STEP");
 			fresh = result.getInt("FRESH");
 			/*
-			String sqlCountRows = String.format("select COUNT(*) from PASSIVE_USER where USER_ID = %d", id);
-			result = statement.executeQuery(sqlCountRows);
-			device_no = result.getInt("COUNT");
-			*/
-			
-			String sql2 = String.format("insert into ACTIVE_USER (USER_ID,RESOURCE_ID,INITIAL_STEPS,CURRENT_STEPS,"
-													+ "MOVING,FRESH,TIMESTAMP,DEVICES_NO,AUTHENTICITY)"
-													+ "values (%d,%d,%d,%d,1,%d,NOW(),%d,%d)",id,resource_id,
-													initial_steps,initial_steps,fresh,1,auth);
+			 * String sqlCountRows =
+			 * String.format("select COUNT(*) from PASSIVE_USER where USER_ID = %d"
+			 * , id); result = statement.executeQuery(sqlCountRows); device_no =
+			 * result.getInt("COUNT");
+			 */
+
+			String sql2 = String.format(
+					"insert into ACTIVE_USER (USER_ID,RESOURCE_ID,INITIAL_STEPS,CURRENT_STEPS,"
+							+ "MOVING,FRESH,TIMESTAMP,DEVICES_NO,AUTHENTICITY)"
+							+ "values (%d,%d,%d,%d,1,%d,NOW(),%d,%d)", id,
+					resource_id, initial_steps, initial_steps, fresh, 1, auth);
 			statement.executeUpdate(sql2);
-			
-			String sql3 = String.format("delete from PASSIVE_USER where USER_ID = %d", id);
+
+			String sql3 = String.format(
+					"delete from PASSIVE_USER where USER_ID = %d", id);
 			statement.executeUpdate(sql3);
 			return true;
 		}
-		return false;		
+		return false;
 	}
-	
+
 	/*
-	 * Read Resource reads all the resources to get their location. In future the resources
-	 * will be arranged based on their location. Only the resources near the query location
-	 * will be considered. They will be checked for possible options for users.
+	 * Read Resource reads all the resources to get their location. In future
+	 * the resources will be arranged based on their location. Only the
+	 * resources near the query location will be considered. They will be
+	 * checked for possible options for users.
 	 */
 
 	public ResultSet readResource() throws Exception {
@@ -80,24 +86,25 @@ public class SqlConnection {
 		return returnResult;
 
 	}
-	
-	public ResultSet readPassiveUserByUserID(int userID) throws Exception{
+
+	public ResultSet readPassiveUserByUserID(int userID) throws Exception {
 		ResultSet returnResult;
 
 		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
-		
-		String sql1 = String.format("select * from PASSIVE_USER where USER_ID = %d", userID);
+
+		String sql1 = String.format(
+				"select * from PASSIVE_USER where USER_ID = %d", userID);
 		returnResult = statement.executeQuery(sql1);
 		return returnResult;
 	}
-	
-	
+
 	/*
-	 * This method is used to check if the user is already present in the PASSIVE_USER. If the 
-	 * user is present in the passive user table we just update the fresh and the step counter value.
-	 * This will be used in deciding the authenticity parameter.
+	 * This method is used to check if the user is already present in the
+	 * PASSIVE_USER. If the user is present in the passive user table we just
+	 * update the fresh and the step counter value. This will be used in
+	 * deciding the authenticity parameter.
 	 */
 
 	public ResultSet readPassiveUser(String imei) throws Exception {
@@ -118,18 +125,17 @@ public class SqlConnection {
 		} else
 			id = -1;
 
-
 		returnResult = null;
 		String sql2 = String.format(
 				"SELECT * FROM PASSIVE_USER WHERE USER_ID = %d", id);
 		returnResult = statement.executeQuery(sql2);
-		if(returnResult.next())
+		if (returnResult.next())
 			return returnResult;
-		else 
+		else
 			return null;
-		
+
 	}
-	
+
 	/*
 	 * If the above method does say that the user is present in the PASSIVE_USER
 	 * table then the following method is used to update the PASSIVE_USER.
@@ -153,7 +159,7 @@ public class SqlConnection {
 			} else
 				id = -1;
 		}
-		System.out.println("ID in update passive user"+id);
+		System.out.println("ID in update passive user" + id);
 		String sql2 = String.format(
 				"UPDATE PASSIVE_USER SET INITIAL_STEP = %d, "
 						+ "FRESH = FRESH + 1, " + "TIMESTAMP = NOW(), "
@@ -164,11 +170,11 @@ public class SqlConnection {
 		statement.executeUpdate(sql2);
 
 	}
-	
+
 	/*
-	 * If the user is not present in the PASSIVE_USER table and he triggers the geo-fence 
-	 * of any resource, we will add him to the PASSIVE_USER table to track him and process
-	 * the authentication request. 
+	 * If the user is not present in the PASSIVE_USER table and he triggers the
+	 * geo-fence of any resource, we will add him to the PASSIVE_USER table to
+	 * track him and process the authentication request.
 	 */
 
 	public void writePUT(PassiveUser user, int resource_id) throws Exception {
@@ -198,7 +204,6 @@ public class SqlConnection {
 		System.out.println("INSERTED TO PUT");
 	}
 
-
 	public void writeDataBase(int id, String picture_path) throws Exception {
 		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -217,10 +222,11 @@ public class SqlConnection {
 				picture_path, id);
 		statement.executeUpdate(sql);
 	}
-	
+
 	/*
-	 * The method authenticates a user by the username and password of the user. It is a 
-	 * basic check on the username and the password values present in our management database
+	 * The method authenticates a user by the username and password of the user.
+	 * It is a basic check on the username and the password values present in
+	 * our management database
 	 */
 
 	public int authByUsernamePassword(String username, String password)
@@ -237,7 +243,7 @@ public class SqlConnection {
 		} else
 			return -1; // return -1 if auth failed.
 	}
-	
+
 	public ResultSet getUserID(String userName) {
 		ResultSet resultSet = null;
 		try {
@@ -248,21 +254,23 @@ public class SqlConnection {
 			// statements allow to issue SQL queries to the database
 			statement = connect.createStatement();
 			// resultSet gets the result of the SQL query
-			String sql = String.format("select * from USER where USERNAME = %s", userName);
+			String sql = String.format(
+					"select * from USER where USERNAME = %s", userName);
 			resultSet = statement.executeQuery(sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return resultSet;
 	}
-	
+
 	/*
-	 * Along with authenticating the user we also add the device to our device database. This device
-	 * will be the communication link between the user and the authentication server.
+	 * Along with authenticating the user we also add the device to our device
+	 * database. This device will be the communication link between the user and
+	 * the authentication server.
 	 */
 
-	public void registerUser(String username, String password, String firstName, String lastName,
-			String email) throws Exception {
+	public void registerUser(String username, String password,
+			String firstName, String lastName, String email) throws Exception {
 		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
@@ -271,7 +279,7 @@ public class SqlConnection {
 						firstName, lastName, email, username, password);
 		statement.executeUpdate(sql);
 	}
-	
+
 	public void registerDevice(String name, String IMEI, String credential,
 			int userId) throws Exception {
 		Class.forName(DRIVER_CLASS);
@@ -282,10 +290,10 @@ public class SqlConnection {
 						name, IMEI, credential, userId);
 		statement.executeUpdate(sql);
 	}
-	
+
 	/*
-	 * This function is used to authenticate the device based on its physical attributes like 
-	 * its IMEI no and the Shared Key or the Credential. 
+	 * This function is used to authenticate the device based on its physical
+	 * attributes like its IMEI no and the Shared Key or the Credential.
 	 */
 
 	public boolean authDevice(String IMEI, String credential) throws Exception {
@@ -298,12 +306,13 @@ public class SqlConnection {
 		resultSet = statement.executeQuery(sql);
 		return resultSet.next();
 	}
-	
+
 	/*
-	 * Used to register a resource. The admin will have a screen on the resource while setting up the
-	 * resource which he will use to register the resource in the start. At subsequent logins we will
-	 * authenticate the resource based on its physical properties like IMEI no (equivalent) and shared 
-	 * key which we sent while registering.
+	 * Used to register a resource. The admin will have a screen on the resource
+	 * while setting up the resource which he will use to register the resource
+	 * in the start. At subsequent logins we will authenticate the resource
+	 * based on its physical properties like IMEI no (equivalent) and shared key
+	 * which we sent while registering.
 	 */
 
 	public void registerResource(String name, String latitude,
@@ -322,16 +331,16 @@ public class SqlConnection {
 		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
-		String sql = String
-				.format("select * from RESOURCE where USER_ID=%d", id);
+		String sql = String.format("select * from RESOURCE where USER_ID=%d",
+				id);
 		resultSet = statement.executeQuery(sql);
 		return resultSet;
 	}
-	
+
 	/*
-	 * As we mentioned we will be authenticating the resource using the physical attributes of the
-	 * resource. These physical attributes are the NSSID (WiFi SSID) and the Shared Key provided during
-	 * authentication.  
+	 * As we mentioned we will be authenticating the resource using the physical
+	 * attributes of the resource. These physical attributes are the NSSID (WiFi
+	 * SSID) and the Shared Key provided during authentication.
 	 */
 
 	public boolean authByNssidSharedKey(String NSSID, String sharedKey)
@@ -345,10 +354,11 @@ public class SqlConnection {
 		resultSet = statement.executeQuery(sql);
 		return resultSet.next();
 	}
-	
+
 	/*
-	 * Management plane function to delete resources which are registered. This function can be used
-	 * only by the system admin to delete a resource or even update the resource if it is being moved.
+	 * Management plane function to delete resources which are registered. This
+	 * function can be used only by the system admin to delete a resource or
+	 * even update the resource if it is being moved.
 	 */
 
 	public void deleteResourceById(int id) throws Exception {
@@ -368,7 +378,7 @@ public class SqlConnection {
 		}
 		return res;
 	}
-	
+
 	public ResultSet getUser(int id) throws Exception {
 		try {
 			// this will load the MySQL driver, each DB has its own driver
@@ -397,7 +407,7 @@ public class SqlConnection {
 	}
 
 	public List<Integer> getPassiveUsers(String credential) {
-		
+
 		ResultSet result;
 		List<Integer> user_ids = new LinkedList<Integer>();
 		try {
@@ -408,15 +418,19 @@ public class SqlConnection {
 			// statements allow to issue SQL queries to the database
 			statement = connect.createStatement();
 			// resultSet gets the result of the SQL query
-			String sql1 = String.format("select ID from RESOURCE where CREDENTIAL = '%s'", credential);
+			String sql1 = String.format(
+					"select ID from RESOURCE where CREDENTIAL = '%s'",
+					credential);
 			result = statement.executeQuery(sql1);
 			int resource_id;
 			resource_id = result.getInt("ID");
 
-			String sql2 = String.format("select USER_ID from PASSIVE_USER where RESOURCE_ID = %d", resource_id);
+			String sql2 = String.format(
+					"select USER_ID from PASSIVE_USER where RESOURCE_ID = %d",
+					resource_id);
 			result = statement.executeQuery(sql2);
-			
-			while(result.next()){
+
+			while (result.next()) {
 				user_ids.add(result.getInt("USER_ID"));
 			}
 
