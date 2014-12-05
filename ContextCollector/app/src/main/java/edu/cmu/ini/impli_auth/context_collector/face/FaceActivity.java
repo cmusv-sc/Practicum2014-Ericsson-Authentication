@@ -105,7 +105,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 							Log.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
 						}
 
-						if(!cascadeDir.delete()) {
+						if (!cascadeDir.delete()) {
 							Log.e("Error", "Error deleting face model cascade directory");
 						}
 					} catch (IOException e) {
@@ -141,7 +141,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		mOpenCvCameraView = (CameraView) findViewById(R.id.cameraView);
 		mOpenCvCameraView.setCvCameraViewListener(this);
 
-		if(mOpenCvCameraView.numberCameras() < 2) {
+		if (mOpenCvCameraView.numberCameras() < 2) {
 			Log.e(TAG, "You are supposed to have front and back camera");
 		}
 
@@ -152,8 +152,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 				if (msg.what == FINISH_TRAINING) {
 					pictakeButton.setVisibility(View.INVISIBLE);
 					submitButton.setVisibility(View.VISIBLE);
-				}
-				else if(msg.what == TRAINING_STATE) {
+				} else if (msg.what == TRAINING_STATE) {
 					textState.setText(msg.obj.toString());
 				}
 			}
@@ -279,7 +278,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			if (countImages < MAX_PIC) {
 				countImages++;
 				fe.saveMat(m);
-				if(MAX_PIC - countImages == 0) {
+				if (MAX_PIC - countImages == 0) {
 					Message msg = new Message();
 					msg.what = TRAINING_STATE;
 					msg.obj = getString(R.string.SPictureDone);
@@ -288,8 +287,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 					msg = new Message();
 					msg.what = FINISH_TRAINING;
 					mHandler.sendMessage(msg);
-				}
-				else {
+				} else {
 					Message msg = new Message();
 					msg.what = TRAINING_STATE;
 					String formatStr = getString(R.string.SPictureLeft);
@@ -298,7 +296,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 				}
 			}
 		}
-		for(Rect r : facesArray) {
+		for (Rect r : facesArray) {
 			Core.rectangle(mRgba, r.tl(), r.br(), FACE_RECT_COLOR, 3);
 		}
 		return mRgba;
@@ -319,13 +317,13 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		List<byte[]> imageBytesList = new ArrayList<byte[]>();
 
 		for (File imgFile : imgFiles) {
-			if(imgFile.exists()) {
+			if (imgFile.exists()) {
 				Log.d("SendRegistrationFormTask", "get image!");
 				Bitmap bmp = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
 				imageBytesList.add(baos.toByteArray());
-				if(!imgFile.delete()) {
+				if (!imgFile.delete()) {
 					Log.e("Error", "Error deleting image of user's face");
 				}
 			}
@@ -360,16 +358,16 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			ArrayList<NameValuePair> nameValuePairs = new  ArrayList<NameValuePair>();
+			ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 
-			nameValuePairs.add(new BasicNameValuePair("Username",mUsername));
-			nameValuePairs.add(new BasicNameValuePair("Password",mPassword));
-			nameValuePairs.add(new BasicNameValuePair("FirstName",mFirstName));
-			nameValuePairs.add(new BasicNameValuePair("LastName",mLastName));
-			nameValuePairs.add(new BasicNameValuePair("Email",mEmail));
+			nameValuePairs.add(new BasicNameValuePair("Username", mUsername));
+			nameValuePairs.add(new BasicNameValuePair("Password", mPassword));
+			nameValuePairs.add(new BasicNameValuePair("FirstName", mFirstName));
+			nameValuePairs.add(new BasicNameValuePair("LastName", mLastName));
+			nameValuePairs.add(new BasicNameValuePair("Email", mEmail));
 
 			Log.d("SendRegistrationFormTask", "ArrayList size is " + imageBytesList.size());
-			for(int i = 0; i < imageBytesList.size(); i++) {
+			for (int i = 0; i < imageBytesList.size(); i++) {
 				String image_str = Base64.encodeToString(imageBytesList.get(i), Base64.DEFAULT);
 				nameValuePairs.add(new BasicNameValuePair(String.format("image%d", i + 1),
 						image_str));
@@ -379,7 +377,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
 			Log.d("SendRegistrationFormTask", "start to send regis!");
 
-			try{
+			try {
 				HttpClient httpclient = new DefaultHttpClient();
 				HttpPost httppost = new HttpPost(url);
 				httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -390,8 +388,8 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 				final String content = EntityUtils.toString(entity);
 				return content.equalsIgnoreCase("Succeed");
 
-			}catch(final Exception e){
-				System.out.println("Error in http connection "+e.toString());
+			} catch (final Exception e) {
+				System.out.println("Error in http connection " + e.toString());
 			}
 			return false;
 
