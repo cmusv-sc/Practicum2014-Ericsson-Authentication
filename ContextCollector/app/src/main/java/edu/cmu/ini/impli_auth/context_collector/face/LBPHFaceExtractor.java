@@ -29,7 +29,8 @@ public class LBPHFaceExtractor {
 	 * Create bitmap format from OpenCV Mat object of testing image.
 	 * Convert bitmap of training face images to certain scale and save them into internal
 	 * storage as temporary file
-	 * @param m  OpenCV Mat object of testing image.
+	 *
+	 * @param m OpenCV Mat object of testing image.
 	 */
 	public void saveMat(Mat m) {
 		Bitmap bmp = Bitmap.createBitmap(m.width(), m.height(), Bitmap.Config.ARGB_8888);

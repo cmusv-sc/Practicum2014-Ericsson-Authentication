@@ -39,6 +39,7 @@ public class CameraView extends JavaCameraView {
 
 	/**
 	 * used to check whether device has front and back cameras or not
+	 *
 	 * @return number of camera in current device
 	 */
 	public int numberCameras() {

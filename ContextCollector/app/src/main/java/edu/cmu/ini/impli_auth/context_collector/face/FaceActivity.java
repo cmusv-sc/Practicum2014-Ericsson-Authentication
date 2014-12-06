@@ -439,6 +439,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		/**
 		 * Get the result of registration from Authentication Server,
 		 * and return back to registration form activity.
+		 *
 		 * @param success HTTP POST succeeds or not
 		 */
 		@Override

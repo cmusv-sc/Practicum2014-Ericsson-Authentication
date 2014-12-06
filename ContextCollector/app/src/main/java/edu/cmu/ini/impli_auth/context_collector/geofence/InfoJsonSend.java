@@ -19,62 +19,62 @@ import java.net.*;
 
 public class InfoJsonSend {
 
-    // Latitude value
+	// Latitude value
 	double Latitude;
-    // Longitude value
+	// Longitude value
 	double Longitude;
-    // Storing jsonOutput to send
+	// Storing jsonOutput to send
 	String jsonOutput;
 	TelephonyManager cellInfo;
-    // Storing IMEI no
+	// Storing IMEI no
 	String IMEINumber;
 	// Storing IP address
 	String ipaddress;
 
-    /**
-     * Constructor for InfoJsonSend
-     * @param context Application Context
-     * @param ipaddressin Ipaddress to send to
-     */
+	/**
+	 * Constructor for InfoJsonSend
+	 *
+	 * @param context     Application Context
+	 * @param ipaddressin Ipaddress to send to
+	 */
 
 	public InfoJsonSend(Context context, String ipaddressin) {
 		ipaddress = ipaddressin;
 		cellInfo = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 		IMEINumber = cellInfo.getDeviceId();
 
-    }
+	}
 
 
-    /**
-     * Method used to send the messages. Constructs JSON object to send data
-     *
-     * @param location Location object which contains latitude and longitude
-     * @param ipAddr Ipaddress to send the data
-     * @param steps The step counter value obtained from the SensorService
-     * @return Success or Failure
-     */
+	/**
+	 * Method used to send the messages. Constructs JSON object to send data
+	 *
+	 * @param location Location object which contains latitude and longitude
+	 * @param ipAddr   Ipaddress to send the data
+	 * @param steps    The step counter value obtained from the SensorService
+	 * @return Success or Failure
+	 */
 
-    public int postMobileUsage(Location location, String ipAddr, int steps, String wifi){
+	public int postMobileUsage(Location location, String ipAddr, int steps, String wifi) {
 
-        HttpResponse response = null;
+		HttpResponse response = null;
 
-        Latitude = location.getLatitude();
-        Longitude = location.getLongitude();
+		Latitude = location.getLatitude();
+		Longitude = location.getLongitude();
 
-        JSONObject userInfo = new JSONObject();
+		JSONObject userInfo = new JSONObject();
 
 		try {
-            userInfo.put("nssid", wifi);
-            userInfo.put("device_Phy_ID",String.valueOf(IMEINumber));
-            userInfo.put("lat", Latitude);
-            userInfo.put("lon", Longitude);
-            userInfo.put("steps",steps);
+			userInfo.put("nssid", wifi);
+			userInfo.put("device_Phy_ID", String.valueOf(IMEINumber));
+			userInfo.put("lat", Latitude);
+			userInfo.put("lon", Longitude);
+			userInfo.put("steps", steps);
 
-            jsonOutput = userInfo.toString();
-        }
-        catch (JSONException e){
-            return -1;
-        }
+			jsonOutput = userInfo.toString();
+		} catch (JSONException e) {
+			return -1;
+		}
 
 
 		URI theURI;
@@ -101,8 +101,8 @@ public class InfoJsonSend {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        if(response != null)
-            System.out.println(response.getStatusLine().toString());
+		if (response != null)
+			System.out.println(response.getStatusLine().toString());
 
 		return 1;
 	}
