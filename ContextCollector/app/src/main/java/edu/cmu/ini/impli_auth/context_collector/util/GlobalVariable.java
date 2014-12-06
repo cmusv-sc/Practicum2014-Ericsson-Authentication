@@ -12,11 +12,12 @@ public class GlobalVariable {
 
 
 	// Restrict the constructor from being instantiated
-	private GlobalVariable(){}
+	private GlobalVariable() {
+	}
 
-	public static synchronized GlobalVariable getInstance(){
-		if(instance==null){
-			instance=new GlobalVariable();
+	public static synchronized GlobalVariable getInstance() {
+		if (instance == null) {
+			instance = new GlobalVariable();
 		}
 		return instance;
 	}

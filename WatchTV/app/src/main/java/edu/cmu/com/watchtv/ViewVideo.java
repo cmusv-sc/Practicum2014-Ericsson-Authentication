@@ -12,7 +12,6 @@ import android.view.WindowManager;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
-
 public class ViewVideo extends Activity {
     private static final int INSERT_ID = Menu.FIRST;
 
@@ -54,4 +53,5 @@ public class ViewVideo extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
+
 }

@@ -16,7 +16,7 @@ import com.google.android.gms.location.LocationListener;
 import edu.cmu.ini.impli_auth.context_collector.util.*;
 
 public class GPSTracker extends Service implements LocationListener, GooglePlayServicesClient.ConnectionCallbacks,
-GooglePlayServicesClient.OnConnectionFailedListener{
+		GooglePlayServicesClient.OnConnectionFailedListener {
 
     // Object for locationClient
     LocationClient mLocationClient;
@@ -91,13 +91,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
     @Override
     public void onDestroy(){
     	Log.i("GPSTracker", "stopped");
-    	//removeLocationUpdates(this);
     	if (mLocationClient.isConnected()) {
-            /*
-             * Remove location updates for a listener.
-             * The current Activity is the listener, so
-             * the argument is "this".
-             */
             mLocationClient.removeLocationUpdates(this);
         }
     	mLocationClient.disconnect();
@@ -118,12 +112,13 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 //    	  }
     	 }
 
+
 	@Override
 	public void onConnectionFailed(ConnectionResult result) {
 
 		Log.d("GPSTracker", "Connection Failed");
 		Toast.makeText(this, "Google Play Services connection failed", Toast.LENGTH_SHORT).show();
-		
+
 	}
 
     /**
@@ -140,14 +135,14 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 		Log.d("GPSTracker", mLocationClient.getLastLocation().toString());
 		Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
 		mLocationClient.requestLocationUpdates(mLocationRequest, this);
-        new SendPost().execute();
-        Log.d("GPSTracker", mLocationRequest.toString());
+		new SendPost().execute();
+		Log.d("GPSTracker", mLocationRequest.toString());
 	}
 
 	@Override
 	public void onDisconnected() {
 		Toast.makeText(this, "Logging stopped", Toast.LENGTH_SHORT).show();
-		
+
 	}
 
     /**
@@ -169,35 +164,31 @@ GooglePlayServicesClient.OnConnectionFailedListener{
             return null;
         }
     }
-
+            
     /**
      * Have to unregister receivers everytime the service stops. Hence done separately.
      */
 
-    private void stopService(){
-        if (!serviceNotRunning) {
-            unregisterReceiver(sensorReceiverDirection);
-            unregisterReceiver(sensorReceiverStep);
-            stopService(stepCounterService);
-            serviceNotRunning = true;
+	private void stopService() {
+		if (!serviceNotRunning) {
+			unregisterReceiver(sensorReceiverDirection);
+			unregisterReceiver(sensorReceiverStep);
+			stopService(stepCounterService);
+			serviceNotRunning = true;
 
-        }
-    }
 
-    /**
-     * Starting the SensorService. We have to register receivers and hence starting the service
-     * is done separately.
+    /*
+    Starting the SensorService. We have to register receivers and hence starting the service is done
+    separately.
      */
 
-    private void startService() {
-        if (serviceNotRunning) {
-            stepCounterService = new Intent(GPSTracker.this, SensorService.class);
-            startService(stepCounterService);
-            registerBroadCastReceivers();
-            serviceNotRunning = false;
-
-        }
-
+	private void startService() {
+		if (serviceNotRunning) {
+			stepCounterService = new Intent(GPSTracker.this, SensorService.class);
+			startService(stepCounterService);
+			registerBroadCastReceivers();
+			serviceNotRunning = false;
+		}
     }
 
     /**
@@ -205,30 +196,31 @@ GooglePlayServicesClient.OnConnectionFailedListener{
      * updates from the SensorService service. The intent filters are defined in the Manifest file.
      * One if for step counter and one for orientation.
      */
-
-    private void registerBroadCastReceivers() {
-        IntentFilter directionFilter = new IntentFilter(SensorService.DIRECTION_UPDATE);
-        sensorReceiverDirection = new SensorServiceReceiver();
-        registerReceiver(sensorReceiverDirection, directionFilter);
-        IntentFilter stepsFilter = new IntentFilter(SensorService.STEP_UPDATE);
-        sensorReceiverStep = new SensorServiceReceiver();
-        registerReceiver(sensorReceiverStep, stepsFilter);
-    }
+    
+	private void registerBroadCastReceivers() {
+		IntentFilter directionFilter = new IntentFilter(SensorService.DIRECTION_UPDATE);
+		sensorReceiverDirection = new SensorServiceReceiver();
+		registerReceiver(sensorReceiverDirection, directionFilter);
+		IntentFilter stepsFilter = new IntentFilter(SensorService.STEP_UPDATE);
+		sensorReceiverStep = new SensorServiceReceiver();
+		registerReceiver(sensorReceiverStep, stepsFilter);
+	}
 
     /**
      * Broadcast Receiver for Sensor Service to get the value of step counter and orientation.
      * They are explicitly sent from the SensorService as intents.
      */
 
-    public class SensorServiceReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(SensorService.STEP_UPDATE))
-                stepCounter = intent.getIntExtra(SensorService.STEPS, 0);
-            else if (intent.getAction().equals(SensorService.DIRECTION_UPDATE))
-                angle = intent.getIntExtra(SensorService.ANGLE, 0);
-            System.out.println(stepCounter + " " + angle);
-        }
-    }
- 
+
+	public class SensorServiceReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (intent.getAction().equals(SensorService.STEP_UPDATE))
+				stepCounter = intent.getIntExtra(SensorService.STEPS, 0);
+			else if (intent.getAction().equals(SensorService.DIRECTION_UPDATE))
+				angle = intent.getIntExtra(SensorService.ANGLE, 0);
+			System.out.println(stepCounter + " " + angle);
+		}
+	}
+
 }

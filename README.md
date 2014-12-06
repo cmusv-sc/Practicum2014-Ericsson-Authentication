@@ -19,26 +19,23 @@ Authentication Server
 
 #### Required Software
 
-Install Eclipse IDE for Java EE Developers
+###### Eclipse (Mars) 
+Install Eclipse IDE for Java EE Developers (Mars)
 ```
 https://eclipse.org/downloads/index-developer.php
 ```
 
-#### Install additional software for Web Tool Platform (WTP)
+###### OpenCV
+Config most recent version of OpenCV into system path, here we use Homebrew to simplify things.
 
-1. Open Eclipse > Help > Install New Software...
-
-2. Work with: Select All available sites
-
-3. Select "Web, XML, Java EE Development and OSGi Enterprise Development" category
-
-4. Select..
-
-  1. Eclipse Java EE Developer Tools
-  2. Eclipse Java Web Developer Tools
-  3. Eclipse Web Developer Tools
-  4. JST Server Adapters
-  5. JST Server Adapters Extensions
+- add homebrew/science which is where OpenCV is located using
+```
+brew tap homebrew/science
+```
+- Go ahead and install OpenCV
+```
+brew install opencv
+```
 
 ## Setup Tomcat on Eclipse
 
@@ -104,6 +101,7 @@ source <script name>;
 5. grant a user with the right of accessing the database with password
 ```
 GRANT ALL ON <db name>.* TO 'user'@'localhost' IDENTIFIED BY 'some_password';
+
 FLUSH PRIVILEGES;
 ```
 ###### In AuthenticationServer/src/main/resources/config.properties
@@ -125,17 +123,41 @@ Authentication Client
 ####Required Software
 IDE, Android Studio (suggested)
 
+Download Android Studio from https://developer.android.com/sdk/installing/studio.html
+
+###### Mobile Device
+
 Android 4.0.3 API 15 (Minimum requirement)
 - With Android Studio, Go to Tools > Android > SDK Manager, to install required SDK.
 
-Download Android Studio from https://developer.android.com/sdk/installing/studio.html
+OpenCV Manager (OpenCV hardware optimized support for Android)
+- When you first time lanuch camera view in Authentication Client, it will guide you to Google Play Store to install it.
 
+###### Emulator
+
+Android 4.0.3 API 15 (Minimum requirement)
+- With Android Studio, Go to Tools > Android > SDK Manager, to install required SDK.
+- Also, in SDK Manager, installing ARM EABI v7a System Image of same SDK you choose (don't use any INTEL image, but we use OpenCV native libraries, it can only run on ARM architecture image, or it would come out INSTALL_FAILED_NO_MATCHING_ABIS error)
+- run your Emulator with ARM EABI v7a System Image, and also allocate memory for internal storage
+
+OpenCV Manager (OpenCV hardware optimized support for Android)
+- Go to 
+  ```
+  http://sourceforge.net/projects/opencvlibrary/files/opencv-android/
+  ```
+  , download OpenCV-2.4.9-android-sdk.zip.
+- unzip OpenCV-2.4.9-android-sdk.zip in [DIRECTORY]/OpenCV-2.4.9-android-sdk
+- manually install this package into Emulator : (the actually version mapping is here http://docs.opencv.org/trunk/android/service/doc/UseCases.html#how-to-select-the-proper-version-of-opencv-manager)
+  ```
+  adb install OpenCV-2.4.9-android-sdk/apk/OpenCV_2.4.9_Manager_2.18_armv7a-neon.apk
+  ```
+  
 ####Build Instructions
 
 1. Open Android Studio
 2. Select Import Project, select [PROJECT_DIRECTORY]/AuthenticationClient as parent folder, and click OK.
 3. Go to [PROJECT_DIRECTORY]/AuthenticationClient/app/src/main/java/edu/cmu/ini/impli_auth/auth_client/util/GlobalVariable.java, and change value of Global variable SERVER_IP as AuthenticationServer IP. [If you are using your local machine as Authentication Server use IP of your machine]
-4. Connect your Android device (in developer mode) and Run the AuthenticationClient on the Phone.
+4. Connect your Android device(Display Resource) in developer mode and Run the AuthenticationClient on the Phone.
 
 Context Collector
 -----------------
@@ -143,11 +165,35 @@ Context Collector
 ####Required Software
 IDE, Android Studio (suggested)
 
+###### Mobile Device
+
 Android 4.0.3 API 15 (Minimum requirement)
 - With Android Studio, Go to Tools > Android > SDK Manager, to install required SDK.
 
-Google Play Services 6.1.71
-- With Android Studio, Go to Tools > Android > SDK Manager, to install required package.
+OpenCV Manager (OpenCV hardware optimized support for Android)
+- When you first time lanuch camera view in Context Collector, it will guide you to Google Play Store to install it.
+
+Google Play Services 6.1.71 (Google Play Services for Froyo)
+- With Android Studio, Go to Tools > Android > SDK Manager, Open the Extras directory and select: Google Play Services for Froyo and Google Play services
+
+###### Emulator
+
+Android 4.0.3 API 15 (Minimum requirement)
+- With Android Studio, Go to Tools > Android > SDK Manager, to install required SDK.
+- Also, in SDK Manager, installing ARM EABI v7a System Image of same SDK you choose (don't use any INTEL image, but we use OpenCV native libraries, it can only run on ARM architecture image, or it would come out INSTALL_FAILED_NO_MATCHING_ABIS error)
+- run your Emulator with ARM EABI v7a System Image, and also allocate memory for internal storage
+
+OpenCV Manager (OpenCV hardware optimized support for Android)
+- Go to 
+  ```
+  http://sourceforge.net/projects/opencvlibrary/files/opencv-android/
+  ```
+  , download OpenCV-2.4.9-android-sdk.zip.
+- unzip OpenCV-2.4.9-android-sdk.zip in [DIRECTORY]/OpenCV-2.4.9-android-sdk
+- manually install this package into Emulator : (the actually version mapping is here http://docs.opencv.org/trunk/android/service/doc/UseCases.html#how-to-select-the-proper-version-of-opencv-manager)
+  ```
+  adb install OpenCV-2.4.9-android-sdk/apk/OpenCV_2.4.9_Manager_2.18_armv7a-neon.apk
+  ```
 
 ####Build Instructions
 
@@ -155,7 +201,7 @@ Google Play Services 6.1.71
 2. Select Import Project, select [PROJECT_DIRECTORY]/ContextCollector as parent folder, and click OK.
 3. Go to 
 [PROJECT_DIRECTORY]/ContextCollector/app/src/main/java/edu/cmu/ini/impli_auth/context_collector/util/GlobalVariable.java, and change value of Global variable SERVER_IP as AuthenticationServer IP. 
-4. Connect your Android device (in developer mode) and Run the ContextCollector on the Phone.
+4. Connect your Android device (Personal mobile device) in developer mode and Run the ContextCollector on the Phone.
 
 Third Party App Sample (WatchTV)
 --------------------------------
@@ -163,13 +209,22 @@ Third Party App Sample (WatchTV)
 ####Required Software
 IDE, Android Studio (suggested)
 
+###### Mobile Device
+
 Android 4.0.3 API 15 (Minimum requirement)
 - With Android Studio, Go to Tools > Android > SDK Manager, to install required SDK.
+
+###### Emulator
+
+Android 4.0.3 API 15 (Minimum requirement)
+- With Android Studio, Go to Tools > Android > SDK Manager, to install required SDK.
+- Also, in SDK Manager, installing ARM EABI v7a System Image of same SDK you choose (don't use any INTEL image, but we use OpenCV native libraries in AuthenticationClient, and these two applications should be in the same device, native library can only run on ARM architecture image, or it would come out INSTALL_FAILED_NO_MATCHING_ABIS error)
+- run your Emulator with ARM EABI v7a System Image, and also allocate memory for internal storage
 
 ####Build Instructions
 
 1. Open Android Studio
 2. Select Import Project, select [PROJECT_DIRECTORY]/WatchTV as parent folder, and click OK.
-3. Connect your Android device (in developer mode) and Run the WatchTV on the Phone.
+3. Connect your Android device (Personal mobile device) in developer mode and Run the WatchTV on the Phone.
 
 

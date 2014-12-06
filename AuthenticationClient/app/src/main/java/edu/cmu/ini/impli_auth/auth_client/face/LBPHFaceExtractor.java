@@ -19,7 +19,7 @@ public class LBPHFaceExtractor {
 
 	public List<byte[]> constructTestImages(List<Bitmap> mBitmaps) {
 		List<byte[]> byteArrayList = new ArrayList<byte[]>();
-		for(Bitmap mBitmap : mBitmaps) {
+		for (Bitmap mBitmap : mBitmaps) {
 			Bitmap bmp = Bitmap.createScaledBitmap(mBitmap, WIDTH, HEIGHT, false);
 			try {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
