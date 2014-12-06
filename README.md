@@ -125,12 +125,33 @@ IDE, Android Studio (suggested)
 
 Download Android Studio from https://developer.android.com/sdk/installing/studio.html
 
+###### Mobile Device
+
 Android 4.0.3 API 15 (Minimum requirement)
 - With Android Studio, Go to Tools > Android > SDK Manager, to install required SDK.
 
 OpenCV Manager (OpenCV hardware optimized support for Android)
 - When you first time lanuch camera view in Authentication Client, it will guide you to Google Play Store to install it.
 
+###### Emulator
+
+Android 4.0.3 API 15 (Minimum requirement)
+- With Android Studio, Go to Tools > Android > SDK Manager, to install required SDK.
+- Also, in SDK Manager, installing ARM EABI v7a System Image of same SDK you choose (don't use any INTEL image, but we use OpenCV native libraries, it can only run on ARM architecture image, or it would come out INSTALL_FAILED_NO_MATCHING_ABIS error)
+- run your Emulator with ARM EABI v7a System Image, and also allocate memory for internal storage
+
+OpenCV Manager (OpenCV hardware optimized support for Android)
+- Go to 
+  ```
+  http://sourceforge.net/projects/opencvlibrary/files/opencv-android/
+  ```
+  , download OpenCV-2.4.9-android-sdk.zip.
+- unzip OpenCV-2.4.9-android-sdk.zip in [DIRECTORY]/OpenCV-2.4.9-android-sdk
+- manually install this package into Emulator : (the actually version mapping is here http://docs.opencv.org/trunk/android/service/doc/UseCases.html#how-to-select-the-proper-version-of-opencv-manager)
+  ```
+  adb install OpenCV-2.4.9-android-sdk/apk/OpenCV_2.4.9_Manager_2.18_armv7a-neon.apk
+  ```
+  
 ####Build Instructions
 
 1. Open Android Studio
@@ -144,6 +165,8 @@ Context Collector
 ####Required Software
 IDE, Android Studio (suggested)
 
+###### Mobile Device
+
 Android 4.0.3 API 15 (Minimum requirement)
 - With Android Studio, Go to Tools > Android > SDK Manager, to install required SDK.
 
@@ -151,7 +174,26 @@ OpenCV Manager (OpenCV hardware optimized support for Android)
 - When you first time lanuch camera view in Context Collector, it will guide you to Google Play Store to install it.
 
 Google Play Services 6.1.71 (Google Play Services for Froyo)
-- With Android Studio, Go to Tools > Android > SDK Manager, to install required package.
+- With Android Studio, Go to Tools > Android > SDK Manager, Open the Extras directory and select: Google Play Services for Froyo and Google Play services
+
+###### Emulator
+
+Android 4.0.3 API 15 (Minimum requirement)
+- With Android Studio, Go to Tools > Android > SDK Manager, to install required SDK.
+- Also, in SDK Manager, installing ARM EABI v7a System Image of same SDK you choose (don't use any INTEL image, but we use OpenCV native libraries, it can only run on ARM architecture image, or it would come out INSTALL_FAILED_NO_MATCHING_ABIS error)
+- run your Emulator with ARM EABI v7a System Image, and also allocate memory for internal storage
+
+OpenCV Manager (OpenCV hardware optimized support for Android)
+- Go to 
+  ```
+  http://sourceforge.net/projects/opencvlibrary/files/opencv-android/
+  ```
+  , download OpenCV-2.4.9-android-sdk.zip.
+- unzip OpenCV-2.4.9-android-sdk.zip in [DIRECTORY]/OpenCV-2.4.9-android-sdk
+- manually install this package into Emulator : (the actually version mapping is here http://docs.opencv.org/trunk/android/service/doc/UseCases.html#how-to-select-the-proper-version-of-opencv-manager)
+  ```
+  adb install OpenCV-2.4.9-android-sdk/apk/OpenCV_2.4.9_Manager_2.18_armv7a-neon.apk
+  ```
 
 ####Build Instructions
 
@@ -167,8 +209,17 @@ Third Party App Sample (WatchTV)
 ####Required Software
 IDE, Android Studio (suggested)
 
+###### Mobile Device
+
 Android 4.0.3 API 15 (Minimum requirement)
 - With Android Studio, Go to Tools > Android > SDK Manager, to install required SDK.
+
+###### Emulator
+
+Android 4.0.3 API 15 (Minimum requirement)
+- With Android Studio, Go to Tools > Android > SDK Manager, to install required SDK.
+- Also, in SDK Manager, installing ARM EABI v7a System Image of same SDK you choose (don't use any INTEL image, but we use OpenCV native libraries in AuthenticationClient, and these two applications should be in the same device, native library can only run on ARM architecture image, or it would come out INSTALL_FAILED_NO_MATCHING_ABIS error)
+- run your Emulator with ARM EABI v7a System Image, and also allocate memory for internal storage
 
 ####Build Instructions
 
