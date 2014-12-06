@@ -29,6 +29,9 @@ import java.util.*;
 import edu.cmu.ini.impli_auth.auth_client.*;
 import edu.cmu.ini.impli_auth.auth_client.util.*;
 
+/**
+ * This activity is for users to do facial recognition login.
+ */
 public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
 	private static final String TAG = "AuthenticationClient::FaceActivity";
@@ -60,6 +63,9 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	private GlobalVariable gv;
 	public SendAuthTask sendAuthTask;
 
+	/**
+	 * After OpenCV is loaded successful, load the LBP based xml description file for face detection
+	 */
 	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
 		@Override
 		public void onManagerConnected(int status) {
@@ -114,7 +120,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	}
 
 	/**
-	 * Called when the activity is first created.
+	 * Initialize the camera view, and every widget in this activity.
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -165,11 +171,6 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			}
 		});
 
-		String mPath = getFilesDir() + "/camtest/";
-		boolean success = (new File(mPath)).mkdirs();
-		if (!success) {
-			Log.e("Error", "Error creating directory");
-		}
 	}
 
 
@@ -183,24 +184,43 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	@Override
 	public void onResume() {
 		super.onResume();
+		// resume the OpenCV library
 		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_3, this, mLoaderCallback);
 	}
 
+	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		mOpenCvCameraView.disableView();
 	}
 
+	/**
+	 * initialize the Mat object of training image.
+	 * @param width -  the width of the frames that will be delivered
+	 * @param height - the height of the frames that will be delivered
+	 */
+	@Override
 	public void onCameraViewStarted(int width, int height) {
 		mGray = new Mat();
 		mRgba = new Mat();
 	}
 
+	/**
+	 * release the Mat object of training image
+	 */
+	@Override
 	public void onCameraViewStopped() {
 		mGray.release();
 		mRgba.release();
 	}
 
+	/**
+	 * It is used to control taking pictures process, put image of users in the current input
+	 * frame in to a list and send it for prediction. Also, show focusing box for user's face
+	 * @param inputFrame inputFrame can from camera sensor
+	 * @return Mat object will be shown on camera view
+	 */
+	@Override
 	public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
 
 		mRgba = inputFrame.rgba();
@@ -244,13 +264,20 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		return mRgba;
 	}
 
-
+	/**
+	 * get credential of this SharedResource for Authenticaiton Server to check whether certain
+	 * users are near SharedResource(display) or not.
+	 * @return Credential of this SharedResource
+	 */
 	private String getSharedResourceCredential() {
 		SharedPreferences sharedPref;
 		sharedPref = PreferenceManager.getDefaultSharedPreferences(FaceActivity.this);
 		return sharedPref.getString(getString(R.string.share_perf_key), null);
 	}
 
+	/**
+	 * AsyncTask to do HTTP post for authentication
+	 */
 	public class SendAuthTask extends AsyncTask<Void, Void, String> {
 
 		private final List<byte[]> imageBytesList;
@@ -259,6 +286,11 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			this.imageBytesList = imageBytesList;
 		}
 
+		/**
+		 * bundle HTTP POST parameter, and send to Authentication Server
+		 * @param params nothing, we pass parameter as instance variable
+		 * @return username, public or private resource, probability of this authentication
+		 */
 		@Override
 		protected String doInBackground(Void... params) {
 			String content = "";
@@ -296,6 +328,11 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			return content;
 		}
 
+		/**
+		 * Get the result of authentication from Authentication Server,
+		 * and hand over the result back to third party application.
+		 * @param result username, public or private resource, probability of this authentication
+		 */
 		@Override
 		protected void onPostExecute(final String result) {
 			sendAuthTask = null;
@@ -322,10 +359,13 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		}
 	}
 
-	public String predict(List<Bitmap> mBitmaps) {
+	/**
+	 * Send byte array of users' face images to AsynTask for HTTP POST
+	 * @param mBitmaps List of bitmap of users' face image
+	 */
+	public void predict(List<Bitmap> mBitmaps) {
 		List<byte[]> byteArrayList = fe.constructTestImages(mBitmaps);
 		sendAuthTask = new SendAuthTask(byteArrayList);
 		sendAuthTask.execute();
-		return "start to auth";
 	}
 }

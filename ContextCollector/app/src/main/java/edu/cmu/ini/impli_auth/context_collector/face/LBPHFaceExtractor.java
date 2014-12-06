@@ -8,6 +8,10 @@ import org.opencv.core.*;
 
 import java.io.*;
 
+/**
+ * Helper class to deal with face image preprocessing before sent to Authentication Server
+ */
+
 public class LBPHFaceExtractor {
 
 	private static final String TAG = "ContextCollector::LBPHFaceExtractor";
@@ -21,6 +25,12 @@ public class LBPHFaceExtractor {
 		Log.d(TAG, "Start LBPHFaceExtractor");
 	}
 
+	/**
+	 * Create bitmap format from OpenCV Mat object of testing image.
+	 * Convert bitmap of training face images to certain scale and save them into internal
+	 * storage as temporary file
+	 * @param m  OpenCV Mat object of testing image.
+	 */
 	public void saveMat(Mat m) {
 		Bitmap bmp = Bitmap.createBitmap(m.width(), m.height(), Bitmap.Config.ARGB_8888);
 

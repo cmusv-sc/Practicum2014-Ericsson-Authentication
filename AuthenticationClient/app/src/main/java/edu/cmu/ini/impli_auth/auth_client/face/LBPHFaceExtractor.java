@@ -6,6 +6,10 @@ import java.util.*;
 import android.graphics.*;
 import android.util.*;
 
+/**
+ * Helper class to deal with face image preprocessing before sent to Authentication Server
+ */
+
 public class LBPHFaceExtractor {
 
 	private static final String TAG = "AuthenticationClient::LBPHFaceExtractor";
@@ -17,6 +21,12 @@ public class LBPHFaceExtractor {
 		Log.d(TAG, "Start LBPHFaceExtractor");
 	}
 
+	/**
+	 * Convert bitmap of testing face images to certain scale and transfer it to byte array.
+	 * @param  mBitmaps List of Bitmap of Users' face images in a single authentication (facical
+	 *                     recognition) session
+	 * @return  preprocessed byte array of Users' face images
+	 */
 	public List<byte[]> constructTestImages(List<Bitmap> mBitmaps) {
 		List<byte[]> byteArrayList = new ArrayList<byte[]>();
 		for (Bitmap mBitmap : mBitmaps) {

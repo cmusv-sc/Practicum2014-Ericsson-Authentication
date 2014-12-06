@@ -28,6 +28,9 @@ import java.util.*;
 import edu.cmu.ini.impli_auth.context_collector.*;
 import edu.cmu.ini.impli_auth.context_collector.util.*;
 
+/**
+ * This activity is for users to take pictures for registering themselves in this system
+ */
 public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
 	private static final String TAG = "ContextCollector::FaceActivity";
@@ -75,6 +78,9 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	private String mEmail;
 
 
+	/**
+	 * After OpenCV is loaded successful, load the LBP based xml description file for face detection
+	 */
 	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
 		@Override
 		public void onManagerConnected(int status) {
@@ -129,7 +135,8 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	}
 
 	/**
-	 * Called when the activity is first created.
+	 * Initialize the camera view, and every widget in this activity. Also, create directory for
+	 * training image temporary files.
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -176,7 +183,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		submitButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				sendRegistrationRequest();
+				register(mUsername, mPassword, mFirstName, mLastName, mEmail);
 			}
 		});
 
@@ -212,10 +219,6 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		textState.setText(R.string.SWholePicture);
 	}
 
-	private void sendRegistrationRequest() {
-		register(mUsername, mPassword, mFirstName, mLastName, mEmail);
-	}
-
 	@Override
 	public void onPause() {
 		super.onPause();
@@ -226,24 +229,43 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	@Override
 	public void onResume() {
 		super.onResume();
+		// resume the OpenCV library
 		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_3, this, mLoaderCallback);
 	}
 
+	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		mOpenCvCameraView.disableView();
 	}
 
+	/**
+	 * initialize the Mat object of training image.
+	 * @param width -  the width of the frames that will be delivered
+	 * @param height - the height of the frames that will be delivered
+	 */
+	@Override
 	public void onCameraViewStarted(int width, int height) {
 		mGray = new Mat();
 		mRgba = new Mat();
 	}
 
+	/**
+	 * release the Mat object of training image
+	 */
+	@Override
 	public void onCameraViewStopped() {
 		mGray.release();
 		mRgba.release();
 	}
 
+	/**
+	 * It is used to control taking pictures process, save input frame of user's face as
+	 * temporary files and show focusing box for user's face
+	 * @param inputFrame inputFrame can from camera sensor
+	 * @return Mat object will be shown on camera view
+	 */
+	@Override
 	public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
 
 		mRgba = inputFrame.rgba();
@@ -266,6 +288,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		Rect[] facesArray = faces.toArray();
 		Log.d(TAG, "Face number: " + facesArray.length);
 
+		// only consider one user in the single input frame
 		if ((facesArray.length == 1) && (faceState == TRAINING)) {
 
 			faceState = IDLE;
@@ -302,6 +325,16 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		return mRgba;
 	}
 
+	/**
+	 * Send username, password, firstname, lastname, email and 5 training images (temporary file)
+	 * to Authentication Server to do registration
+	 * @param mUsername username
+	 * @param mPassword password
+	 * @param mFirstName firstname
+	 * @param mLastName lastname
+	 * @param mEmail email
+	 * @return whether registration is successful or not
+	 */
 	public boolean register(String mUsername, String mPassword, String mFirstName,
 	                        String mLastName, String mEmail) {
 
@@ -336,6 +369,9 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		return true;
 	}
 
+	/**
+	 * AsyncTask to do HTTP post for registration
+	 */
 	public class SendRegistrationFormTask extends AsyncTask<Void, Void, Boolean> {
 
 		private final String mUsername;
@@ -356,6 +392,11 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 			this.imageBytesList = imageBytesList;
 		}
 
+		/**
+		 * bundle HTTP POST parameter, and send to Authentication Server
+		 * @param params nothing, we pass parameter as instance variable
+		 * @return succeed or not
+		 */
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
@@ -395,6 +436,11 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
 		}
 
+		/**
+		 * Get the result of registration from Authentication Server,
+		 * and return back to registration form activity.
+		 * @param success HTTP POST succeeds or not
+		 */
 		@Override
 		protected void onPostExecute(final Boolean success) {
 			sendRegistrationFormTask = null;

@@ -1,11 +1,16 @@
 package edu.cmu.ini.impli_auth.context_collector.util;
 
-
+/**
+ * This is singleton class for global variable recourse initialzed and access,
+ * you can get only one instance for this class during whole application lifecycle.
+ */
 public class GlobalVariable {
 	private static GlobalVariable instance;
 
-	// Global variable
-	private final static String SERVER_IP = "10.0.0.4";
+	/**
+	 * Authenitcation Server IP, port, and facical recognition, geo-fence RESTful path
+	 */
+	private final static String SERVER_IP = "10.0.2.2";
 	private final static String PORT = "8080";
 	private final static String TEST_PATH = "postUser/";
 	private final static String LOCATION_PATH = "postLocation/";
@@ -15,6 +20,9 @@ public class GlobalVariable {
 	private GlobalVariable() {
 	}
 
+	/**
+	 * The method for getting instance of this class.
+	 */
 	public static synchronized GlobalVariable getInstance() {
 		if (instance == null) {
 			instance = new GlobalVariable();
