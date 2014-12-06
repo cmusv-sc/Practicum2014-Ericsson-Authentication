@@ -12,6 +12,9 @@ import android.view.WindowManager;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
+/**
+ * Full screen view for video.
+ */
 public class ViewVideo extends Activity {
     private static final int INSERT_ID = Menu.FIRST;
 

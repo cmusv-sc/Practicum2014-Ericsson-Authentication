@@ -9,6 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+/**
+ * Main activity which invokes authentication client and pass the result from authentication client
+ * to PlayVideo activity.
+ */
 public class MyActivity extends Activity {
     
     public void onCreate(Bundle savedInstanceState) {

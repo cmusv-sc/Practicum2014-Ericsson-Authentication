@@ -15,6 +15,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * The activity to play video based on auth result. Result includes probability and resource type.
+ * Explanation can be find in project document.
+ */
 public class PlayVideo extends Activity {
     //double High = 70;
     double Medium = 70;
