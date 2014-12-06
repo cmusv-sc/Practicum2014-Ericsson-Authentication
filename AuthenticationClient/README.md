@@ -18,7 +18,7 @@ Authentication Client
 
 The exported property enables this activity to be called from other applications.
 
-How to use the application
+####How to use the application
 
 This application is not directly used. 
 We need to install this on the device to make it available for other applications to access the activities.
