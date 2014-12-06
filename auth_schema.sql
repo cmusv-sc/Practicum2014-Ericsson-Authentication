@@ -135,7 +135,6 @@ CREATE TABLE `USER` (
   `EMAIL` varchar(30) DEFAULT NULL,
   `USERNAME` varchar(20) DEFAULT NULL,
   `PASSWORD` varchar(20) DEFAULT NULL,
-  `PICTURES` text,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;

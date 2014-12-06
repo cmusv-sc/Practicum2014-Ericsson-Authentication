@@ -10,7 +10,7 @@ public class GlobalVariable {
 	/**
 	 * Authenitcation Server IP, port, and facical recognition, geo-fence RESTful path
 	 */
-	private final static String SERVER_IP = "10.0.2.2";
+	private final static String SERVER_IP = "10.0.0.4";
 	private final static String PORT = "8080";
 	private final static String TEST_PATH = "postUser/";
 	private final static String LOCATION_PATH = "postLocation/";

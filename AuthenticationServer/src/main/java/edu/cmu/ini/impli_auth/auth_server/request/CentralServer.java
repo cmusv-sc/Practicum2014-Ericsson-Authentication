@@ -39,7 +39,7 @@ public class CentralServer {
 			faceRecognizer.train();
 		} else {
 			System.out
-					.println("facial recognition training not start yet, we need at least two users to start it");
+					.println("facial recognition training not start yet, we need at least two registered users to start it");
 		}
 	}
 
@@ -153,6 +153,9 @@ public class CentralServer {
 			byte[] imageBytes4 = DatatypeConverter.parseBase64Binary(image5);
 			Util.saveImage(userID, imageBytes4, "image5");
 			if (Util.canStartFaceReg()) {
+				if (faceRecognizer == null) {
+					faceRecognizer = new LBPHFaceRecognizer(WIDTH, HEIGHT);
+				}
 				faceRecognizer.train();
 			}
 		}
