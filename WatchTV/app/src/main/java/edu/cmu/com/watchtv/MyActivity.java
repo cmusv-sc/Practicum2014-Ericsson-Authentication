@@ -7,21 +7,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 public class MyActivity extends Activity {
-    boolean pressed = false;
-    Button myButton;
-    EditText myText;
-    EditText myText2;
-	private String TAG = "MyActivity";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
-        EditText myText = (EditText) findViewById(R.id.editText);
-        final EditText myText2 = (EditText) findViewById(R.id.editText2);
+
         final Button myButton = (Button) findViewById(R.id.my_button);
         myButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,6 +33,7 @@ public class MyActivity extends Activity {
         if (requestCode == 1 ) {
             if(resultCode == RESULT_OK){
                 Intent intent = new Intent(MyActivity.this, PlayVideo.class);
+                String TAG = "MyActivity";
                 Log.d(TAG, String.valueOf(data.getDoubleExtra("Prob", -1.0)));
                 Log.d(TAG, data.getStringExtra("UserName"));
                 Log.d(TAG, location);

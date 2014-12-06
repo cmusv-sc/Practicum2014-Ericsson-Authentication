@@ -6,8 +6,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
@@ -19,7 +17,7 @@ import android.widget.Toast;
 
 
 public class PlayVideo extends Activity {
-    double High = 70;
+    //double High = 70;
     double Medium = 70;
     double Min = 15;
     String uriPath = "";
@@ -66,7 +64,7 @@ public class PlayVideo extends Activity {
         retriever.setDataSource(this, videoURI);
         Bitmap bitmap = retriever
                 .getFrameAtTime(100000,MediaMetadataRetriever.OPTION_PREVIOUS_SYNC);
-        Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+
 
         imgView1.setImageBitmap(bitmap);
         imgView2.setImageBitmap(bitmap);
@@ -286,11 +284,5 @@ public class PlayVideo extends Activity {
 
             }
         });
-
-        Uri uri = Uri.parse(uriPath);
-
-
-
-
     }
 }

@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
                         MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.clear();
-                editor.commit();
+                editor.apply();
                 //Stop services
                 stopService(i);
 
@@ -59,7 +59,7 @@ public class MainActivity extends Activity {
         if(current_day == 0){
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putInt(getString(R.string.lastRecordedDay), Calendar.DAY_OF_YEAR);
-            editor.commit();
+            editor.apply();
             current_day = sharedPref.getInt(getString(R.string.lastRecordedDay),0);
         }
 
@@ -98,10 +98,7 @@ public class MainActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return R.id.action_settings == id || super.onOptionsItemSelected(item);
     }
 
     @Override

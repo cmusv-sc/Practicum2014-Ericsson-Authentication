@@ -1,8 +1,10 @@
 package edu.cmu.com.watchtv;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
@@ -11,13 +13,7 @@ import android.widget.MediaController;
 import android.widget.VideoView;
 
 
-
-
-/**
- * Created by aloknerurkar on 11/23/14.
- */
 public class ViewVideo extends Activity {
-    private String filename;
     private static final int INSERT_ID = Menu.FIRST;
 
     @Override
@@ -26,7 +22,7 @@ public class ViewVideo extends Activity {
         System.gc();
         Intent i = getIntent();
         Bundle extras = i.getExtras();
-        filename = extras.getString("videofilename");
+        String filename = extras.getString("videofilename");
         VideoView vv = new VideoView(getApplicationContext());
         setContentView(vv);
         vv.setVideoPath(filename);
@@ -44,7 +40,7 @@ public class ViewVideo extends Activity {
     }
 
     @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+    public boolean onMenuItemSelected(int featureId, @NonNull MenuItem item) {
         switch(item.getItemId()) {
             case INSERT_ID:
                 createNote();
@@ -52,6 +48,7 @@ public class ViewVideo extends Activity {
         return true;
     }
 
+    @SuppressLint("AppCompatMethod")
     private void createNote() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
