@@ -29,6 +29,13 @@ public class SqlConnection {
 		PASSWORD = configValue.getDBPassword();
 		DRIVER_CLASS = configValue.getDBDriverClass();
 	}
+	/**
+	 * 
+	 * @param id User_id to insert into active user
+	 * @param auth Probability output of the authentication
+	 * @return Success/failure
+	 * @throws Exception throws SQL Exception
+	 */
 
 	public boolean writeToAUT(int id, int auth) throws Exception {
 		ResultSet result;
@@ -95,6 +102,13 @@ public class SqlConnection {
 		return returnResult;
 
 	}
+	
+	/**
+	 * 
+	 * @param userID User_ID to read the passive user table
+	 * @return ResultSet of the query 
+	 * @throws Exception throws SQL exception
+	 */
 
 	public ResultSet readPassiveUserByUserID(int userID) throws Exception {
 		ResultSet returnResult;
@@ -152,9 +166,9 @@ public class SqlConnection {
 	 * If the above method does say that the user is present in the PASSIVE_USER
 	 * table then the following method is used to update the PASSIVE_USER.
 	 * 
-	 * @param user
-	 * @param id
-	 * @throws Exception
+	 * @param user Passive User object. Used to capture all fields needed for Passive_user
+	 * @param id User_id used to update passive_user
+	 * @throws Exception SQL exception 
 	 */
 	public void updatePassiveUser(PassiveUser user, int id) throws Exception {
 

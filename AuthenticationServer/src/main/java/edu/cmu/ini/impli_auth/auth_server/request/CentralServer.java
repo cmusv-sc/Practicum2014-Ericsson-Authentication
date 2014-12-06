@@ -54,17 +54,22 @@ public class CentralServer {
 		return (dist);
 	}
 
-	/*
+	/**
 	 * Standard functions to convert angle values from degrees to radians and
 	 * vice versa. These are values needed in the above trigonometric functions.
-	 * The latitude and longitude values are nothing but angles and we need to
-	 * convert them to radians in order to use the trigonometric functions. Then
-	 * we restore the final value into degrees and calculate distance
+	 * @param deg input in degrees
+	 * @return radian output in radian
 	 */
 
 	private double deg2rad(double deg) {
 		return (deg * Math.PI / 180.0);
 	}
+	
+	/**
+	 * Reverse function
+	 * @param rad input in radians
+	 * @return output in degrees
+	 */
 
 	private double rad2deg(double rad) {
 		return (rad * 180 / Math.PI);
@@ -134,7 +139,21 @@ public class CentralServer {
 		}
 
 	}
-
+	/**
+	 * Funtion used to register the user
+	 * 
+	 * @param username Username
+	 * @param password Password
+	 * @param firstName Entered first name
+	 * @param lastName Entered last name
+	 * @param email Email ID
+	 * @param image1 First image
+	 * @param image2 Second image 
+	 * @param image3 Third image
+	 * @param image4 Fourth image
+	 * @param image5 Fifth Image
+	 * @return
+	 */
 	@POST
 	@Path("/postUser")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -188,6 +207,19 @@ public class CentralServer {
 		}
 		return Response.status(200).entity(returnMessage).build();
 	}
+	
+	/**
+	 * Function used to register resources
+	 * 
+	 * @param username Username of owner
+	 * @param password Password of owner
+	 * @param name Specific name of the resource
+	 * @param latitude Latitude of the resource location
+	 * @param longitude Longitude of the resource location
+	 * @param NSSID WiFi NSSID connected to
+	 * @param type Type of user can be public/private
+	 * @return HTTP response with result code
+	 */
 
 	@POST
 	@Path("/postResource")
@@ -244,6 +276,13 @@ public class CentralServer {
 		System.out.println(returnMessage);
 		return Response.status(200).entity(returnMessage).build();
 	}
+	
+	/**
+	 * Method used to authenticate the resource everytime its switched back on
+	 * @param NSSID Wifi NSSID connected to
+	 * @param sKey Shared key provided to the resource
+	 * @return HTTP response with result code
+	 */
 
 	@POST
 	@Path("/authResource")
@@ -267,8 +306,9 @@ public class CentralServer {
 
 		return Response.status(200).entity(result).build();
 	}
-
-	/*
+	
+	/**
+	 * 
 	 * GEO-FENCING
 	 * 
 	 * After the user is successfully signed in the app will constantly be
@@ -284,8 +324,11 @@ public class CentralServer {
 	 * If not we check from his location if he is near any Resource using the
 	 * above distance calculator. If he is within the threshold we add him to
 	 * PASSIVE_USER along with the resource_id of the resource he is near to.
+	 * @param user On success we create a PassiveUser entry. The input we get
+	 * 			   from the app is in PassiveUser object format.
+	 * @return HTTP response with result code
 	 */
-
+	
 	@POST
 	@Path("/postLocation")
 	@Consumes("application/json")
@@ -339,6 +382,17 @@ public class CentralServer {
 		String http_result = "Passive User : " + user;
 		return Response.status(201).entity(http_result).build();
 	}
+	
+	/**
+	 * Method used to create a device entry everytime the user logs in
+	 * @param username Username of the device owner
+	 * @param password Password of the device owner
+	 * @param name Device name
+	 * @param IMEI The IMEI no of the device. This can be replced with any
+	 * 		  device specific no.
+	 * @return HTTP response with result code
+	 */
+			
 
 	@POST
 	@Path("/postDevice")
@@ -396,7 +450,16 @@ public class CentralServer {
 		SqlConnection dao = new SqlConnection();
 		return dao.writeToAUT(id, auth);
 	}
-
+	
+	/**
+	 * The method is used to authenticate the user. The second image is for multiple 
+	 * user scenarios 
+	 * @param credential Credential provided to the user
+	 * @param image1 Image of the first user
+	 * @param image2 Image of the second user
+	 * @return HTTP response with result code
+	 * @throws Exception throws IOException
+	 */
 	@POST
 	@Path("/testImage")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
