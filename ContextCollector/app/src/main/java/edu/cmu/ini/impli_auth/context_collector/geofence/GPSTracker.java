@@ -170,11 +170,13 @@ public class GPSTracker extends Service implements LocationListener, GooglePlayS
      */
 
 	private void stopService() {
-		if (!serviceNotRunning) {
-			unregisterReceiver(sensorReceiverDirection);
-			unregisterReceiver(sensorReceiverStep);
-			stopService(stepCounterService);
-			serviceNotRunning = true;
+        if (!serviceNotRunning) {
+            unregisterReceiver(sensorReceiverDirection);
+            unregisterReceiver(sensorReceiverStep);
+            stopService(stepCounterService);
+            serviceNotRunning = true;
+        }
+    }
 
 
     /*
