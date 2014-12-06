@@ -4,12 +4,11 @@ import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.cmu.ini.impli_auth.auth_server.geofence.PassiveUser;
+import edu.cmu.ini.impli_auth.auth_server.datamodel.PassiveUser;
 import edu.cmu.ini.impli_auth.auth_server.util.ConfigValue;
 
 /**
  * This class contains methods to update database.
- * @author Ivan
  *
  */
 public class SqlConnection {
@@ -29,12 +28,16 @@ public class SqlConnection {
 		PASSWORD = configValue.getDBPassword();
 		DRIVER_CLASS = configValue.getDBDriverClass();
 	}
+
 	/**
 	 * 
-	 * @param id User_id to insert into active user
-	 * @param auth Probability output of the authentication
+	 * @param id
+	 *            User_id to insert into active user
+	 * @param auth
+	 *            Probability output of the authentication
 	 * @return Success/failure
-	 * @throws Exception throws SQL Exception
+	 * @throws Exception
+	 *             throws SQL Exception
 	 */
 
 	public boolean writeToAUT(int id, int auth) throws Exception {
@@ -58,9 +61,9 @@ public class SqlConnection {
 			initial_steps = result.getInt("INITIAL_STEP");
 			fresh = result.getInt("FRESH");
 
-
-			String sqlCountRows = String.format(
-					"select COUNT(*) as DEVICE_NO from PASSIVE_USER where USER_ID = %d", id);
+			String sqlCountRows = String
+					.format("select COUNT(*) as DEVICE_NO from PASSIVE_USER where USER_ID = %d",
+							id);
 			result = statement.executeQuery(sqlCountRows);
 			result.next();
 			device_no = result.getInt("DEVICE_NO");
@@ -69,8 +72,9 @@ public class SqlConnection {
 					"insert into ACTIVE_USER (USER_ID,RESOURCE_ID,INITIAL_STEPS,CURRENT_STEPS,"
 							+ "MOVING,FRESH,TIMESTAMP,DEVICES_NO,AUTHENTICITY)"
 							+ "values (%d,%d,%d,%d,1,%d,NOW(),%d,%d)", id,
-					resource_id, initial_steps, initial_steps, fresh, device_no, auth);
-            
+					resource_id, initial_steps, initial_steps, fresh,
+					device_no, auth);
+
 			statement.executeUpdate(sql2);
 
 			String sql3 = String.format(
@@ -88,7 +92,8 @@ public class SqlConnection {
 	 * checked for possible options for users.
 	 * 
 	 * @return The result of the resource list.
-	 * @throws Exception Throws SQL exception.
+	 * @throws Exception
+	 *             Throws SQL exception.
 	 */
 	public ResultSet readResource() throws Exception {
 
@@ -102,12 +107,14 @@ public class SqlConnection {
 		return returnResult;
 
 	}
-	
+
 	/**
 	 * 
-	 * @param userID User_ID to read the passive user table
-	 * @return ResultSet of the query 
-	 * @throws Exception throws SQL exception
+	 * @param userID
+	 *            User_ID to read the passive user table
+	 * @return ResultSet of the query
+	 * @throws Exception
+	 *             throws SQL exception
 	 */
 
 	public ResultSet readPassiveUserByUserID(int userID) throws Exception {
@@ -129,9 +136,11 @@ public class SqlConnection {
 	 * update the fresh and the step counter value. This will be used in
 	 * deciding the authenticity parameter.
 	 * 
-	 * @param imei IMEI number of user context collector.
+	 * @param imei
+	 *            IMEI number of user context collector.
 	 * @return Result set of getting passive user.
-	 * @throws Exception Throws SQL exception.
+	 * @throws Exception
+	 *             Throws SQL exception.
 	 */
 	public ResultSet readPassiveUser(String imei) throws Exception {
 
@@ -166,9 +175,13 @@ public class SqlConnection {
 	 * If the above method does say that the user is present in the PASSIVE_USER
 	 * table then the following method is used to update the PASSIVE_USER.
 	 * 
-	 * @param user Passive User object. Used to capture all fields needed for Passive_user
-	 * @param id User_id used to update passive_user
-	 * @throws Exception SQL exception 
+	 * @param user
+	 *            Passive User object. Used to capture all fields needed for
+	 *            Passive_user
+	 * @param id
+	 *            User_id used to update passive_user
+	 * @throws Exception
+	 *             SQL exception
 	 */
 	public void updatePassiveUser(PassiveUser user, int id) throws Exception {
 
@@ -236,34 +249,18 @@ public class SqlConnection {
 		System.out.println("INSERTED TO PUT");
 	}
 
-	public void writeDataBase(int id, String picture_path) throws Exception {
-		Class.forName(DRIVER_CLASS);
-		connect = DriverManager.getConnection(URL, USER, PASSWORD);
-		statement = connect.createStatement();
-		String sql = String
-				.format("insert into USER values (%d, 'test', 'test', 'test@gmail.com', 'test', '123', '%s')",
-						id, picture_path);
-		statement.executeUpdate(sql);
-	}
-
-	public void updateDataBase(int id, String picture_path) throws Exception {
-		Class.forName(DRIVER_CLASS);
-		connect = DriverManager.getConnection(URL, USER, PASSWORD);
-		statement = connect.createStatement();
-		String sql = String.format("UPDATE USER SET picture='%s' where id=%d",
-				picture_path, id);
-		statement.executeUpdate(sql);
-	}
-
 	/**
 	 * The method authenticates a user by the username and password of the user.
 	 * It is a basic check on the username and the password values present in
 	 * our management database
 	 * 
-	 * @param username Username.
-	 * @param password Password.
+	 * @param username
+	 *            Username.
+	 * @param password
+	 *            Password.
 	 * @return The user id if authenticated. -1 if failed.
-	 * @throws Exception Throws SQL exception.
+	 * @throws Exception
+	 *             Throws SQL exception.
 	 */
 	public int authByUsernamePassword(String username, String password)
 			throws Exception {
@@ -282,7 +279,9 @@ public class SqlConnection {
 
 	/**
 	 * Get the user entry by username.
-	 * @param userName The username to find the user.
+	 * 
+	 * @param userName
+	 *            The username to find the user.
 	 * @return The result of the search.
 	 */
 	public ResultSet getUserID(String userName) {
@@ -309,12 +308,18 @@ public class SqlConnection {
 	 * database. This device will be the communication link between the user and
 	 * the authentication server.
 	 * 
-	 * @param username Username.
-	 * @param password Password.
-	 * @param firstName User first name.
-	 * @param lastName User last name.
-	 * @param email User email.
-	 * @throws Exception Throw SQL exception.
+	 * @param username
+	 *            Username.
+	 * @param password
+	 *            Password.
+	 * @param firstName
+	 *            User first name.
+	 * @param lastName
+	 *            User last name.
+	 * @param email
+	 *            User email.
+	 * @throws Exception
+	 *             Throw SQL exception.
 	 */
 	public void registerUser(String username, String password,
 			String firstName, String lastName, String email) throws Exception {
@@ -329,24 +334,31 @@ public class SqlConnection {
 
 	/**
 	 * Register a device under certain user.
-	 * @param name Device description name.
-	 * @param IMEI IMEI number of the device. Used as a unique identifier.
-	 * @param credential The device credential to put into the db.
-	 * @param userId Device owner id in User table.
-	 * @throws Exception Throws SQL exception.
+	 * 
+	 * @param name
+	 *            Device description name.
+	 * @param IMEI
+	 *            IMEI number of the device. Used as a unique identifier.
+	 * @param credential
+	 *            The device credential to put into the db.
+	 * @param userId
+	 *            Device owner id in User table.
+	 * @throws Exception
+	 *             Throws SQL exception.
 	 */
 	public void registerDevice(String name, String IMEI, String credential,
 			int userId) throws Exception {
 		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
 		statement = connect.createStatement();
-		String sql = String.format("select ID from DEVICE where IMEI='%s'", IMEI);
+		String sql = String.format("select ID from DEVICE where IMEI='%s'",
+				IMEI);
 		resultSet = statement.executeQuery(sql);
-		if(resultSet.next()){
+		if (resultSet.next()) {
 			// Update when exist.
-			sql = String
-					.format("replace into DEVICE values (%d, '%s', '%s', '%s', %d)",
-							resultSet.getInt("ID"), name, IMEI, credential, userId);
+			sql = String.format(
+					"replace into DEVICE values (%d, '%s', '%s', '%s', %d)",
+					resultSet.getInt("ID"), name, IMEI, credential, userId);
 			statement.executeUpdate(sql);
 		} else {
 			// Insert if not.
@@ -355,15 +367,19 @@ public class SqlConnection {
 							name, IMEI, credential, userId);
 			statement.executeUpdate(sql);
 		}
-		
+
 	}
 
 	/**
 	 * Authenticate a device with device credential.
-	 * @param IMEI Device IMEI number.
-	 * @param credential Device credential.
+	 * 
+	 * @param IMEI
+	 *            Device IMEI number.
+	 * @param credential
+	 *            Device credential.
 	 * @return A boolean value indicating authentication result.
-	 * @throws Exception Throws SQL exception.
+	 * @throws Exception
+	 *             Throws SQL exception.
 	 */
 	public boolean authDevice(String IMEI, String credential) throws Exception {
 		Class.forName(DRIVER_CLASS);
@@ -383,14 +399,23 @@ public class SqlConnection {
 	 * based on its physical properties like IMEI no (equivalent) and shared key
 	 * which we sent while registering.
 	 * 
-	 * @param name Descriptive name of resource.
-	 * @param latitude Latitude of device location.
-	 * @param longitude Longitude of device location.
-	 * @param NSSID The NSSID of the wifi module on the resource. Used a unique identifier of the resource.
-	 * @param type Descriptive type of the resource.
-	 * @param SKEY Resource credential.
-	 * @param userId Owner id in User table.
-	 * @throws Exception Throws SQL exception.
+	 * @param name
+	 *            Descriptive name of resource.
+	 * @param latitude
+	 *            Latitude of device location.
+	 * @param longitude
+	 *            Longitude of device location.
+	 * @param NSSID
+	 *            The NSSID of the wifi module on the resource. Used a unique
+	 *            identifier of the resource.
+	 * @param type
+	 *            Descriptive type of the resource.
+	 * @param SKEY
+	 *            Resource credential.
+	 * @param userId
+	 *            Owner id in User table.
+	 * @throws Exception
+	 *             Throws SQL exception.
 	 */
 	public void registerResource(String name, String latitude,
 			String longitude, String NSSID, String type, String SKEY, int userId)
@@ -406,9 +431,12 @@ public class SqlConnection {
 
 	/**
 	 * Get all resources belongs to a user.
-	 * @param id User id.
+	 * 
+	 * @param id
+	 *            User id.
 	 * @return A result set of all resources under the user.
-	 * @throws Exception Throws SQL exceptions.
+	 * @throws Exception
+	 *             Throws SQL exceptions.
 	 */
 	public ResultSet getUserResources(int id) throws Exception {
 		Class.forName(DRIVER_CLASS);
@@ -425,10 +453,13 @@ public class SqlConnection {
 	 * attributes of the resource. These physical attributes are the NSSID (WiFi
 	 * SSID) and the Shared Key provided during authentication.
 	 * 
-	 * @param NSSID NSSID of resource.
-	 * @param sharedKey The shared key created on register.
+	 * @param NSSID
+	 *            NSSID of resource.
+	 * @param sharedKey
+	 *            The shared key created on register.
 	 * @return Return a boolean value indicating authentication result.
-	 * @throws Exception Throws SQL excetpion.
+	 * @throws Exception
+	 *             Throws SQL excetpion.
 	 */
 	public boolean authByNssidSharedKey(String NSSID, String sharedKey)
 			throws Exception {
@@ -447,8 +478,10 @@ public class SqlConnection {
 	 * function can be used only by the system admin to delete a resource or
 	 * even update the resource if it is being moved.
 	 * 
-	 * @param id Resource id.
-	 * @throws Exception Throws SQL exception.
+	 * @param id
+	 *            Resource id.
+	 * @throws Exception
+	 *             Throws SQL exception.
 	 */
 	public void deleteResourceById(int id) throws Exception {
 		Class.forName(DRIVER_CLASS);
@@ -460,6 +493,7 @@ public class SqlConnection {
 
 	/**
 	 * Get all user from user table.
+	 * 
 	 * @return Result set of all users.
 	 */
 	public ResultSet getAllUser() {
@@ -474,9 +508,12 @@ public class SqlConnection {
 
 	/**
 	 * Get the user by id. Get all user if id < 0.
-	 * @param id User id.
+	 * 
+	 * @param id
+	 *            User id.
 	 * @return Result set of user.
-	 * @throws Exception Throws SQL exception.
+	 * @throws Exception
+	 *             Throws SQL exception.
 	 */
 	public ResultSet getUser(int id) throws Exception {
 		try {
@@ -505,6 +542,13 @@ public class SqlConnection {
 		}
 	}
 
+	/**
+	 * get list of ID of users who is going to use this resource
+	 * 
+	 * @param credential
+	 *            share resource(display) credential
+	 * @return list of ID of users who is going to use this resource
+	 */
 	public List<Integer> getPassiveUsers(String credential) {
 
 		ResultSet result;
@@ -537,6 +581,25 @@ public class SqlConnection {
 			e.printStackTrace();
 		}
 		return user_ids;
+	}
+
+	/**
+	 * get current amount of user in this system
+	 * 
+	 * @return
+	 * @throws Exception
+	 *             Throws SQL exception or ClassNotFound exception
+	 */
+	public int getUserAmount() throws Exception {
+		ResultSet result;
+		Class.forName(DRIVER_CLASS);
+		connect = DriverManager.getConnection(URL, USER, PASSWORD);
+		statement = connect.createStatement();
+
+		String sqlCountRows = "select COUNT(*) as USER_NO from USER";
+		result = statement.executeQuery(sqlCountRows);
+		result.next();
+		return result.getInt("USER_NO");
 	}
 
 }

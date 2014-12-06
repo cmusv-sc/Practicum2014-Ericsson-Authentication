@@ -1,4 +1,4 @@
-package edu.cmu.ini.impli_auth.auth_server.geofence;
+package edu.cmu.ini.impli_auth.auth_server.datamodel;
 
 public class User {
 

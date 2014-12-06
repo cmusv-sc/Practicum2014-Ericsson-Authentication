@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * 
+ * Deal with database configuration in file "config.properties"
+ *
+ */
 public class ConfigValue {
 	private static String propFileName = "config.properties";
 	Properties prop;

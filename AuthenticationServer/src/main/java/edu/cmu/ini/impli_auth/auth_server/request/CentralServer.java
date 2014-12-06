@@ -16,80 +16,30 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
 
 import edu.cmu.ini.impli_auth.auth_server.database.SqlConnection;
+import edu.cmu.ini.impli_auth.auth_server.datamodel.PassiveUser;
 import edu.cmu.ini.impli_auth.auth_server.face.FaceTestResult;
 import edu.cmu.ini.impli_auth.auth_server.face.LBPHFaceRecognizer;
-import edu.cmu.ini.impli_auth.auth_server.geofence.PassiveUser;
 import edu.cmu.ini.impli_auth.auth_server.util.Util;
+
+/**
+ * 
+ * Contains RESTful interface for client application's registration and
+ * authentication request
+ */
 
 @Path("/json")
 public class CentralServer {
 
-	// private LBPHFaceRecognizer faceRecognizer;
-	private static int width = 128, height = 128;
+	private LBPHFaceRecognizer faceRecognizer = null;
+	private static int WIDTH = 128, HEIGHT = 128;
 
-	// public CentralServer() {
-	// faceRecognizer = new LBPHFaceRecognizer(width, height);
-	// faceRecognizer.train();
-	// }
-
-	/*
-	 * This method is used to obtain the physical distance between two
-	 * coordinates. It is a standard math formula. For the exact formula please
-	 * refer the documentation.
-	 * 
-	 * The distance value obtained is a scalar. What that means, is source and
-	 * destination can be interchanged and we will still get the same value. It
-	 * is basically the distance between two points.
-	 */
-	private double distance(double lat1, double lon1, double lat2, double lon2) {
-
-		double theta = lon1 - lon2;
-		double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2))
-				+ Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2))
-				* Math.cos(deg2rad(theta));
-		dist = Math.acos(dist);
-		dist = rad2deg(dist);
-		dist = dist * 60 * 1.1515 * 1.609344;
-
-		return (dist);
-	}
-
-	/**
-	 * Standard functions to convert angle values from degrees to radians and
-	 * vice versa. These are values needed in the above trigonometric functions.
-	 * @param deg input in degrees
-	 * @return radian output in radian
-	 */
-
-	private double deg2rad(double deg) {
-		return (deg * Math.PI / 180.0);
-	}
-	
-	/**
-	 * Reverse function
-	 * @param rad input in radians
-	 * @return output in degrees
-	 */
-
-	private double rad2deg(double rad) {
-		return (rad * 180 / Math.PI);
-	}
-
-	@GET
-	@Path("/db")
-	public void getdata() {
-
-		SqlConnection dao = new SqlConnection();
-		try {
-			ResultSet resSet = dao.getAllUser();
-			if (resSet != null) {
-				while (resSet.next()) {
-					System.out.print(resSet.getString("email"));
-				}
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
+	public CentralServer() {
+		if (Util.canStartFaceReg()) {
+			faceRecognizer = new LBPHFaceRecognizer(WIDTH, HEIGHT);
+			faceRecognizer.train();
+		} else {
+			System.out
+					.println("facial recognition training not start yet, we need at least two users to start it");
 		}
 	}
 
@@ -139,19 +89,30 @@ public class CentralServer {
 		}
 
 	}
+
 	/**
-	 * Funtion used to register the user
+	 * Function used to register the user
 	 * 
-	 * @param username Username
-	 * @param password Password
-	 * @param firstName Entered first name
-	 * @param lastName Entered last name
-	 * @param email Email ID
-	 * @param image1 First image
-	 * @param image2 Second image 
-	 * @param image3 Third image
-	 * @param image4 Fourth image
-	 * @param image5 Fifth Image
+	 * @param username
+	 *            Username
+	 * @param password
+	 *            Password
+	 * @param firstName
+	 *            Entered first name
+	 * @param lastName
+	 *            Entered last name
+	 * @param email
+	 *            Email ID
+	 * @param image1
+	 *            First image
+	 * @param image2
+	 *            Second image
+	 * @param image3
+	 *            Third image
+	 * @param image4
+	 *            Fourth image
+	 * @param image5
+	 *            Fifth Image
 	 * @return
 	 */
 	@POST
@@ -177,6 +138,7 @@ public class CentralServer {
 			result = -1;
 		}
 
+		// save image into user's corresponding directory
 		if (result != -1) {
 			int userID = Util.getUserID(username);
 			Util.createDir(userID);
@@ -190,7 +152,9 @@ public class CentralServer {
 			Util.saveImage(userID, imageBytes3, "image4");
 			byte[] imageBytes4 = DatatypeConverter.parseBase64Binary(image5);
 			Util.saveImage(userID, imageBytes4, "image5");
-			// faceRecognizer.train();
+			if (Util.canStartFaceReg()) {
+				faceRecognizer.train();
+			}
 		}
 
 		String returnMessage;
@@ -207,17 +171,24 @@ public class CentralServer {
 		}
 		return Response.status(200).entity(returnMessage).build();
 	}
-	
+
 	/**
 	 * Function used to register resources
 	 * 
-	 * @param username Username of owner
-	 * @param password Password of owner
-	 * @param name Specific name of the resource
-	 * @param latitude Latitude of the resource location
-	 * @param longitude Longitude of the resource location
-	 * @param NSSID WiFi NSSID connected to
-	 * @param type Type of user can be public/private
+	 * @param username
+	 *            Username of owner
+	 * @param password
+	 *            Password of owner
+	 * @param name
+	 *            Specific name of the resource
+	 * @param latitude
+	 *            Latitude of the resource location
+	 * @param longitude
+	 *            Longitude of the resource location
+	 * @param NSSID
+	 *            WiFi NSSID connected to
+	 * @param type
+	 *            Type of user can be public/private
 	 * @return HTTP response with result code
 	 */
 
@@ -276,11 +247,14 @@ public class CentralServer {
 		System.out.println(returnMessage);
 		return Response.status(200).entity(returnMessage).build();
 	}
-	
+
 	/**
 	 * Method used to authenticate the resource everytime its switched back on
-	 * @param NSSID Wifi NSSID connected to
-	 * @param sKey Shared key provided to the resource
+	 * 
+	 * @param NSSID
+	 *            Wifi NSSID connected to
+	 * @param sKey
+	 *            Shared key provided to the resource
 	 * @return HTTP response with result code
 	 */
 
@@ -306,7 +280,7 @@ public class CentralServer {
 
 		return Response.status(200).entity(result).build();
 	}
-	
+
 	/**
 	 * 
 	 * GEO-FENCING
@@ -324,11 +298,13 @@ public class CentralServer {
 	 * If not we check from his location if he is near any Resource using the
 	 * above distance calculator. If he is within the threshold we add him to
 	 * PASSIVE_USER along with the resource_id of the resource he is near to.
-	 * @param user On success we create a PassiveUser entry. The input we get
-	 * 			   from the app is in PassiveUser object format.
+	 * 
+	 * @param user
+	 *            On success we create a PassiveUser entry. The input we get
+	 *            from the app is in PassiveUser object format.
 	 * @return HTTP response with result code
 	 */
-	
+
 	@POST
 	@Path("/postLocation")
 	@Consumes("application/json")
@@ -354,7 +330,8 @@ public class CentralServer {
 							.getString("LATITUDE"));
 					double lat2 = Double.parseDouble(result
 							.getString("LONGITUDE"));
-					dist = distance(lat1, lat2, user.getLat(), user.getLon());
+					dist = Util.distance(lat1, lat2, user.getLat(),
+							user.getLon());
 					System.out.println("Reached DISTANCE" + dist);
 
 					if (dist < 1) {
@@ -382,18 +359,21 @@ public class CentralServer {
 		String http_result = "Passive User : " + user;
 		return Response.status(201).entity(http_result).build();
 	}
-	
+
 	/**
-	 * Method used to create a device entry everytime the user logs in
-	 * @param username Username of the device owner
-	 * @param password Password of the device owner
-	 * @param name Device name
-	 * @param IMEI The IMEI no of the device. This can be replced with any
-	 * 		  device specific no.
+	 * Method used to create a device entry every time the user logs in
+	 * 
+	 * @param username
+	 *            Username of the device owner
+	 * @param password
+	 *            Password of the device owner
+	 * @param name
+	 *            Device name
+	 * @param IMEI
+	 *            The IMEI no of the device. This can be replaced with any
+	 *            device specific no.
 	 * @return HTTP response with result code
 	 */
-			
-
 	@POST
 	@Path("/postDevice")
 	// @Consumes("application/json")
@@ -450,15 +430,24 @@ public class CentralServer {
 		SqlConnection dao = new SqlConnection();
 		return dao.writeToAUT(id, auth);
 	}
-	
+
 	/**
-	 * The method is used to authenticate the user. The second image is for multiple 
-	 * user scenarios 
-	 * @param credential Credential provided to the user
-	 * @param image1 Image of the first user
-	 * @param image2 Image of the second user
+	 * run facial recognition test, first consider private resource owner in
+	 * multiple user scenarios, and also only consider who is actually active
+	 * user right now to refine the result (information come from Geo-fence)
+	 * 
+	 * The method is used to authenticate the user. The second image is for
+	 * multiple user scenarios
+	 * 
+	 * @param credential
+	 *            Credential provided to the resource (display) user is using
+	 * @param image1
+	 *            Image of the first user
+	 * @param image2
+	 *            Image of the second user
 	 * @return HTTP response with result code
-	 * @throws Exception throws IOException
+	 * @throws Exception
+	 *             throws IOException
 	 */
 	@POST
 	@Path("/testImage")
@@ -468,13 +457,20 @@ public class CentralServer {
 			@FormParam("image1") String image1,
 			@FormParam("image2") String image2) throws Exception {
 
-		byte[] imageData = DatatypeConverter.parseBase64Binary(image1);
 		String userName = "";
+		// facial recognition can't start yet, return response as unknown user
+		if (!Util.canStartFaceReg()) {
+			return Response.status(200).entity(userName + ":" + 0 + ":public")
+					.build();
+		}
+		if (faceRecognizer == null) {
+			faceRecognizer = new LBPHFaceRecognizer(WIDTH, HEIGHT);
+			faceRecognizer.train();
+		}
+
+		byte[] imageData = DatatypeConverter.parseBase64Binary(image1);
 		int auth = 0;
 
-		LBPHFaceRecognizer faceRecognizer = new LBPHFaceRecognizer(width,
-				height);
-		faceRecognizer.train();
 		FaceTestResult result = faceRecognizer.test(imageData, "test1.jpg");
 		userName = Util.getUserName(result.label);
 		System.out.println("first user");
