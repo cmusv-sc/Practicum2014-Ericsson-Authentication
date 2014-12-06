@@ -7,6 +7,11 @@ import java.util.List;
 import edu.cmu.ini.impli_auth.auth_server.geofence.PassiveUser;
 import edu.cmu.ini.impli_auth.auth_server.util.ConfigValue;
 
+/**
+ * This class contains methods to update database.
+ * @author Ivan
+ *
+ */
 public class SqlConnection {
 
 	private Connection connect = null;
@@ -67,13 +72,15 @@ public class SqlConnection {
 		return false;
 	}
 
-	/*
+	/**
 	 * Read Resource reads all the resources to get their location. In future
 	 * the resources will be arranged based on their location. Only the
 	 * resources near the query location will be considered. They will be
 	 * checked for possible options for users.
+	 * 
+	 * @return The result of the resource list.
+	 * @throws Exception Throws SQL exception.
 	 */
-
 	public ResultSet readResource() throws Exception {
 
 		ResultSet returnResult;
@@ -100,13 +107,16 @@ public class SqlConnection {
 		return returnResult;
 	}
 
-	/*
+	/**
 	 * This method is used to check if the user is already present in the
 	 * PASSIVE_USER. If the user is present in the passive user table we just
 	 * update the fresh and the step counter value. This will be used in
 	 * deciding the authenticity parameter.
+	 * 
+	 * @param imei IMEI number of user context collector.
+	 * @return Result set of getting passive user.
+	 * @throws Exception Throws SQL exception.
 	 */
-
 	public ResultSet readPassiveUser(String imei) throws Exception {
 
 		ResultSet returnResult;
@@ -136,11 +146,14 @@ public class SqlConnection {
 
 	}
 
-	/*
+	/**
 	 * If the above method does say that the user is present in the PASSIVE_USER
 	 * table then the following method is used to update the PASSIVE_USER.
+	 * 
+	 * @param user
+	 * @param id
+	 * @throws Exception
 	 */
-
 	public void updatePassiveUser(PassiveUser user, int id) throws Exception {
 
 		ResultSet returnResult;
@@ -171,12 +184,15 @@ public class SqlConnection {
 
 	}
 
-	/*
+	/**
 	 * If the user is not present in the PASSIVE_USER table and he triggers the
 	 * geo-fence of any resource, we will add him to the PASSIVE_USER table to
 	 * track him and process the authentication request.
+	 * 
+	 * @param user
+	 * @param resource_id
+	 * @throws Exception
 	 */
-
 	public void writePUT(PassiveUser user, int resource_id) throws Exception {
 
 		ResultSet returnResult;
@@ -223,12 +239,16 @@ public class SqlConnection {
 		statement.executeUpdate(sql);
 	}
 
-	/*
+	/**
 	 * The method authenticates a user by the username and password of the user.
 	 * It is a basic check on the username and the password values present in
 	 * our management database
+	 * 
+	 * @param username Username.
+	 * @param password Password.
+	 * @return The user id if authenticated. -1 if failed.
+	 * @throws Exception Throws SQL exception.
 	 */
-
 	public int authByUsernamePassword(String username, String password)
 			throws Exception {
 		Class.forName(DRIVER_CLASS);
@@ -244,6 +264,11 @@ public class SqlConnection {
 			return -1; // return -1 if auth failed.
 	}
 
+	/**
+	 * Get the user entry by username.
+	 * @param userName The username to find the user.
+	 * @return The result of the search.
+	 */
 	public ResultSet getUserID(String userName) {
 		ResultSet resultSet = null;
 		try {
@@ -263,12 +288,18 @@ public class SqlConnection {
 		return resultSet;
 	}
 
-	/*
+	/**
 	 * Along with authenticating the user we also add the device to our device
 	 * database. This device will be the communication link between the user and
 	 * the authentication server.
+	 * 
+	 * @param username Username.
+	 * @param password Password.
+	 * @param firstName User first name.
+	 * @param lastName User last name.
+	 * @param email User email.
+	 * @throws Exception Throw SQL exception.
 	 */
-
 	public void registerUser(String username, String password,
 			String firstName, String lastName, String email) throws Exception {
 		Class.forName(DRIVER_CLASS);
@@ -280,6 +311,14 @@ public class SqlConnection {
 		statement.executeUpdate(sql);
 	}
 
+	/**
+	 * Register a device under certain user.
+	 * @param name Device description name.
+	 * @param IMEI IMEI number of the device. Used as a unique identifier.
+	 * @param credential The device credential to put into the db.
+	 * @param userId Device owner id in User table.
+	 * @throws Exception Throws SQL exception.
+	 */
 	public void registerDevice(String name, String IMEI, String credential,
 			int userId) throws Exception {
 		Class.forName(DRIVER_CLASS);
@@ -303,11 +342,13 @@ public class SqlConnection {
 		
 	}
 
-	/*
-	 * This function is used to authenticate the device based on its physical
-	 * attributes like its IMEI no and the Shared Key or the Credential.
+	/**
+	 * Authenticate a device with device credential.
+	 * @param IMEI Device IMEI number.
+	 * @param credential Device credential.
+	 * @return A boolean value indicating authentication result.
+	 * @throws Exception Throws SQL exception.
 	 */
-
 	public boolean authDevice(String IMEI, String credential) throws Exception {
 		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -319,14 +360,22 @@ public class SqlConnection {
 		return resultSet.next();
 	}
 
-	/*
+	/**
 	 * Used to register a resource. The admin will have a screen on the resource
 	 * while setting up the resource which he will use to register the resource
 	 * in the start. At subsequent logins we will authenticate the resource
 	 * based on its physical properties like IMEI no (equivalent) and shared key
 	 * which we sent while registering.
+	 * 
+	 * @param name Descriptive name of resource.
+	 * @param latitude Latitude of device location.
+	 * @param longitude Longitude of device location.
+	 * @param NSSID The NSSID of the wifi module on the resource. Used a unique identifier of the resource.
+	 * @param type Descriptive type of the resource.
+	 * @param SKEY Resource credential.
+	 * @param userId Owner id in User table.
+	 * @throws Exception Throws SQL exception.
 	 */
-
 	public void registerResource(String name, String latitude,
 			String longitude, String NSSID, String type, String SKEY, int userId)
 			throws Exception {
@@ -339,6 +388,12 @@ public class SqlConnection {
 		statement.executeUpdate(sql);
 	}
 
+	/**
+	 * Get all resources belongs to a user.
+	 * @param id User id.
+	 * @return A result set of all resources under the user.
+	 * @throws Exception Throws SQL exceptions.
+	 */
 	public ResultSet getUserResources(int id) throws Exception {
 		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -349,12 +404,16 @@ public class SqlConnection {
 		return resultSet;
 	}
 
-	/*
+	/**
 	 * As we mentioned we will be authenticating the resource using the physical
 	 * attributes of the resource. These physical attributes are the NSSID (WiFi
 	 * SSID) and the Shared Key provided during authentication.
+	 * 
+	 * @param NSSID NSSID of resource.
+	 * @param sharedKey The shared key created on register.
+	 * @return Return a boolean value indicating authentication result.
+	 * @throws Exception Throws SQL excetpion.
 	 */
-
 	public boolean authByNssidSharedKey(String NSSID, String sharedKey)
 			throws Exception {
 		Class.forName(DRIVER_CLASS);
@@ -367,12 +426,14 @@ public class SqlConnection {
 		return resultSet.next();
 	}
 
-	/*
+	/**
 	 * Management plane function to delete resources which are registered. This
 	 * function can be used only by the system admin to delete a resource or
 	 * even update the resource if it is being moved.
+	 * 
+	 * @param id Resource id.
+	 * @throws Exception Throws SQL exception.
 	 */
-
 	public void deleteResourceById(int id) throws Exception {
 		Class.forName(DRIVER_CLASS);
 		connect = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -381,6 +442,10 @@ public class SqlConnection {
 		statement.executeUpdate(sql);
 	}
 
+	/**
+	 * Get all user from user table.
+	 * @return Result set of all users.
+	 */
 	public ResultSet getAllUser() {
 		ResultSet res = null;
 		try {
@@ -391,6 +456,12 @@ public class SqlConnection {
 		return res;
 	}
 
+	/**
+	 * Get the user by id. Get all user if id < 0.
+	 * @param id User id.
+	 * @return Result set of user.
+	 * @throws Exception Throws SQL exception.
+	 */
 	public ResultSet getUser(int id) throws Exception {
 		try {
 			// this will load the MySQL driver, each DB has its own driver
