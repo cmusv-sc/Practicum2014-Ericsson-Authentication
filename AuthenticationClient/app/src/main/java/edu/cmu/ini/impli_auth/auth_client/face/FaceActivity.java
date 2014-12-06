@@ -196,7 +196,8 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
 	/**
 	 * initialize the Mat object of training image.
-	 * @param width -  the width of the frames that will be delivered
+	 *
+	 * @param width  -  the width of the frames that will be delivered
 	 * @param height - the height of the frames that will be delivered
 	 */
 	@Override
@@ -217,6 +218,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	/**
 	 * It is used to control taking pictures process, put image of users in the current input
 	 * frame in to a list and send it for prediction. Also, show focusing box for user's face
+	 *
 	 * @param inputFrame inputFrame can from camera sensor
 	 * @return Mat object will be shown on camera view
 	 */
@@ -267,6 +269,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 	/**
 	 * get credential of this SharedResource for Authenticaiton Server to check whether certain
 	 * users are near SharedResource(display) or not.
+	 *
 	 * @return Credential of this SharedResource
 	 */
 	private String getSharedResourceCredential() {
@@ -288,6 +291,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
 		/**
 		 * bundle HTTP POST parameter, and send to Authentication Server
+		 *
 		 * @param params nothing, we pass parameter as instance variable
 		 * @return username, public or private resource, probability of this authentication
 		 */
@@ -331,6 +335,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 		/**
 		 * Get the result of authentication from Authentication Server,
 		 * and hand over the result back to third party application.
+		 *
 		 * @param result username, public or private resource, probability of this authentication
 		 */
 		@Override
@@ -361,6 +366,7 @@ public class FaceActivity extends Activity implements CvCameraViewListener2 {
 
 	/**
 	 * Send byte array of users' face images to AsynTask for HTTP POST
+	 *
 	 * @param mBitmaps List of bitmap of users' face image
 	 */
 	public void predict(List<Bitmap> mBitmaps) {
