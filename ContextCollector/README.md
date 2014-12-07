@@ -21,7 +21,7 @@ Context Collector
 Change the IP
 
 ``` 
-private final static String SERVER_IP = "10.0.2.2";
+private final static String SERVER_IP = [SERVER_IP];
 private final static String PORT = "8080";
 ```
 
