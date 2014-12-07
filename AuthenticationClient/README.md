@@ -1,5 +1,21 @@
 Authentication Client
 =====================
+
+####Server Configuration
+ 
+ We need to configure the SERVER IP before running the application. You could do that by opening:
+
+```
+ Context Collector > app > src > main > java > util > GlobalVariable.java
+```
+
+Change the IP
+
+``` 
+private final static String SERVER_IP = [SERVER_IP];
+private final static String PORT = "8080";
+```
+
 #### Used to register share resoruce which has this application
 
 when you directly open this application, you can use it to register the device which has this application as share resoruce
