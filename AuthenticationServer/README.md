@@ -4,7 +4,7 @@ Authentication Server
 Jersey Server implementation of our Central Service. The server maintains the database and services all the authentication requests from resources as well as collects context information from the devices. 
 
 ####MySQL configuration
-You can find the MySQL database file in the
+You can find the MySQL database configuration file in the
 ```
 CentralServer/src/main/resources
 ```
@@ -35,3 +35,7 @@ Step 2: In the Run As dialog select Run on Server
 Step 3: Choose an existing server or manually define a new server
         This server can be running locally or by configuring a remote server.
 ```
+
+#### TroubleShooting for server
+The errors shown in Eclipse console is self-explanatory.
+Authentication result from facial recognition and geo-fence will also be printed in console.
