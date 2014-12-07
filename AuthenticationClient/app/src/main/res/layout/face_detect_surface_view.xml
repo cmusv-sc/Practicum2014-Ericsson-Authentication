@@ -1,0 +1,62 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="0.88"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.88" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <edu.cmu.ini.impli_auth.auth_client.face.CameraView
+                    android:id="@+id/cameraView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.88" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+        
+		<LinearLayout
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content" >
+
+            <TextView
+		        android:id="@+id/resultTextView"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="0.71"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <ToggleButton
+		        android:id="@+id/searchButton"
+		        android:layout_width="wrap_content"
+		        android:layout_height="match_parent"
+                android:layout_weight="0.3"
+		        android:text="@string/SSearch"
+		        android:textOff="@string/SSearch"
+		        android:textOn="@string/SStopSearch" />
+
+            <ImageButton
+		        android:id="@+id/cameraImageButton"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="0.3"
+		        android:src="@drawable/ic_stat_camera" />
+
+		</LinearLayout>
+            
+    	</LinearLayout>
+    
+</LinearLayout>

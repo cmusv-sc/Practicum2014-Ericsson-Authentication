@@ -1,0 +1,17 @@
+.DS_Store
+AuthenticationServer/target/*
+AuthenticationServer/.settings/*
+AuthenticationClient/.idea/*
+AuthenticationClient/.gradle/*
+AuthenticationClient/app/build/*
+AuthenticationClient/build/*
+AuthenticationClient/openCVLibrary249/build/*
+ContextCollector/.gradle/*
+ContextCollector/.idea/*
+ContextCollector/app/build/*
+ContextCollector/build/*
+ContextCollector/openCVLibrary249/build/*
+WatchTV/build/*
+WatchTV/app/build/*
+WatchTV/.gradle/*
+WatchTV/.idea/*

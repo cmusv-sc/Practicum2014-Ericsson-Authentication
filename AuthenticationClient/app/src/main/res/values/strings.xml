@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Authentication Client</string>
+    <string name="SSearch">Search</string>
+    <string name="SStopSearch">Stop Search</string>
+    <string name="SIdle">Idle</string>
+    <string name="SSearching">Searching</string>
+</resources>

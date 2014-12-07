@@ -1,0 +1,20 @@
+<resources>
+        <string name="title_activity_login">Register Resource</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Register This Resource</string>
+    <string name="action_sign_in_short">Register</string>
+    <string name="share_perf_key">share_perf_key</string>
+    <string name="registered_flag">registered</string>
+    <string name="resource_name">resource_name</string>
+    <string name="latitude">latitude</string>
+    <string name="longitude">longitude</string>
+    <string name="type">type</string>
+
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+</resources>
