@@ -1,13 +1,17 @@
 Authentication Client
 =====================
+#### Used to register share resoruce which has this application
 
+when you directly open this application, you can use it to register the device which has this application as share resoruce
 
- This android application provides the FaceActivity which is used by applications to do the authentication.
+#### Used to do authentication
+
+ This android application provides the FaceActivity which is used by third party applications to do the authentication.
 
 
 ```
  Manifest file
-<activity 
+  <activity 
       android:name="edu.cmu.ini.impli_auth.auth_client.face.FaceActivity"
       android:label="@string/app_name"
       android:screenOrientation="landscape"
@@ -16,9 +20,9 @@ Authentication Client
   </activity>
 ```
 
-The exported property enables this activity to be called from other applications.
+The exported property enables this activity to be called from other third party applications.
 
-####How to use the application
+######How to use the application for authentication
 
-This application is not directly used. 
+This application is not directly used for auth. 
 We need to install this on the device to make it available for other applications to access the activities.
